@@ -1,8 +1,8 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench ActiveDocument="..\..\..\..\..\Public\Documents\Unity Projects\Arcomage\Assets\Scripts\Objects\CardController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GameController.cs">
     <Files>
-      <File FileName="..\..\..\..\..\Public\Documents\Unity Projects\Arcomage\Assets\Scripts\Objects\CardController.cs" Line="22" Column="30" />
+      <File FileName="Assets\Scripts\GameController.cs" Line="62" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
