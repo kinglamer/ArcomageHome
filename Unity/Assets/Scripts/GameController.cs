@@ -8,7 +8,7 @@ using System.Collections;
 public class PlayerHelper
 {
 	public int CountCard=0;
-	public int MaxCard=6;
+	public int MaxCard=5;
 }
 
 public class GameController : MonoBehaviour {
