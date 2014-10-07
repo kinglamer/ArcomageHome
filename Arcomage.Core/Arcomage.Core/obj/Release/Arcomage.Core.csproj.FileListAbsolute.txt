@@ -1,0 +1,10 @@
+F:\Dropbox\ForFun\AcromageHome\Arcomage.Core\Arcomage.Core\bin\Release\Arcomage.Core.dll
+F:\Dropbox\ForFun\AcromageHome\Arcomage.Core\Arcomage.Core\bin\Release\Arcomage.Core.pdb
+F:\Dropbox\ForFun\AcromageHome\Arcomage.Core\Arcomage.Core\obj\Release\Arcomage.Core.csprojResolveAssemblyReference.cache
+F:\Dropbox\ForFun\AcromageHome\Arcomage.Core\Arcomage.Core\obj\Release\Arcomage.Core.dll
+F:\Dropbox\ForFun\AcromageHome\Arcomage.Core\Arcomage.Core\obj\Release\Arcomage.Core.pdb
+F:\Dropbox\ForFun\AcromageHome\Arcomage.Core\Arcomage.Core\bin\Release\Arcomage.Core.dll.config
+F:\Dropbox\ForFun\AcromageHome\Arcomage.Core\Arcomage.Core\bin\Release\Newtonsoft.Json.dll
+F:\Dropbox\ForFun\AcromageHome\Arcomage.Core\Arcomage.Core\bin\Release\Newtonsoft.Json.xml
+F:\Dropbox\ForFun\AcromageHome\Arcomage.Core\Arcomage.Core\bin\Release\Arcomage.BL.dll
+F:\Dropbox\ForFun\AcromageHome\Arcomage.Core\Arcomage.Core\bin\Release\Arcomage.BL.pdb

@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit http://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA6ChZm6oxlUOU0AaPASQzRwAAAAACAAAAAAAQZgAAAAEAACAAAAB06eFyM4J7i3A8nUYtkPfXTfOOf5iJTi0W6hpERv8SNQAAAAAOgAAAAAIAACAAAACi2HYmsjZ+SoPY1tYrRi2DQdB13vxsJFG9VlTaPLxvHCAAAAA1q/wTXvtXm+wXjoexRil+n3xu9CI9K6k+tFU+KrRtpUAAAABPNd1c5kFbfV/eZzbUCVLYle87QNY9vLqs9zKSI3FQAnoVqbWpxWP/+OgWuRWYmUoWbhxxLs9qjQCVV5q7Mnpq</EncryptedPassword>
+    <_PublishTargetUrl>ftp://ftp.Smarterasp.net/site1</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="Add.aspx">
+      <publishTime>10/04/2014 21:06:31</publishTime>
+    </File>
+    <File Include="ArcoServer.svc">
+      <publishTime>09/29/2014 23:40:57</publishTime>
+    </File>
+    <File Include="bin/Arcomage.BL.dll">
+      <publishTime>10/04/2014 12:20:57</publishTime>
+    </File>
+    <File Include="bin/Arcomage.Core.dll">
+      <publishTime>10/04/2014 20:59:25</publishTime>
+    </File>
+    <File Include="bin/Arcomage.DAL.dll">
+      <publishTime>10/04/2014 20:59:25</publishTime>
+    </File>
+    <File Include="bin/Arcomage.Server.dll">
+      <publishTime>10/04/2014 21:54:11</publishTime>
+    </File>
+    <File Include="bin/EntityFramework.dll">
+      <publishTime>10/04/2014 12:13:19</publishTime>
+    </File>
+    <File Include="bin/EntityFramework.SqlServer.dll">
+      <publishTime>10/04/2014 12:13:19</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>10/01/2014 21:30:50</publishTime>
+    </File>
+    <File Include="Default.aspx">
+      <publishTime>10/04/2014 21:31:21</publishTime>
+    </File>
+    <File Include="List.aspx">
+      <publishTime>10/04/2014 19:58:00</publishTime>
+    </File>
+    <File Include="packages.config">
+      <publishTime>10/01/2014 21:30:50</publishTime>
+    </File>
+    <File Include="Style.css">
+      <publishTime>10/04/2014 16:24:34</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>10/04/2014 20:07:32</publishTime>
+    </File>
+  </ItemGroup>
+</Project>
