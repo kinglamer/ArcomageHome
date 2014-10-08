@@ -4,21 +4,26 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Arcomage.Core;
+using Arcomage.Entity;
 
 namespace Arcomage.DAL
 {
-    public class CardContext : DbContext
+    public partial class CardContext : DbContext
     {
+        public DbSet<Card> Cards { get; set; }
+        public DbSet<CardParams> CardParamses { get; set; }
+
         public CardContext()
             : base("DefaultConnection") { }
 
-        public DbSet<CardParametrs> ArcomageCards { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+          
+            modelBuilder.Entity<Card>().HasMany<CardParams>(s => s.cardParams);
+
+            base.OnModelCreating(modelBuilder);
 
         }
-
     }
 }

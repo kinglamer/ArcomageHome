@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Arcomage.DAL;
+using Arcomage.Entity;
 
 namespace Arcomage.Server
 {
@@ -12,40 +14,45 @@ namespace Arcomage.Server
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            DataTable dt = new DataTable();
 
-            using (var db = new CardContext())
+            using (var db =new CardContext())
             {
-               var data = db.ArcomageCards.Select(p => new 
-               {p.id,
-                PlayerTower =  p.playerBuildings.Tower,
-                PlayerWall = p.playerBuildings.Wall,
 
-                EnemyTower = p.enemyBuildings.Tower,
-                EnemyWall = p.enemyBuildings.Wall,
+                dt.Columns.Add("id");
+                dt.Columns.Add("name");
+             
+                foreach (Specifications suit in (Specifications[])Enum.GetValues(typeof(Specifications)))
+                {
+                    dt.Columns.Add(suit.ToString());
+                }
 
-                PlayerResDiamonds = p.playerResources.Diamonds,
-                PlayerResAnimals = p.playerResources.Animals,
-                PlayerResRocks = p.playerResources.Rocks,
+                var cards = db.Cards.ToList();
 
-                EnemyResDiamonds = p.enemyResources.Diamonds,
-                EnemyResAnimals = p.enemyResources.Animals,
-                EnemyResRocks = p.enemyResources.Rocks,
+                foreach (var card in cards)
+                {
+                    DataRow newRow = dt.NewRow();
+                    newRow["name"] = card.name;
 
-                PlayerSourDiamonds = p.playerSources.DiamondMines,
-                PlayerSourAnimals = p.playerSources.Menagerie,
-                PlayerSourRocks = p.playerSources.Colliery,
+                    newRow["id"] = card.id;
 
-                EnemySourDiamonds = p.enemySources.DiamondMines,
-                EnemySourAnimals = p.enemySources.Menagerie,
-                EnemySourRocks = p.enemySources.Colliery,
+                    foreach (var parm in card.cardParams)
+                    {
+                        newRow[parm.key.ToString()] = parm.value;
+                    }
 
-                 CostDiamonds =  p.cardCost.Diamonds,
-                 CostAnimals=  p.cardCost.Animals, 
-                 CostRocks =  p.cardCost.Rocks});
+                    dt.Rows.Add(newRow);
+                }
 
-                gvTable.DataSource = data.ToList();
-                gvTable.DataBind();
+
+
+
+             
+                //  
             }
+
+            gvTable.DataSource = dt;
+            gvTable.DataBind();
         }
     }
 }

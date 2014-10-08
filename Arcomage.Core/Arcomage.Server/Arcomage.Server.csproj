@@ -102,7 +102,6 @@
       <DependentUpon>List.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceHelper\CardCache.cs" />
     <Compile Include="IArcoServer.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -116,18 +115,17 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Arcomage.BL\Arcomage.BL.csproj">
-      <Project>{5cdbd06b-18c3-4f7c-a3b0-ab974659fb03}</Project>
-      <Name>Arcomage.BL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Arcomage.Core\Arcomage.Core.csproj">
-      <Project>{A08C490A-7C60-4FDA-B452-A7136A039FB9}</Project>
-      <Name>Arcomage.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Arcomage.DAL\Arcomage.DAL.csproj">
       <Project>{41A48EE5-32B4-413F-98A0-8C4FA09CCC41}</Project>
       <Name>Arcomage.DAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Arcomage.Entity\Arcomage.Entity.csproj">
+      <Project>{69DC8E57-C976-4B60-B7CF-B16F20732F0F}</Project>
+      <Name>Arcomage.Entity</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ServiceHelper\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

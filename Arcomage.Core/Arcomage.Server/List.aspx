@@ -9,15 +9,10 @@
 <body>
     <form id="form1" runat="server">
     <div>
-        
-        <asp:gridview ID="gvTable" runat="server" runat="server" AutoGenerateColumns="False"
+             <asp:gridview ID="gvTable" runat="server" runat="server" AutoGenerateColumns="True"
     PageSize="10" AllowPaging="true">
             
-                <Columns>
-        <asp:BoundField DataField="id" HeaderText="Customer Id" />
-        <asp:BoundField DataField="PlayerTower" HeaderText="Contact Name" />
-        <asp:BoundField DataField="PlayerWall" HeaderText="City" />
-    </Columns>
+     
         </asp:gridview>
     </div>
     </form>

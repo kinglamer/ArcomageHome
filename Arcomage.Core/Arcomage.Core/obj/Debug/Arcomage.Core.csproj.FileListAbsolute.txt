@@ -15,3 +15,9 @@ D:\Dropbox\ForFun\AcromageHome\Arcomage.Core\Arcomage.Core\obj\Debug\Arcomage.Co
 D:\Dropbox\ForFun\AcromageHome\Unity\Assets\Plugins\Arcomage.Core.dll.config
 D:\Dropbox\ForFun\AcromageHome\Unity\Assets\Plugins\Arcomage.Core.dll
 D:\Dropbox\ForFun\AcromageHome\Unity\Assets\Plugins\Arcomage.Core.pdb
+E:\DemoProjects\ArcomageHome\Unity\Assets\Plugins\Arcomage.Core.dll.config
+E:\DemoProjects\ArcomageHome\Unity\Assets\Plugins\Arcomage.Core.dll
+E:\DemoProjects\ArcomageHome\Unity\Assets\Plugins\Arcomage.Core.pdb
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Core\obj\Debug\Arcomage.Core.csprojResolveAssemblyReference.cache
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Core\obj\Debug\Arcomage.Core.dll
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Core\obj\Debug\Arcomage.Core.pdb

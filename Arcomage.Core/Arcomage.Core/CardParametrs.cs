@@ -1,5 +1,4 @@
-﻿using Arcomage.BL;
-using Arcomage.Core.Parametrs;
+﻿using Arcomage.Core.Parametrs;
 using Newtonsoft.Json;
 
 namespace Arcomage.Core
@@ -7,7 +6,7 @@ namespace Arcomage.Core
     /// <summary>
     /// Основные параметры карты, что она может добавлять или убавлять себе или противнику
     /// </summary>
-    public class CardParametrs : ICardParametrs
+    public class CardParametrs 
     {
         public string name { get; set; }
         public int id { get; set; }

@@ -1,13 +1,7 @@
-﻿using System;
+﻿using Arcomage.DAL;
+using Arcomage.Entity;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using Arcomage.Core;
-using Arcomage.Core.Parametrs;
-using Arcomage.DAL;
-using Arcomage.Server.ServiceHelper;
 
 namespace Arcomage.Server
 {
@@ -22,11 +16,11 @@ namespace Arcomage.Server
         {
             using (var db = new CardContext())
             {
-                var item = new CardParametrs();
+                var item = new Card();
 
                 if (tbName.Text.Length > 0)
                 {
-                    
+
                     item.name = tbName.Text;
                 }
                 else
@@ -35,165 +29,101 @@ namespace Arcomage.Server
                     return;
                 }
 
-                Resources res;
-                if (!GetCostCard(out res))
+                List<CardParams>  cardParam = new List<CardParams>();
+
+                Dictionary<Specifications, string> dicCost = new Dictionary<Specifications, string>();
+                dicCost.Add(Specifications.CostAnimals,tbCostAnimals.Text);
+                dicCost.Add(Specifications.CostDiamonds,tbCostDiamonds.Text);
+                dicCost.Add(Specifications.CostRocks,tbCostRocks.Text);
+
+
+                var result = GetCardParams(item, dicCost);
+
+                if (result.Count > 1 || result.Count == 0)
                 {
                     lbError.Text = "Необходимо заполнить стоимость карты. У карты может быть только одна стоимость.";
                     return;
                 }
-                else
-                {
-                    item.cardCost = res;
-                }
 
+                cardParam.AddRange(result);
 
-                Buildings bP ;
-                SourcesOfResources srP;
-                Resources rP;
+                Dictionary<Specifications, string> dicParam = new Dictionary<Specifications, string>();
+                dicParam.Add(Specifications.PlayerTower, tbTowerPlayer.Text);
+                dicParam.Add(Specifications.PlayerWall, tbWallPlayer.Text);
 
-                Buildings bE ;
-                SourcesOfResources srE;
-                Resources rE;
+                dicParam.Add(Specifications.EnemyTower, tbTowerEnemy.Text);
+                dicParam.Add(Specifications.EnemyWall, tbWallEnemy.Text);
 
+                dicParam.Add(Specifications.PlayerAnimals, tbAnimalsPlayer.Text);
+                dicParam.Add(Specifications.PlayerDiamonds, tbDiamondsPlayer.Text);
+                dicParam.Add(Specifications.PlayerRocks, tbRocksPlayer.Text);
 
+                dicParam.Add(Specifications.EnemyAnimals, tbAnimalsEnemy.Text);
+                dicParam.Add(Specifications.EnemyDiamonds, tbDiamondsEnemy.Text);
+                dicParam.Add(Specifications.EnemyRocks, tbRocksEnemy.Text);
 
-                if (!GetCardParams(out bP, out srP, out rP, out bE, out srE, out rE))
+                dicParam.Add(Specifications.PlayerMenagerie, tbMenageriePlayer.Text);
+                dicParam.Add(Specifications.PlayerDiamondMines, tbDiamondMinesPlayer.Text);
+                dicParam.Add(Specifications.PlayerColliery, tbCollieryPlayer.Text);
+
+                dicParam.Add(Specifications.EnemyMenagerie, tbMenagerieEnemy.Text);
+                dicParam.Add(Specifications.EnemyDiamondMines, tbDiamondMinesEnemy.Text);
+                dicParam.Add(Specifications.EnemyColliery, tbCollieryEnemy.Text);
+
+                result = GetCardParams(item, dicParam);
+
+                if (result.Count > 3 || result.Count == 0)
                 {
                     lbError.Text = "Необходимо заполнить хотя бы один параметр карты. Параметров карт не должо быть больше 3";
                     return;
                 }
-                else
-                {
-                    item.playerBuildings = bP;
-                    item.playerSources = srP;
-                    item.playerResources = rP;
-                    item.enemyBuildings = bE;
-                    item.enemySources = srE;
-                    item.enemyResources = rE;
 
-                }
+                cardParam.AddRange(result);
 
-                
-
-                db.ArcomageCards.Add(item);
-
+                db.Cards.Add(item);
                 db.SaveChanges();
+
+                db.CardParamses.AddRange(cardParam);
+                db.SaveChanges();
+
             }
         }
 
-        private bool GetCardParams(out Buildings bP, out SourcesOfResources srP, out Resources rP, out Buildings bE, out SourcesOfResources srE, out Resources rE)
+
+
+        private List<CardParams> GetCardParams(Card card, Dictionary<Specifications, string> elem)
         {
-            int cntParams = 0;
 
-            bP = new Buildings();
-            srP =new SourcesOfResources();
-            rP =new Resources();
+            List<CardParams> returnVal = new List<CardParams>();
 
-            bE = new Buildings();
-            srE = new SourcesOfResources();
-            rE = new Resources();
-
-
-            cntParams = CntBuilding(bP, cntParams, tbTowerPlayer.Text, tbWallPlayer.Text);
-            cntParams = CntBuilding(bE, cntParams, tbTowerEnemy.Text, tbWallEnemy.Text);
-
-            cntParams = CntResourses(rP, cntParams, tbAnimalsPlayer.Text, tbDiamondsPlayer.Text, tbRocksPlayer.Text);
-            cntParams = CntResourses(rE, cntParams, tbAnimalsEnemy.Text, tbDiamondsEnemy.Text, tbRocksEnemy.Text);
-
-            cntParams = CntSource(srP, cntParams, tbMenageriePlayer.Text, tbDiamondMinesPlayer.Text, tbCollieryPlayer.Text);
-            cntParams = CntSource(srE, cntParams, tbMenagerieEnemy.Text, tbDiamondMinesEnemy.Text, tbCollieryEnemy.Text);
-
-            
-
-            if (cntParams == 0 || cntParams > 3)
+            foreach (var item in elem)
             {
-                return false;
+                var result = AddToList(card, item.Value, item.Key);
+
+                if (result != null)
+                    returnVal.Add(result);
+            }
+          
+
+            return returnVal;
+        }
+
+        private CardParams AddToList(Card item, string value, Specifications key)
+        {
+            if (value.Length > 0)
+            {
+                CardParams newItem = new CardParams()
+                {
+                    card = item,
+                    key = key,
+                    value = Convert.ToInt32(value)
+                };
+                return newItem;
             }
             else
             {
-                return true;
+                return null;
             }
-
-        }
-
-
-
-        private int CntBuilding(Buildings bP, int cntParams, string Tower, string Wall)
-        {
-            if (Tower.Length > 0)
-            {
-                bP.Tower = Convert.ToInt32(Tower);
-                cntParams++;
-            }
-
-            if (Wall.Length > 0)
-            {
-                bP.Wall = Convert.ToInt32(Wall);
-                cntParams++;
-            }
-            return cntParams;
-        }
-
-
-        private bool GetCostCard(out Resources cardCost)
-        {
-            int cntBoxes = 0;
-            cardCost =new Resources();
-
-            cntBoxes = CntResourses(cardCost, cntBoxes, tbCostAnimals.Text, tbCostDiamonds.Text, tbCostRocks.Text);
-
-            if (cntBoxes == 0 || cntBoxes > 1)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        private int CntResourses(Resources cardCost, int cntBoxes, string animals, string dimonds, string rocks)
-        {
-            if (animals.Length > 0)
-            {
-                cardCost.Animals = Convert.ToInt32(animals);
-                cntBoxes++;
-            }
-
-            if (dimonds.Length > 0)
-            {
-                cardCost.Diamonds = Convert.ToInt32(dimonds);
-                cntBoxes++;
-            }
-
-            if (rocks.Length > 0)
-            {
-                cardCost.Rocks = Convert.ToInt32(rocks);
-                cntBoxes++;
-            }
-            return cntBoxes;
-        }
-
-        private int CntSource(SourcesOfResources sourse, int cntBoxes, string animals, string dimonds, string rocks)
-        {
-            if (animals.Length > 0)
-            {
-                sourse.Menagerie = Convert.ToInt32(animals);
-                cntBoxes++;
-            }
-
-            if (dimonds.Length > 0)
-            {
-                sourse.DiamondMines = Convert.ToInt32(dimonds);
-                cntBoxes++;
-            }
-
-            if (rocks.Length > 0)
-            {
-                sourse.Colliery = Convert.ToInt32(rocks);
-                cntBoxes++;
-            }
-            return cntBoxes;
         }
     }
 }

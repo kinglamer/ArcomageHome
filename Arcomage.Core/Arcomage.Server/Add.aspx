@@ -5,11 +5,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
-     <link rel="stylesheet" type="text/css" href="Style.css">
-
+    <link rel="stylesheet" type="text/css" href="Style.css">
 </head>
 <body>
-    <form id="frmAdd" runat="server">
+   <form id="frmAdd" runat="server">
     <div>
         
     </div>
@@ -92,4 +91,3 @@
     </form>
 </body>
 </html>
-

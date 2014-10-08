@@ -1,12 +1,11 @@
 ﻿
-using Arcomage.BL;
 
 namespace Arcomage.Core.Parametrs
 {
     /// <summary>
     /// Класс отвечающий за источники ресурсов игрока
     /// </summary>
-    public class SourcesOfResources : ISourcesOfResources
+    public class SourcesOfResources 
     {
         /// <summary>
         /// Брилиантовый прииск

@@ -10,3 +10,9 @@ D:\Dropbox\ForFun\AcromageHome\Arcomage.Core\Arcomage.WebConsole\obj\Debug\Arcom
 D:\Dropbox\ForFun\AcromageHome\Arcomage.Core\Arcomage.WebConsole\bin\Debug\Arcomage.WebConsole.exe
 D:\Dropbox\ForFun\AcromageHome\Arcomage.Core\Arcomage.WebConsole\bin\Debug\Arcomage.WebConsole.pdb
 D:\Dropbox\ForFun\AcromageHome\Arcomage.Core\Arcomage.WebConsole\obj\Debug\Arcomage.WebConsole.csprojResolveAssemblyReference.cache
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.WebConsole\bin\Debug\Arcomage.WebConsole.exe.config
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.WebConsole\obj\Debug\Arcomage.WebConsole.exe
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.WebConsole\obj\Debug\Arcomage.WebConsole.pdb
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.WebConsole\bin\Debug\Arcomage.WebConsole.exe
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.WebConsole\bin\Debug\Arcomage.WebConsole.pdb
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.WebConsole\obj\Debug\Arcomage.WebConsole.csprojResolveAssemblyReference.cache

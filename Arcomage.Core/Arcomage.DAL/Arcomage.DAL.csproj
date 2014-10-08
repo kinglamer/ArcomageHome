@@ -50,13 +50,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Arcomage.BL\Arcomage.BL.csproj">
-      <Project>{5CDBD06B-18C3-4F7C-A3B0-AB974659FB03}</Project>
-      <Name>Arcomage.BL</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Arcomage.Core\Arcomage.Core.csproj">
       <Project>{A08C490A-7C60-4FDA-B452-A7136A039FB9}</Project>
       <Name>Arcomage.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Arcomage.Entity\Arcomage.Entity.csproj">
+      <Project>{69DC8E57-C976-4B60-B7CF-B16F20732F0F}</Project>
+      <Name>Arcomage.Entity</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

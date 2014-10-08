@@ -1,13 +1,12 @@
 ﻿
 
-using Arcomage.BL;
 
 namespace Arcomage.Core.Parametrs
 {
     /// <summary>
     /// Количество ресурсов определенного вида
     /// </summary>
-    public class Resources : IResources
+    public class Resources 
     {
         /// <summary>
         /// Брилианты

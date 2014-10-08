@@ -88,12 +88,6 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Arcomage.BL\Arcomage.BL.csproj">
-      <Project>{5CDBD06B-18C3-4F7C-A3B0-AB974659FB03}</Project>
-      <Name>Arcomage.BL</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

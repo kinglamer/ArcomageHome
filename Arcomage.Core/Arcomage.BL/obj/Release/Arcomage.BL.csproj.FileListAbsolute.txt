@@ -1,4 +1,0 @@
-F:\Dropbox\ForFun\AcromageHome\Arcomage.Core\Arcomage.BL\bin\Release\Arcomage.BL.dll
-F:\Dropbox\ForFun\AcromageHome\Arcomage.Core\Arcomage.BL\bin\Release\Arcomage.BL.pdb
-F:\Dropbox\ForFun\AcromageHome\Arcomage.Core\Arcomage.BL\obj\Release\Arcomage.BL.dll
-F:\Dropbox\ForFun\AcromageHome\Arcomage.Core\Arcomage.BL\obj\Release\Arcomage.BL.pdb

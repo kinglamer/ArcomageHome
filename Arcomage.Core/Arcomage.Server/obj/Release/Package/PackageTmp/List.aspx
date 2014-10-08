@@ -9,8 +9,11 @@
 <body>
     <form id="form1" runat="server">
     <div>
-        
-        <asp:gridview ID="gvTable" runat="server"></asp:gridview>
+             <asp:gridview ID="gvTable" runat="server" runat="server" AutoGenerateColumns="True"
+    PageSize="10" AllowPaging="true">
+            
+     
+        </asp:gridview>
     </div>
     </form>
 </body>
