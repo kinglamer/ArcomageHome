@@ -1,0 +1,5 @@
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Entity\bin\Release\Arcomage.Entity.dll.config
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Entity\bin\Release\Arcomage.Entity.dll
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Entity\bin\Release\Arcomage.Entity.pdb
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Entity\obj\Release\Arcomage.Entity.dll
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Entity\obj\Release\Arcomage.Entity.pdb
