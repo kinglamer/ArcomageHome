@@ -48,11 +48,9 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\GUIScript.cs" />
      <Compile Include="Assets\Scripts\GameController.cs" />
-     <Compile Include="Assets\Scripts\Objects\CardController.cs" />
-     <Compile Include="Assets\Scripts\Objects\QuadCardController.cs" />
-     <None Include="Assets\Materials\QuadCardShader.shader" />
-     <None Include="Assets\Materials\QuadPicShader.shader" />
-     <None Include="Assets\Materials\SingleQuadCardShader.shader" />
+     <Compile Include="Assets\Scripts\Objects\DoneCardScript.cs" />
+     <None Include="Assets\GUI_components\Fonts\Custom3DTextShader.shader" />
+     <None Include="Assets\Materials\Done_CardShader.shader" />
  <Reference Include="Arcomage.BL">
  <HintPath>C:/Users/Public/Documents/Unity Projects/GitRep/Unity/Assets/Scripts/Libs/Arcomage.BL.dll</HintPath>
  </Reference>

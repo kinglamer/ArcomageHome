@@ -30,9 +30,10 @@ public class GameController : MonoBehaviour {
 
 			GameObject card = (GameObject) Instantiate (cards,spawnPosition, spawnRotation);
 			spawnPosition.x += 5f;
-			card.GetComponent<QuadCardController>().cardName = "Card "+ps.CountCard;
-			card.GetComponent<QuadCardController>().cardParam = "Parameter "+ps.CountCard;
-			card.GetComponent<QuadCardController>().cardCost = ps.CountCard;
+			spawnPosition.z += 0.5f;
+			card.GetComponent<DoneCardScript>().cardName = "Card "+ps.CountCard;
+			card.GetComponent<DoneCardScript>().cardParam = "Parameter "+ps.CountCard+"\nParameter "+ps.CountCard+"\nParameter "+ps.CountCard;
+			card.GetComponent<DoneCardScript>().cardCost = ps.CountCard;
 			ps.CountCard++;
 
 				}
