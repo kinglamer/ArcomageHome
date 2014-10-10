@@ -52,6 +52,7 @@
      <Compile Include="Assets\Scripts\Objects\QuadCardController.cs" />
      <None Include="Assets\Materials\QuadCardShader.shader" />
      <None Include="Assets\Materials\QuadPicShader.shader" />
+     <None Include="Assets\Materials\SingleQuadCardShader.shader" />
  <Reference Include="Arcomage.BL">
  <HintPath>C:/Users/Public/Documents/Unity Projects/GitRep/Unity/Assets/Scripts/Libs/Arcomage.BL.dll</HintPath>
  </Reference>

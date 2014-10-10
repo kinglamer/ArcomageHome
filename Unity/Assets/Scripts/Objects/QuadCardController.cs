@@ -59,7 +59,7 @@ public class QuadCardController : MonoBehaviour {
 
 	void OnMouseEnter ()
 	{
-		transform.Translate (Vector3.back);
+		transform.Translate (Vector3.forward);
 		
 	}
 	
@@ -72,7 +72,7 @@ public class QuadCardController : MonoBehaviour {
 	void OnMouseExit ()
 	{	
 		this.GetComponentInChildren<Light> ().enabled = false;
-		transform.Translate (Vector3.forward);
+		transform.Translate (Vector3.back);
 	}
 	
 	void OnGUI(){
