@@ -26,3 +26,17 @@ E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.DAL\bin\Release\EntityFramew
 E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.DAL\obj\Release\Arcomage.DAL.csprojResolveAssemblyReference.cache
 E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.DAL\obj\Release\Arcomage.DAL.dll
 E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.DAL\obj\Release\Arcomage.DAL.pdb
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\bin\Release\Arcomage.DAL.dll.config
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\bin\Release\Arcomage.DAL.dll
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\bin\Release\Arcomage.DAL.pdb
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\bin\Release\Arcomage.Core.dll
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\bin\Release\Arcomage.Entity.dll
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\bin\Release\EntityFramework.dll
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\bin\Release\EntityFramework.SqlServer.dll
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\bin\Release\Arcomage.Core.pdb
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\bin\Release\Arcomage.Entity.pdb
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\bin\Release\EntityFramework.xml
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\bin\Release\EntityFramework.SqlServer.xml
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\obj\Release\Arcomage.DAL.csprojResolveAssemblyReference.cache
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\obj\Release\Arcomage.DAL.dll
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\obj\Release\Arcomage.DAL.pdb

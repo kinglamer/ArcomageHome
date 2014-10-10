@@ -3,3 +3,8 @@ E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Entity\bin\Release\Arcomage.
 E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Entity\bin\Release\Arcomage.Entity.pdb
 E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Entity\obj\Release\Arcomage.Entity.dll
 E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Entity\obj\Release\Arcomage.Entity.pdb
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.Entity\bin\Release\Arcomage.Entity.dll.config
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.Entity\bin\Release\Arcomage.Entity.dll
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.Entity\bin\Release\Arcomage.Entity.pdb
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.Entity\obj\Release\Arcomage.Entity.dll
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.Entity\obj\Release\Arcomage.Entity.pdb

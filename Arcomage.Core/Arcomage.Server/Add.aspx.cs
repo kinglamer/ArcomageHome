@@ -14,6 +14,9 @@ namespace Arcomage.Server
 
         protected void btSave_Click(object sender, EventArgs e)
         {
+            lbError.Text = "";
+            lbInfo.Text = "";
+
             using (var db = new CardContext())
             {
                 var item = new Card();
@@ -86,6 +89,8 @@ namespace Arcomage.Server
                 db.CardParamses.AddRange(cardParam);
                 db.SaveChanges();
 
+                lbError.Text = "";
+                lbInfo.Text = "Карта добавлена";
             }
         }
 

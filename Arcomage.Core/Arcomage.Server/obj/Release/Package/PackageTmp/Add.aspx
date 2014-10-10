@@ -14,7 +14,8 @@
     </div>
         
         <h1> <asp:Label CssClass="error" ID="lbError" runat="server" Text=""></asp:Label></h1> 
-        
+         <h2> <asp:Label ID="lbInfo" runat="server" Text=""></asp:Label></h2> 
+
         <p/>
 
         <asp:Label ID="lbName" runat="server" Text="Название карты"></asp:Label> 

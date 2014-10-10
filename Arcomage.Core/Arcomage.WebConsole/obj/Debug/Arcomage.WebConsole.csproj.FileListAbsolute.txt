@@ -16,3 +16,6 @@ E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.WebConsole\obj\Debug\Arcomag
 E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.WebConsole\bin\Debug\Arcomage.WebConsole.exe
 E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.WebConsole\bin\Debug\Arcomage.WebConsole.pdb
 E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.WebConsole\obj\Debug\Arcomage.WebConsole.csprojResolveAssemblyReference.cache
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.WebConsole\bin\Debug\Arcomage.WebConsole.exe.config
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.WebConsole\obj\Debug\Arcomage.WebConsole.exe
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.WebConsole\obj\Debug\Arcomage.WebConsole.pdb
