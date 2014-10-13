@@ -40,3 +40,5 @@ D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\bin\Release\EntityFramework.
 D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\obj\Release\Arcomage.DAL.csprojResolveAssemblyReference.cache
 D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\obj\Release\Arcomage.DAL.dll
 D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\obj\Release\Arcomage.DAL.pdb
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.DAL\bin\Release\Newtonsoft.Json.dll
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.DAL\bin\Release\Newtonsoft.Json.xml

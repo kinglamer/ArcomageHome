@@ -16,3 +16,5 @@ E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Core\bin\Release\Arcomage.Co
 E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Core\bin\Release\Arcomage.Core.pdb
 E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Core\bin\Release\Newtonsoft.Json.dll
 E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Core\bin\Release\Newtonsoft.Json.xml
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Core\bin\Release\Arcomage.Entity.dll
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Core\bin\Release\Arcomage.Entity.pdb

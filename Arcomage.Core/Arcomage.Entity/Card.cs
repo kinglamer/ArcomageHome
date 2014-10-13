@@ -4,13 +4,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Arcomage.Entity
 {
     public class Card //Standard
     {
-        [Key]
         public int id { get; set; }
         public string name { get; set; }
 

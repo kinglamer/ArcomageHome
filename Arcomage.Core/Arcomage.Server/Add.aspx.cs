@@ -14,11 +14,11 @@ namespace Arcomage.Server
 
         protected void btSave_Click(object sender, EventArgs e)
         {
-            lbError.Text = "";
+            
             lbInfo.Text = "";
+            lbError.Text = "";
 
-            using (var db = new CardContext())
-            {
+            
                 var item = new Card();
 
                 if (tbName.Text.Length > 0)
@@ -34,10 +34,7 @@ namespace Arcomage.Server
 
                 List<CardParams>  cardParam = new List<CardParams>();
 
-                Dictionary<Specifications, string> dicCost = new Dictionary<Specifications, string>();
-                dicCost.Add(Specifications.CostAnimals,tbCostAnimals.Text);
-                dicCost.Add(Specifications.CostDiamonds,tbCostDiamonds.Text);
-                dicCost.Add(Specifications.CostRocks,tbCostRocks.Text);
+                var dicCost = GetDicCost();
 
 
                 var result = GetCardParams(item, dicCost);
@@ -50,28 +47,7 @@ namespace Arcomage.Server
 
                 cardParam.AddRange(result);
 
-                Dictionary<Specifications, string> dicParam = new Dictionary<Specifications, string>();
-                dicParam.Add(Specifications.PlayerTower, tbTowerPlayer.Text);
-                dicParam.Add(Specifications.PlayerWall, tbWallPlayer.Text);
-
-                dicParam.Add(Specifications.EnemyTower, tbTowerEnemy.Text);
-                dicParam.Add(Specifications.EnemyWall, tbWallEnemy.Text);
-
-                dicParam.Add(Specifications.PlayerAnimals, tbAnimalsPlayer.Text);
-                dicParam.Add(Specifications.PlayerDiamonds, tbDiamondsPlayer.Text);
-                dicParam.Add(Specifications.PlayerRocks, tbRocksPlayer.Text);
-
-                dicParam.Add(Specifications.EnemyAnimals, tbAnimalsEnemy.Text);
-                dicParam.Add(Specifications.EnemyDiamonds, tbDiamondsEnemy.Text);
-                dicParam.Add(Specifications.EnemyRocks, tbRocksEnemy.Text);
-
-                dicParam.Add(Specifications.PlayerMenagerie, tbMenageriePlayer.Text);
-                dicParam.Add(Specifications.PlayerDiamondMines, tbDiamondMinesPlayer.Text);
-                dicParam.Add(Specifications.PlayerColliery, tbCollieryPlayer.Text);
-
-                dicParam.Add(Specifications.EnemyMenagerie, tbMenagerieEnemy.Text);
-                dicParam.Add(Specifications.EnemyDiamondMines, tbDiamondMinesEnemy.Text);
-                dicParam.Add(Specifications.EnemyColliery, tbCollieryEnemy.Text);
+                var dicParam = GetDicParam();
 
                 result = GetCardParams(item, dicParam);
 
@@ -81,21 +57,49 @@ namespace Arcomage.Server
                     return;
                 }
 
-                cardParam.AddRange(result);
-
-              //  item.cardParams = cardParam;
-
-                db.Cards.Add(item);
-                db.SaveChanges();
-
-               db.CardParamses.AddRange(cardParam);
-                db.SaveChanges();
+                DatabaseHelper.SaveCard(cardParam, result, item);
 
                 lbError.Text = "";
                 lbInfo.Text = "Карта добавлена";
-            }
+            
         }
 
+        private Dictionary<Specifications, string> GetDicCost()
+        {
+            Dictionary<Specifications, string> dicCost = new Dictionary<Specifications, string>();
+            dicCost.Add(Specifications.CostAnimals, tbCostAnimals.Text);
+            dicCost.Add(Specifications.CostDiamonds, tbCostDiamonds.Text);
+            dicCost.Add(Specifications.CostRocks, tbCostRocks.Text);
+            return dicCost;
+        }
+
+        private Dictionary<Specifications, string> GetDicParam()
+        {
+            Dictionary<Specifications, string> dicParam = new Dictionary<Specifications, string>();
+            dicParam.Add(Specifications.PlayerTower, tbTowerPlayer.Text);
+            dicParam.Add(Specifications.PlayerWall, tbWallPlayer.Text);
+
+            dicParam.Add(Specifications.EnemyTower, tbTowerEnemy.Text);
+            dicParam.Add(Specifications.EnemyWall, tbWallEnemy.Text);
+
+            dicParam.Add(Specifications.PlayerAnimals, tbAnimalsPlayer.Text);
+            dicParam.Add(Specifications.PlayerDiamonds, tbDiamondsPlayer.Text);
+            dicParam.Add(Specifications.PlayerRocks, tbRocksPlayer.Text);
+
+            dicParam.Add(Specifications.EnemyAnimals, tbAnimalsEnemy.Text);
+            dicParam.Add(Specifications.EnemyDiamonds, tbDiamondsEnemy.Text);
+            dicParam.Add(Specifications.EnemyRocks, tbRocksEnemy.Text);
+
+            dicParam.Add(Specifications.PlayerMenagerie, tbMenageriePlayer.Text);
+            dicParam.Add(Specifications.PlayerDiamondMines, tbDiamondMinesPlayer.Text);
+            dicParam.Add(Specifications.PlayerColliery, tbCollieryPlayer.Text);
+
+            dicParam.Add(Specifications.EnemyMenagerie, tbMenagerieEnemy.Text);
+            dicParam.Add(Specifications.EnemyDiamondMines, tbDiamondMinesEnemy.Text);
+            dicParam.Add(Specifications.EnemyColliery, tbCollieryEnemy.Text);
+
+            return dicParam;
+        }
 
 
         private List<CardParams> GetCardParams(Card card, Dictionary<Specifications, string> elem)

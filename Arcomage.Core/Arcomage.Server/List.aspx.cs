@@ -33,10 +33,7 @@ namespace Arcomage.Server
         {
             MakeTableStruct();
 
-            using (var db = new CardContext())
-            {
-                
-                var cards = db.Cards.ToList();
+            List<Card> cards = DatabaseHelper.GetCards();
 
                 foreach (var card in cards)
                 {
@@ -52,7 +49,7 @@ namespace Arcomage.Server
 
                     dt.Rows.Add(newRow);
                 }
-            }
+           
 
             gvTable.DataSource = dt;
             gvTable.DataBind();
@@ -84,24 +81,12 @@ namespace Arcomage.Server
 
         protected void gvTable_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
-            using (var db = new CardContext())
-            {
-
                 string Id = gvTable.Rows[e.RowIndex].Cells[1].Text;
 
-                var myCard = new Card { id = Convert.ToInt32(Id) };
-                db.Cards.Attach(myCard);
-
-                db.Entry(myCard).State = EntityState.Deleted;
-                db.SaveChanges();
-
-
+                DatabaseHelper.DeleteCard(Id);
                 GetData();
-                
-            }
         }
 
-     
 
         private IDictionary<string, object> GetValues(GridViewRow row)
         {
@@ -129,75 +114,16 @@ namespace Arcomage.Server
 
         protected void gvTable_RowUpdating(object sender, GridViewUpdateEventArgs e)
         {
-            using (var db = new CardContext())
-            {
+            
                 GridViewRow row = gvTable.Rows[e.RowIndex];
                 var newValues = GetValues(row);
-                int id = Convert.ToInt32(newValues["id"]);
-                var myCard = db.Cards.FirstOrDefault(x => x.id == id );
-
-                myCard.name = newValues["name"].ToString();
-
-                foreach (var item in newValues)
-                {
-                    if (item.Key != "name" && item.Key != "id" )
-                    {
-                        Specifications spec = (Specifications)Enum.Parse(typeof(Specifications), item.Key);
-                     
-
-                        if (myCard.cardParams.Any(x => x.key == spec))
-                        {
-                         
-                            if (item.Value != null)
-                            {
-                                myCard.cardParams.First(x => x.key == spec).value = Convert.ToInt32(item.Value);
-                            }
-                            else
-                            {
-                               /* var removedParams = new CardParams()
-                                {
-                                    id = myCard.cardParams.First(x => x.key == spec)
-                                     
-                                };*/
-
-                              //  db.CardParamses.Attach(removedParams);
-                                db.Entry(myCard.cardParams.First(x => x.key == spec)).State = EntityState.Deleted;
-
-                         
-
-                            }
-                        }
-                        else
-                        {
-
-                            if (item.Value != null)
-                            {
-                                db.CardParamses.Add(new CardParams()
-                                {
-                                    card = myCard,
-                                    key = spec,
-                                    value = Convert.ToInt32(item.Value)
-                                });
-                            }
-                        }
-
-                       
-                        
-                    }
-                }
-              
-                db.Entry(myCard).State = EntityState.Modified;
-
-
-
-                db.SaveChanges();
+   
+                DatabaseHelper.UpdateCard(newValues);
 
                 gvTable.EditIndex = -1;
                 GetData();
 
-            }
+            
         }
-
-    
     }
 }

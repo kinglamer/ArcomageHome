@@ -87,6 +87,7 @@
     <Compile Include="ArcoServer.svc.cs">
       <DependentUpon>ArcoServer.svc</DependentUpon>
     </Compile>
+    <Compile Include="CardTest.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -115,6 +116,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Arcomage.Common\Arcomage.Common.csproj">
+      <Project>{23650d10-2ab9-4068-93e8-ace0c0729926}</Project>
+      <Name>Arcomage.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Arcomage.DAL\Arcomage.DAL.csproj">
       <Project>{41A48EE5-32B4-413F-98A0-8C4FA09CCC41}</Project>
       <Name>Arcomage.DAL</Name>

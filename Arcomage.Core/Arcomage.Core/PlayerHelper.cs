@@ -1,4 +1,8 @@
-﻿using Arcomage.Core.Parametrs;
+﻿using System.Collections.Generic;
+using System.ServiceModel;
+using Arcomage.Core.ArcomageService;
+using Arcomage.Entity;
+using Newtonsoft.Json;
 
 namespace Arcomage.Core
 {
@@ -7,11 +11,9 @@ namespace Arcomage.Core
 
         public readonly int MaxCard;
         public int CountCard = 0;
+        private const string url = "http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
 
-        public Buildings build = new Buildings();
-        public SourcesOfResources sources = new SourcesOfResources();
-        public Resources resources = new Resources();
-
+        private Queue<Card> QCard = new Queue<Card>();
 
         /// <summary>
         /// Установка дефолтных значений
@@ -20,12 +22,38 @@ namespace Arcomage.Core
         {
             MaxCard = 5;
             CountCard = 0;
-            build.Tower = 10;
-            build.Wall = 5;
+        }
 
-            resources.Animals = 10;
-            resources.Diamonds = 10;
-            resources.Rocks = 10;
+        public Card GetCard()
+        {
+            if (QCard.Count == 0)
+            {
+             //   ArcoServerClient host = new ArcoServerClient();
+
+               ArcoServerClient host = new ArcoServerClient(new BasicHttpBinding(), new EndpointAddress(url));
+
+
+
+                string cardFromServer = host.GetRandomCard();
+
+                List<Card> newParametrs = JsonConvert.DeserializeObject<List<Card>>(cardFromServer);
+
+                foreach (var item in newParametrs)
+                {
+                    if (QCard.Count == MaxCard)
+                    {
+                        break;
+                    }
+
+                    QCard.Enqueue(item);
+                  
+                }
+
+                 
+
+            }
+
+           return QCard.Dequeue();
         }
 
     }

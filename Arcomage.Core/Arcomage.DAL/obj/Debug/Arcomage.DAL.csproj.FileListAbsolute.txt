@@ -56,3 +56,5 @@ D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\obj\Debug\Arcomage.DAL.dll
 D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\obj\Debug\Arcomage.DAL.pdb
 D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\obj\Debug\Arcomage.DAL.Migrations.DeleteCascade.resources
 D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\obj\Debug\Arcomage.DAL.csproj.GenerateResource.Cache
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.DAL\bin\Debug\Newtonsoft.Json.dll
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.DAL\bin\Debug\Newtonsoft.Json.xml

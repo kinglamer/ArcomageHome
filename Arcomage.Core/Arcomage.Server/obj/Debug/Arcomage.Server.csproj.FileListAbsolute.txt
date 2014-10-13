@@ -60,3 +60,5 @@ D:\Projects\AcromageHome\Arcomage.Core\Arcomage.Server\bin\Newtonsoft.Json.xml
 D:\Projects\AcromageHome\Arcomage.Core\Arcomage.Server\obj\Debug\Arcomage.Server.csprojResolveAssemblyReference.cache
 D:\Projects\AcromageHome\Arcomage.Core\Arcomage.Server\obj\Debug\Arcomage.Server.dll
 D:\Projects\AcromageHome\Arcomage.Core\Arcomage.Server\obj\Debug\Arcomage.Server.pdb
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Server\bin\Arcomage.Common.dll
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Server\bin\Arcomage.Common.pdb

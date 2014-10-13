@@ -19,7 +19,9 @@ namespace Arcomage.DAL
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-          
+
+            modelBuilder.Entity<Card>().HasKey(x => x.id);
+            modelBuilder.Entity<CardParams>().HasKey(x => x.id);
             modelBuilder.Entity<Card>().HasMany<CardParams>(s => s.cardParams).WithRequired(x=>x.card);
 
           

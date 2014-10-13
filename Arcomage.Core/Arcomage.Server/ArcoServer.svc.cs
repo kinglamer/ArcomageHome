@@ -1,4 +1,13 @@
 ﻿
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using Arcomage.Common;
+using Arcomage.DAL;
+using Arcomage.Entity;
+using Newtonsoft.Json;
+
 namespace Arcomage.Server
 {
     // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "ArcoServer" in code, svc and config file together.
@@ -7,36 +16,35 @@ namespace Arcomage.Server
     {
         public string GetRandomCard()
         {
-          //  var parametrs = new CardParametrs();
-          //  parametrs.name = "test";
-          //  if (CardCache.cache.Count == 0)
-         //   {
-               // GetRandomCardFromDB();
-         //   }
-       
 
-          //  parametrs = CardCache.cache.Dequeue();
+            /*    var result = DatabaseHelper.GetCards();
+
+              if (result.Count == 0)
+              {
+                  return "Empty";
+              }
+            //  result.Randomize();
+
+           List<Card> returnVal = new List<Card>();
+
+              for (int i = 0; i < 5 || i < result.Count; i++)
+              {
+                  returnVal.Add(result[i]);
+              }*/
 
 
-          //  return JsonConvert.SerializeObject(parametrs); ;
-            return "test";
-        }
 
-        private void GetRandomCardFromDB()
-        {
-           /* using (var db = new CardContext())
-            {
-               var item = new CardParametrs();
+            CardTest card = new CardTest();
+            card.id = 1;
+            card.name = "Test";
 
-                item.name = "test";
-                item.playerBuildings.Tower = 5;
+            card.Paramses.Add(new CardParamsTest() { key = Specifications.CostAnimals, value = 10});
 
-                db.ArcomageCards.Add_old(item);
 
-                CardCache.cache.Enqueue(item);
-                db.SaveChanges(); 
-            }*/
+            return JsonConvert.SerializeObject(card); 
 
         }
+
+   
     }
 }
