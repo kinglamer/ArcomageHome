@@ -8,25 +8,6 @@ using System.Threading.Tasks;
 
 namespace Arcomage.Entity
 {
-
-    public class CardParams //student
-    {
-        [Key]
-        public int id { get; set; }
-
-        public Specifications key { get; set; }
-        public int value { get; set; }
-
-      //  public virtual List<Card> cards { get; set; }
-
-        public Card card { get; set; }
-
-        public CardParams()
-        {
-            card = new Card();
-        }
-    }
-
     public class Card //Standard
     {
         [Key]
@@ -39,32 +20,5 @@ namespace Arcomage.Entity
         {
             cardParams = new Collection<CardParams>();
         }
-    }
-
-
-    public enum Specifications 
-    {
-        NotSet = 0,
-        PlayerTower,
-        PlayerWall,
-        PlayerDiamondMines,
-        PlayerMenagerie,
-        PlayerColliery,
-        PlayerDiamonds,
-        PlayerAnimals,
-        PlayerRocks,
-
-        EnemyTower,
-        EnemyWall,
-        EnemyDiamondMines,
-        EnemyMenagerie,
-        EnemyColliery,
-        EnemyDiamonds,
-        EnemyAnimals,
-        EnemyRocks,
-
-        CostDiamonds,
-        CostAnimals,
-        CostRocks
     }
 }

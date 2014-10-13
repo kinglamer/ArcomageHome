@@ -45,9 +45,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Parametrs\Buildings.cs" />
+    <Compile Include="Parametrs\CardParametrs.cs" />
     <Compile Include="Parametrs\Resources.cs" />
     <Compile Include="Parametrs\SourcesOfResources.cs" />
-    <Compile Include="CardParametrs.cs" />
     <Compile Include="PlayerHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\ArcomageService\Reference.cs">

@@ -20,8 +20,9 @@ namespace Arcomage.DAL
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
           
-            modelBuilder.Entity<Card>().HasMany<CardParams>(s => s.cardParams);
+            modelBuilder.Entity<Card>().HasMany<CardParams>(s => s.cardParams).WithOptional().WillCascadeOnDelete(true);
 
+          
             base.OnModelCreating(modelBuilder);
 
         }

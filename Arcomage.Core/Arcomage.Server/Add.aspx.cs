@@ -83,11 +83,13 @@ namespace Arcomage.Server
 
                 cardParam.AddRange(result);
 
+                item.cardParams = cardParam;
+
                 db.Cards.Add(item);
                 db.SaveChanges();
 
-                db.CardParamses.AddRange(cardParam);
-                db.SaveChanges();
+             //   db.CardParamses.AddRange(cardParam);
+             //   db.SaveChanges();
 
                 lbError.Text = "";
                 lbInfo.Text = "Карта добавлена";

@@ -54,3 +54,5 @@ D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\bin\Debug\EntityFramework.Sq
 D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\obj\Debug\Arcomage.DAL.csprojResolveAssemblyReference.cache
 D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\obj\Debug\Arcomage.DAL.dll
 D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\obj\Debug\Arcomage.DAL.pdb
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\obj\Debug\Arcomage.DAL.Migrations.DeleteCascade.resources
+D:\Projects\AcromageHome\Arcomage.Core\Arcomage.DAL\obj\Debug\Arcomage.DAL.csproj.GenerateResource.Cache

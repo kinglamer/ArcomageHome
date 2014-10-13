@@ -47,6 +47,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CardContext.cs" />
+    <Compile Include="Migrations\201410130626410_DeleteCascade.cs" />
+    <Compile Include="Migrations\201410130626410_DeleteCascade.Designer.cs">
+      <DependentUpon>201410130626410_DeleteCascade.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -62,6 +67,11 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201410130626410_DeleteCascade.resx">
+      <DependentUpon>201410130626410_DeleteCascade.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -15,6 +15,8 @@ namespace Arcomage.Server
 {
     public partial class List : System.Web.UI.Page
     {
+
+        //TODO: refactor. Вынести в дал операции с бд
         private static DataTable dt { get; set; }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -34,7 +36,6 @@ namespace Arcomage.Server
             using (var db = new CardContext())
             {
                 
-
                 var cards = db.Cards.ToList();
 
                 foreach (var card in cards)
@@ -85,10 +86,15 @@ namespace Arcomage.Server
         {
             using (var db = new CardContext())
             {
-                var myCard = new Card { id = Convert.ToInt32(gvTable.DataKeys[e.RowIndex]["id"]) };
+
+                string Id = gvTable.Rows[e.RowIndex].Cells[1].Text;
+
+                var myCard = new Card { id = Convert.ToInt32(Id) };
                 db.Cards.Attach(myCard);
-                db.Cards.Remove(myCard);
+
+                db.Entry(myCard).State = EntityState.Deleted;
                 db.SaveChanges();
+
 
                 GetData();
                 
@@ -131,6 +137,21 @@ namespace Arcomage.Server
                 var myCard = db.Cards.FirstOrDefault(x => x.id == id );
 
                 myCard.name = newValues["name"].ToString();
+
+                foreach (var item in newValues)
+                {
+                    if (item.Key != "name" && item.Key != "id" && item.Value != null)
+                    {
+                        string value = item.Value.ToString();
+                        if (value.Length > 0)
+                        {
+                            Specifications spec = (Specifications) Enum.Parse(typeof(Specifications), item.Key.ToString());
+                            myCard.cardParams.First(x => x.key == spec).value = Convert.ToInt32(value);
+
+                        }
+                    }
+                }
+              
                 db.Entry(myCard).State = EntityState.Modified;
 
 
