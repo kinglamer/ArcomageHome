@@ -140,15 +140,49 @@ namespace Arcomage.Server
 
                 foreach (var item in newValues)
                 {
-                    if (item.Key != "name" && item.Key != "id" && item.Value != null)
+                    if (item.Key != "name" && item.Key != "id" )
                     {
-                        string value = item.Value.ToString();
-                        if (value.Length > 0)
-                        {
-                            Specifications spec = (Specifications) Enum.Parse(typeof(Specifications), item.Key.ToString());
-                            myCard.cardParams.First(x => x.key == spec).value = Convert.ToInt32(value);
+                        Specifications spec = (Specifications)Enum.Parse(typeof(Specifications), item.Key);
+                     
 
+                        if (myCard.cardParams.Any(x => x.key == spec))
+                        {
+                         
+                            if (item.Value != null)
+                            {
+                                myCard.cardParams.First(x => x.key == spec).value = Convert.ToInt32(item.Value);
+                            }
+                            else
+                            {
+                               /* var removedParams = new CardParams()
+                                {
+                                    id = myCard.cardParams.First(x => x.key == spec)
+                                     
+                                };*/
+
+                              //  db.CardParamses.Attach(removedParams);
+                                db.Entry(myCard.cardParams.First(x => x.key == spec)).State = EntityState.Deleted;
+
+                         
+
+                            }
                         }
+                        else
+                        {
+
+                            if (item.Value != null)
+                            {
+                                db.CardParamses.Add(new CardParams()
+                                {
+                                    card = myCard,
+                                    key = spec,
+                                    value = Convert.ToInt32(item.Value)
+                                });
+                            }
+                        }
+
+                       
+                        
                     }
                 }
               

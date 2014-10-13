@@ -47,6 +47,13 @@
           <asp:BoundField DataField="EnemyMenagerie" HeaderText="EnemyMenagerie"  /> 
           <asp:BoundField DataField="EnemyDiamondMines" HeaderText="EnemyDiamondMines"  />
           <asp:BoundField DataField="EnemyColliery" HeaderText="EnemyColliery"  />    
+              
+          <asp:BoundField DataField="CostDiamonds" HeaderText="CostDiamonds"  /> 
+          <asp:BoundField DataField="CostAnimals" HeaderText="CostAnimals"  />
+          <asp:BoundField DataField="CostRocks" HeaderText="CostRocks"  />    
+                          
+   
+        
 
     </Columns>
      
