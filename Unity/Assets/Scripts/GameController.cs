@@ -37,7 +37,7 @@ public class GameController : MonoBehaviour {
 			{
 				if (item.key != Specifications.CostAnimals || 
 				    item.key != Specifications.CostDiamonds ||
-				    item.key != Specifications.CostDiamonds )
+				    item.key != Specifications.CostRocks )
 				{
 					Paramscard += "Parameter " + item.value.ToString() + "\n";
 				}
@@ -45,7 +45,7 @@ public class GameController : MonoBehaviour {
 
 			var costCard = myCard.cardParams.FirstOrDefault(x=>x.key == Specifications.CostAnimals || 
 			                                                x.key == Specifications.CostDiamonds ||
-			                                                x.key == Specifications.CostDiamonds ).value;
+			                                                x.key == Specifications.CostRocks ).value;
 
 
 			card.GetComponent<DoneCardScript>().cardParam = Paramscard;
