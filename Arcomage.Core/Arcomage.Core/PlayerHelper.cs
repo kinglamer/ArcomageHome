@@ -24,6 +24,10 @@ namespace Arcomage.Core
             CountCard = 0;
         }
 
+        /// <summary>
+        /// Получает карту из стека карт
+        /// </summary>
+        /// <returns></returns>
         public Card GetCard()
         {
             if (QCard.Count == 0)

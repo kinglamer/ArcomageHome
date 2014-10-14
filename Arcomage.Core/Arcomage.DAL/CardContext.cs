@@ -16,7 +16,7 @@ namespace Arcomage.DAL
         public CardContext()
             : base("DefaultConnection") { }
 
-
+   
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
 
