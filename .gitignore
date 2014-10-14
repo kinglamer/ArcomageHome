@@ -8,6 +8,9 @@ Library/*
 # Visual Studio / MonoDevelop generated #
 # ===================================== #
 ExportedObj/
+bin/
+*.dll
+*.pdb
 obj/
 *.svd
 *.userprefs
