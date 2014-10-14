@@ -28,15 +28,18 @@ namespace Arcomage.Core
         {
             if (QCard.Count == 0)
             {
-             //   ArcoServerClient host = new ArcoServerClient();
+            
 
-               ArcoServerClient host = new ArcoServerClient(new BasicHttpBinding(), new EndpointAddress(url));
+                ArcoServerClient host = new ArcoServerClient(new BasicHttpBinding(), new EndpointAddress(url));
 
 
 
                 string cardFromServer = host.GetRandomCard();
 
                 List<Card> newParametrs = JsonConvert.DeserializeObject<List<Card>>(cardFromServer);
+
+                if (newParametrs.Count == 0)
+                    return null;
 
                 foreach (var item in newParametrs)
                 {
