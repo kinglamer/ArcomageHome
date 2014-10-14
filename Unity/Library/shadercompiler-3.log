@@ -1,0 +1,33 @@
+Base path: C:/Program Files (x86)/Unity/Editor/Data
+Pipe name: \\.\pipe\UnityShaderCompiler-3-4168
+Cmd: getPlatforms
+Cmd: compileSnippet
+  api=8 type=0 insize=5043 outsize=4144 kw=DIRECTIONAL LIGHTMAP_OFF DIRLIGHTMAP_OFF ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=5043 outsize=1745 kw=DIRECTIONAL LIGHTMAP_ON DIRLIGHTMAP_ON ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=5043 outsize=4581 kw=DIRECTIONAL LIGHTMAP_OFF DIRLIGHTMAP_OFF VERTEXLIGHT_ON ok=1
+Cmd: compileSnippet
+  api=8 type=1 insize=5043 outsize=3039 kw=DIRECTIONAL LIGHTMAP_OFF DIRLIGHTMAP_OFF ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=5043 outsize=1843 kw=DIRECTIONAL LIGHTMAP_ON DIRLIGHTMAP_ON ok=1
+Cmd: compileSnippet
+  api=0 type=0 insize=2973 outsize=697 kw=DIRECTIONAL ok=1
+Cmd: compileSnippet
+  api=0 type=0 insize=2973 outsize=991 kw=SPOT ok=1
+Cmd: compileSnippet
+  api=8 type=0 insize=2973 outsize=4461 kw=SPOT ok=1
+Cmd: compileSnippet
+  api=0 type=0 insize=2973 outsize=912 kw=DIRECTIONAL_COOKIE ok=1
+Cmd: compileSnippet
+  api=8 type=0 insize=2973 outsize=3965 kw=DIRECTIONAL_COOKIE ok=1
+Cmd: compileSnippet
+  api=8 type=1 insize=2973 outsize=3486 kw=POINT ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=2973 outsize=2818 kw=SPOT ok=1
+Cmd: compileSnippet
+  api=8 type=1 insize=2973 outsize=3762 kw=POINT_COOKIE ok=1
+Unhandled exception: Readfile from pipe failed. GLE=Канал был закрыт.
+
+
+Quitting shader compiler process
