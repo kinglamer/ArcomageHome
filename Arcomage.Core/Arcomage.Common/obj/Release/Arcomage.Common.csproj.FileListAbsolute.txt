@@ -1,0 +1,4 @@
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Common\bin\Release\Arcomage.Common.dll
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Common\bin\Release\Arcomage.Common.pdb
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Common\obj\Release\Arcomage.Common.dll
+E:\DemoProjects\ArcomageHome\Arcomage.Core\Arcomage.Common\obj\Release\Arcomage.Common.pdb
