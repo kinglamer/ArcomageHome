@@ -53,13 +53,13 @@
      <None Include="Assets\GUI_components\Fonts\Custom3DTextShader.shader" />
      <None Include="Assets\Materials\Done_CardShader.shader" />
  <Reference Include="Arcomage.Core">
- <HintPath>C:/Users/Public/Documents/Unity Projects/GitRep/Unity/Assets/Plugins/Arcomage.Core.dll</HintPath>
+ <HintPath>C:/Users/Public/Documents/Unity Projects/ArcoRep/Unity/Assets/Plugins/Arcomage.Core.dll</HintPath>
  </Reference>
  <Reference Include="Arcomage.Entity">
- <HintPath>C:/Users/Public/Documents/Unity Projects/GitRep/Unity/Assets/Plugins/Arcomage.Entity.dll</HintPath>
+ <HintPath>C:/Users/Public/Documents/Unity Projects/ArcoRep/Unity/Assets/Plugins/Arcomage.Entity.dll</HintPath>
  </Reference>
  <Reference Include="Newtonsoft.Json">
- <HintPath>C:/Users/Public/Documents/Unity Projects/GitRep/Unity/Assets/Plugins/Newtonsoft.Json.dll</HintPath>
+ <HintPath>C:/Users/Public/Documents/Unity Projects/ArcoRep/Unity/Assets/Plugins/Newtonsoft.Json.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
