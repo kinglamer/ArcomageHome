@@ -36,4 +36,9 @@ obj/
 ehthumbs.db
 Thumbs.db
 Unity/Assembly-CSharp-vs.csproj.rej
+<<<<<<< HEAD
 Unity/Assets/Plugins/*.pdb
+=======
+Unity/Assets/Plugins/
+*.pdb
+>>>>>>> b93bdc250696ccc32f50920ba246bd4e1bbb6c9d
