@@ -5,8 +5,7 @@
 [Tt]emp/
 [Oo]bj/
 [Bb]uild/
-Plugins/
-*.pdb
+Plugins/*.pdb
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
