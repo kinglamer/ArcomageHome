@@ -10,7 +10,6 @@ public class GameController : MonoBehaviour
 
 		public Transform respawnCard ;
 		public GameObject cards ;
-
 		private PlayerHelper ps;
 		private PlayerHelper enemyInfo ;
 
@@ -20,14 +19,14 @@ public class GameController : MonoBehaviour
 		// Use this for initialization
 		void Start ()
 		{
-		        enemyInfo = new PlayerHelper ();
+				enemyInfo = new PlayerHelper ();
 				ps = new PlayerHelper ();
 				ps.SetTheEnemy (enemyInfo);
-		        enemyInfo.SetTheEnemy (ps);
+				enemyInfo.SetTheEnemy (ps);
 			
-		GUIScript guiS  = new GUIScript (ps, enemyInfo);
+				GUIScript guiS = new GUIScript (ps, enemyInfo);
 
-		//guiS.SetParams (ps);
+				//guiS.SetParams (ps);
 
 
 				Vector3 spawnPosition = new Vector3 (respawnCard.position.x - 10, respawnCard.position.y, respawnCard.position.z);
@@ -48,7 +47,7 @@ public class GameController : MonoBehaviour
 								if (item.key != Specifications.CostAnimals || 
 										item.key != Specifications.CostDiamonds ||
 										item.key != Specifications.CostRocks) {
-										Paramscard += item.key.ToString() + " " + item.value.ToString () + "\n";
+										Paramscard += item.key.ToString () + " " + item.value.ToString () + "\n";
 								}
 						}
 
@@ -75,7 +74,15 @@ public class GameController : MonoBehaviour
 
 
 		}
-	
+
+
+		//метод для отыгрывания карты
+		public void CardPlayed (int cardID)
+		{
+				Debug.Log ("Card been destroyed " + cardID);//тест
+		}
+
+
 		// Update is called once per frame
 		void Update ()
 		{
