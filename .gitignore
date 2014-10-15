@@ -5,7 +5,7 @@
 [Tt]emp/
 [Oo]bj/
 [Bb]uild/
-Plugins/*.pdb
+
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
@@ -39,3 +39,4 @@ Unity/Assembly-CSharp-vs.csproj.rej
 
 
 
+Unity/Assets/Plugins/*.pdb

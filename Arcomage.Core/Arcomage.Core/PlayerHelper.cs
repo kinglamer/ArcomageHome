@@ -12,6 +12,8 @@ namespace Arcomage.Core
         public readonly int MaxCard;
         public int CountCard = 0;
 
+        private PlayerHelper enemy { get; set; }
+
         private Dictionary<Specifications, int> playerStatistic { get; set; }
 
 
@@ -27,6 +29,12 @@ namespace Arcomage.Core
             MaxCard = 5;
             CountCard = 0;
             playerStatistic = GenerateDefault(); // new Dictionary<Specifications, int>();
+        }
+
+        public void SetTheEnemy(PlayerHelper newEnemy)
+        {
+            if (enemy == null)
+            enemy = newEnemy;
         }
 
         public int GetPlayerStat(Specifications sp)

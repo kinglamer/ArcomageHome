@@ -11,12 +11,23 @@ public class GameController : MonoBehaviour
 		public Transform respawnCard ;
 		public GameObject cards ;
 
+		private PlayerHelper ps;
+		private PlayerHelper enemyInfo ;
+
+
 //	public GameObject guiText;
 
 		// Use this for initialization
 		void Start ()
 		{
-				PlayerHelper ps = new PlayerHelper ();
+		        enemyInfo = new PlayerHelper ();
+				ps = new PlayerHelper ();
+				ps.SetTheEnemy (enemyInfo);
+		        enemyInfo.SetTheEnemy (ps);
+			
+		GUIScript guiS  = new GUIScript (ps, enemyInfo);
+
+		//guiS.SetParams (ps);
 
 
 				Vector3 spawnPosition = new Vector3 (respawnCard.position.x - 10, respawnCard.position.y, respawnCard.position.z);
@@ -37,7 +48,7 @@ public class GameController : MonoBehaviour
 								if (item.key != Specifications.CostAnimals || 
 										item.key != Specifications.CostDiamonds ||
 										item.key != Specifications.CostRocks) {
-										Paramscard += "Parameter " + item.value.ToString () + "\n";
+										Paramscard += item.key.ToString() + " " + item.value.ToString () + "\n";
 								}
 						}
 
