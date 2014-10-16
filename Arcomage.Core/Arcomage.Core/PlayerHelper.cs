@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
+using Arcomage.Common;
 using Arcomage.Core.ArcomageService;
 using Arcomage.Entity;
 using Newtonsoft.Json;
@@ -10,10 +11,11 @@ namespace Arcomage.Core
 {
     public class PlayerHelper
     {
-
+        protected readonly ILog log;
         public readonly int MaxCard;
         public int CountCard { get; private set; }
 
+        private string playerName { get; set; }
         private PlayerHelper enemy { get; set; }
 
         private Dictionary<Specifications, int> playerStatistic { get; set; }
@@ -33,11 +35,20 @@ namespace Arcomage.Core
         /// <summary>
         /// Установка дефолтных значений
         /// </summary>
-        public PlayerHelper()
+        public PlayerHelper(ILog _log, string _playerName)
         {
-            MaxCard = 5;
-            CountCard = 0;
-            playerStatistic = GenerateDefault(); // new Dictionary<Specifications, int>();
+
+            playerName = _playerName;
+
+                log = _log;
+            
+                MaxCard = 5;
+                CountCard = 0;
+                
+                playerStatistic = GenerateDefault(); // new Dictionary<Specifications, int>();
+
+              
+            
         }
 
         public void SetTheEnemy(PlayerHelper newEnemy)
@@ -69,48 +80,95 @@ namespace Arcomage.Core
 
         private void ApplyCardParamsToPlayer(ICollection<CardParams> cardParams)
         {
+
+
             foreach (var item in cardParams)
             {
-                switch (item.key)
+                try
                 {
-                    case Specifications.PlayerTower:
-                    case Specifications.PlayerWall:
-                    case Specifications.PlayerDiamondMines:
-                    case Specifications.PlayerMenagerie:
-                    case Specifications.PlayerColliery:
-                    case Specifications.PlayerDiamonds:
-                    case Specifications.PlayerAnimals:
-                    case Specifications.PlayerRocks:
-                        playerStatistic[item.key] += item.value;
-                        break;
-                    case Specifications.EnemyTower:
-                    case Specifications.EnemyWall:
-                    case Specifications.EnemyDiamondMines:
-                    case Specifications.EnemyMenagerie:
-                    case Specifications.EnemyColliery:
-                    case Specifications.EnemyDiamonds:
-                    case Specifications.EnemyAnimals:
-                    case Specifications.EnemyRocks:
-                        enemy.ApplyCardParamFromEnemy(item);
-                        break;
-                    case Specifications.CostDiamonds:
-                        playerStatistic[Specifications.PlayerDiamonds] -= item.value;
-                        break;
-                    case Specifications.CostAnimals:
-                        playerStatistic[Specifications.PlayerAnimals] -= item.value;
-                        break;
-                    case Specifications.CostRocks:
-                        playerStatistic[Specifications.PlayerRocks] -= item.value;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+
+                    switch (item.key)
+                    {
+                        case Specifications.PlayerTower:
+                        case Specifications.PlayerWall:
+                        case Specifications.PlayerDiamondMines:
+                        case Specifications.PlayerMenagerie:
+                        case Specifications.PlayerColliery:
+                        case Specifications.PlayerDiamonds:
+                        case Specifications.PlayerAnimals:
+                        case Specifications.PlayerRocks:
+                            playerStatistic[item.key] += item.value;
+                            break;
+                        case Specifications.EnemyTower:
+                        case Specifications.EnemyWall:
+                        case Specifications.EnemyDiamondMines:
+                        case Specifications.EnemyMenagerie:
+                        case Specifications.EnemyColliery:
+                        case Specifications.EnemyDiamonds:
+                        case Specifications.EnemyAnimals:
+                        case Specifications.EnemyRocks:
+                            enemy.ApplyCardParamFromEnemy(item);
+                            break;
+                        case Specifications.CostDiamonds:
+                            playerStatistic[Specifications.PlayerDiamonds] -= item.value;
+                            break;
+                        case Specifications.CostAnimals:
+                            playerStatistic[Specifications.PlayerAnimals] -= item.value;
+                            break;
+                        case Specifications.CostRocks:
+                            playerStatistic[Specifications.PlayerRocks] -= item.value;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Ex: " + ex + "\n Additional Info: " + item.key);
                 }
             }
+
         }
 
         public void ApplyCardParamFromEnemy(CardParams item)
         {
-            playerStatistic[item.key] += item.value;
+            
+            Specifications resutl = Specifications.NotSet;
+            switch (item.key)
+            {
+                case Specifications.EnemyTower:
+                    resutl = Specifications.PlayerTower;
+                    break;
+                case Specifications.EnemyWall:
+                    resutl = Specifications.PlayerWall;
+                    break;
+                case Specifications.EnemyDiamondMines:
+                    resutl = Specifications.PlayerDiamondMines;
+                    break;
+                case Specifications.EnemyMenagerie:
+                    resutl = Specifications.PlayerMenagerie;
+                    break;
+                case Specifications.EnemyColliery:
+                    resutl = Specifications.PlayerColliery;
+                    break;
+                case Specifications.EnemyDiamonds:
+                    resutl = Specifications.PlayerDiamonds;
+                    break;
+                case Specifications.EnemyAnimals:
+                    resutl = Specifications.PlayerAnimals;
+                    break;
+                case Specifications.EnemyRocks:
+                    resutl = Specifications.PlayerRocks;
+                    break;
+            }
+
+           // log.Info("playerName:" + playerName + ": " + playerStatistic[resutl]);
+
+          
+            playerStatistic[resutl] += item.value;
+            
+          //  log.Info("playerName:" + playerName + ": " + playerStatistic[resutl]);
+            
         }
 
         /// <summary>

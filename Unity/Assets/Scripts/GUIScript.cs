@@ -35,7 +35,7 @@ public class GUIScript : MonoBehaviour {
 
 	void OnGUI()
 	{
-		if (player != null) {
+		if (player != null && enemy != null) {
 						PlayerTower.text = "Tower: " + player.GetPlayerStat (Specifications.PlayerTower).ToString ();
 						PlayerWall.text = "Wall: " + player.GetPlayerStat (Specifications.PlayerWall).ToString ();
 		
@@ -44,12 +44,12 @@ public class GUIScript : MonoBehaviour {
 						PlayerRock.text = player.GetPlayerStat (Specifications.PlayerRocks).ToString () + " / +" + player.GetPlayerStat (Specifications.PlayerColliery).ToString ();
 
 
-			EnemyTower.text = "Tower: " + player.GetPlayerStat (Specifications.PlayerTower).ToString ();
-			EnemyWall.text = "Wall: " + player.GetPlayerStat (Specifications.PlayerWall).ToString ();
+			EnemyTower.text = "Tower: " + enemy.GetPlayerStat (Specifications.PlayerTower).ToString ();
+			EnemyWall.text = "Wall: " + enemy.GetPlayerStat (Specifications.PlayerWall).ToString ();
 			
-			EnemyDiamonds.text = player.GetPlayerStat (Specifications.PlayerDiamonds).ToString () + " / +" + player.GetPlayerStat (Specifications.PlayerDiamondMines).ToString ();
-			EnemyAnimal.text = player.GetPlayerStat (Specifications.PlayerAnimals).ToString () + " / +" + player.GetPlayerStat (Specifications.PlayerMenagerie).ToString ();
-			EnemyRock.text = player.GetPlayerStat (Specifications.PlayerRocks).ToString () + " / +" + player.GetPlayerStat (Specifications.PlayerColliery).ToString ();
+			EnemyDiamonds.text = enemy.GetPlayerStat (Specifications.PlayerDiamonds).ToString () + " / +" + enemy.GetPlayerStat (Specifications.PlayerDiamondMines).ToString ();
+			EnemyAnimal.text = enemy.GetPlayerStat (Specifications.PlayerAnimals).ToString () + " / +" + enemy.GetPlayerStat (Specifications.PlayerMenagerie).ToString ();
+			EnemyRock.text = enemy.GetPlayerStat (Specifications.PlayerRocks).ToString () + " / +" + enemy.GetPlayerStat (Specifications.PlayerColliery).ToString ();
 
 				}
 		

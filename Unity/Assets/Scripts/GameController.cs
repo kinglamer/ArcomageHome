@@ -4,9 +4,24 @@ using Arcomage.Core;
 using Arcomage.Entity;
 using System.Collections.Generic;
 using System.Linq;
+using Arcomage.Common;
 
-public class GameController : MonoBehaviour
+public class GameController : MonoBehaviour, ILog
 {
+	#region ILog implementation
+
+	public void Error (string text)
+	{
+		Debug.LogError (text);
+	}
+
+
+	public void Info (string text)
+	{
+		Debug.Log (text);
+	}
+	#endregion
+
 
 		public Transform respawnCard ;
 		public GameObject cards ;
@@ -14,31 +29,26 @@ public class GameController : MonoBehaviour
 		private PlayerHelper enemyInfo ;
 		
 
-//	public GameObject guiText;
 
 		// Use this for initialization
 		void Start ()
 		{
 				
 
-				enemyInfo = new PlayerHelper ();
-				ps = new PlayerHelper ();
+				enemyInfo = new PlayerHelper (this, "Comp");
+				
+				ps = new PlayerHelper (this, "Human");
+
 				ps.SetTheEnemy (enemyInfo);
 				enemyInfo.SetTheEnemy (ps);
 			
 				GUIScript guiS = new GUIScript (ps, enemyInfo);
 
-				//guiS.SetParams (ps);
-
-				PushCardOnDeck ();
 
 
-//		GUIText[] ts = guiText.GetComponentsInChildren<GUIText>();
-//
-//		foreach (GUIText t in ts) {
-//			if (t != null && t.text != null)
-//				t.text = "11";
-//		}
+				PushCardOnDeck (new Vector3());
+
+
 
 
 
@@ -48,16 +58,25 @@ public class GameController : MonoBehaviour
 		private Vector3 GetSpawn ()
 		{
 				Vector3 spawnPosition = new Vector3 (respawnCard.position.x - 10, respawnCard.position.y, respawnCard.position.z);
-
+//
 				return spawnPosition;
 		}
 
-		private void PushCardOnDeck ()
+		private void PushCardOnDeck (Vector3 cardPos)
 		{
 				Quaternion spawnRotation = new Quaternion ();
 				spawnRotation = Quaternion.identity;
+				
 
-				var spawnPosition = GetSpawn ();
+				Vector3 spawnPosition;
+				if (cardPos.x != 0 && cardPos.y != 0  && cardPos.z != 0)
+				{
+						spawnPosition = cardPos;
+				} else {
+					spawnPosition =GetSpawn();
+				}
+
+			
 			
 				while (ps.CountCard < ps.MaxCard) {
 			
@@ -97,7 +116,7 @@ public class GameController : MonoBehaviour
 		public void CardPlayed (int cardID, Vector3 cardPos)
 		{
 				ps.UseCard (cardID);
-				PushCardOnDeck ();
+				PushCardOnDeck (cardPos);
 				Debug.Log ("Card been destroyed " + cardID + " at position " + cardPos);//тест
 		}
 
