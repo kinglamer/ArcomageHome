@@ -12,8 +12,6 @@
 # ===================================== #
 ExportedObj/
 bin/
-*.dll
-*.pdb
 obj/
 *.svd
 *.userprefs
