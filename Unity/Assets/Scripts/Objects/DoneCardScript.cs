@@ -12,6 +12,7 @@ public class DoneCardScript : MonoBehaviour
 	
 		private Vector3 screenPoint;
 		private Vector3 offset;
+		private Vector3 startPos;
 		//		private CardParametrs parametrs ;
 	
 		public Boundary boundary;
@@ -26,7 +27,6 @@ public class DoneCardScript : MonoBehaviour
 		public int cardCost{ get; set; }
 
 		public int cardId { get; set; }
-		
 
 		GameObject gameController;
 		Vector3 curPosition;
@@ -38,6 +38,7 @@ public class DoneCardScript : MonoBehaviour
 		{
 				//parametrs = new CardParametrs ();
 				gameController = GameObject.FindWithTag ("GameController");
+				startPos = transform.position;
 		
 		}
 	
@@ -77,7 +78,7 @@ public class DoneCardScript : MonoBehaviour
 				if (Input.GetMouseButtonDown (0)) {
 						currentTime = Time.time;
 						if ((currentTime - lastClickTime) < clickTime) {
-								gameController.GetComponent<GameController> ().CardPlayed (cardId);
+								gameController.GetComponent<GameController> ().CardPlayed (cardId, startPos);
 								Destroy (gameObject);
 						}
 						lastClickTime = currentTime;
@@ -93,7 +94,7 @@ public class DoneCardScript : MonoBehaviour
 		void OnMouseUp ()
 		{
 				if (curPosition.y > -5.5f) {
-						gameController.GetComponent<GameController> ().CardPlayed (cardId);
+						gameController.GetComponent<GameController> ().CardPlayed (cardId, startPos);
 						Destroy (gameObject);
 				}
 		}
