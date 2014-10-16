@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Arcomage.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Arcomage.Server\Bin\Arcomage.Common.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net35\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -85,10 +89,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Arcomage.Common\Arcomage.Common.csproj">
-      <Project>{23650d10-2ab9-4068-93e8-ace0c0729926}</Project>
-      <Name>Arcomage.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Arcomage.Entity\Arcomage.Entity.csproj">
       <Project>{69DC8E57-C976-4B60-B7CF-B16F20732F0F}</Project>
       <Name>Arcomage.Entity</Name>

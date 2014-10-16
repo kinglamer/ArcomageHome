@@ -97,7 +97,7 @@ namespace Arcomage.Core
                         case Specifications.PlayerDiamonds:
                         case Specifications.PlayerAnimals:
                         case Specifications.PlayerRocks:
-                            playerStatistic[item.key] += item.value;
+                            ChangeValue(item.key, item.value);
                             break;
                         case Specifications.EnemyTower:
                         case Specifications.EnemyWall:
@@ -110,13 +110,13 @@ namespace Arcomage.Core
                             enemy.ApplyCardParamFromEnemy(item);
                             break;
                         case Specifications.CostDiamonds:
-                            playerStatistic[Specifications.PlayerDiamonds] -= item.value;
+                            ChangePlayerResourses(Specifications.PlayerDiamonds, item.value);
                             break;
                         case Specifications.CostAnimals:
-                            playerStatistic[Specifications.PlayerAnimals] -= item.value;
+                            ChangePlayerResourses(Specifications.PlayerAnimals, item.value);
                             break;
                         case Specifications.CostRocks:
-                            playerStatistic[Specifications.PlayerRocks] -= item.value;
+                            ChangePlayerResourses(Specifications.PlayerRocks, item.value);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -130,6 +130,35 @@ namespace Arcomage.Core
 
         }
 
+        private void ChangePlayerResourses(Specifications spec, int value)
+        {
+            if (playerStatistic[spec] - value <= 0)
+            {
+                playerStatistic[spec] = 0;
+            }
+            else
+            {
+                playerStatistic[spec] -= value;
+            }
+
+        }
+
+        private void ChangeValue(Specifications specifications, int value)
+        {
+            if (playerStatistic[specifications] + value <= 0)
+            {
+                playerStatistic[specifications] = 0;
+            }
+            else
+            {
+                playerStatistic[specifications] += value;
+            }
+        }
+
+        /// <summary>
+        /// Метод для изменения параметров противника
+        /// </summary>
+        /// <param name="item"></param>
         public void ApplyCardParamFromEnemy(CardParams item)
         {
             
@@ -164,9 +193,8 @@ namespace Arcomage.Core
 
            // log.Info("playerName:" + playerName + ": " + playerStatistic[resutl]);
 
-           
+            ChangeValue(resutl, item.value);
             
-            playerStatistic[resutl] += item.value;
             
           //  log.Info("playerName:" + playerName + ": " + playerStatistic[resutl]);
             
