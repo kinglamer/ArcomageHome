@@ -25,6 +25,9 @@ public class DoneCardScript : MonoBehaviour
 
 		public int cardCost{ get; set; }
 
+		public int cardId { get; set; }
+		
+
 		GameObject gameController;
 		Vector3 curPosition;
 		float currentTime = 0;
@@ -74,7 +77,7 @@ public class DoneCardScript : MonoBehaviour
 				if (Input.GetMouseButtonDown (0)) {
 						currentTime = Time.time;
 						if ((currentTime - lastClickTime) < clickTime) {
-								gameController.GetComponent<GameController> ().CardPlayed (GetInstanceID ());
+								gameController.GetComponent<GameController> ().CardPlayed (cardId);
 								Destroy (gameObject);
 						}
 						lastClickTime = currentTime;
@@ -90,7 +93,7 @@ public class DoneCardScript : MonoBehaviour
 		void OnMouseUp ()
 		{
 				if (curPosition.y > -5.5f) {
-						gameController.GetComponent<GameController> ().CardPlayed (GetInstanceID ());
+						gameController.GetComponent<GameController> ().CardPlayed (cardId);
 						Destroy (gameObject);
 				}
 		}

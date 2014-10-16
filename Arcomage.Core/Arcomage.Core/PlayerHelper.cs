@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel;
 using Arcomage.Core.ArcomageService;
 using Arcomage.Entity;
@@ -10,7 +12,7 @@ namespace Arcomage.Core
     {
 
         public readonly int MaxCard;
-        public int CountCard = 0;
+        public int CountCard { get; private set; }
 
         private PlayerHelper enemy { get; set; }
 
@@ -19,8 +21,15 @@ namespace Arcomage.Core
 
         private const string url = "http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
 
+        /// <summary>
+        /// Стэк карт с сервера, чтобы реже обращаться к нему
+        /// </summary>
         private Queue<Card> QCard = new Queue<Card>();
 
+        /// <summary>
+        /// Список текущих карт игрока
+        /// </summary>
+        private List<Card> playCards = new List<Card>();
         /// <summary>
         /// Установка дефолтных значений
         /// </summary>
@@ -47,8 +56,63 @@ namespace Arcomage.Core
             }
         }
 
-       
-       
+
+        public void UseCard(int id)
+        {
+            int index = playCards.FindIndex(x => x.id == id);
+
+            ApplyCardParamsToPlayer(playCards[index].cardParams);
+
+            playCards.RemoveAt(index);
+            CountCard--;
+        }
+
+        private void ApplyCardParamsToPlayer(ICollection<CardParams> cardParams)
+        {
+            foreach (var item in cardParams)
+            {
+                switch (item.key)
+                {
+                    case Specifications.PlayerTower:
+                    case Specifications.PlayerWall:
+                    case Specifications.PlayerDiamondMines:
+                    case Specifications.PlayerMenagerie:
+                    case Specifications.PlayerColliery:
+                    case Specifications.PlayerDiamonds:
+                    case Specifications.PlayerAnimals:
+                    case Specifications.PlayerRocks:
+                        playerStatistic[item.key] += item.value;
+                        break;
+                    case Specifications.EnemyTower:
+                    case Specifications.EnemyWall:
+                    case Specifications.EnemyDiamondMines:
+                    case Specifications.EnemyMenagerie:
+                    case Specifications.EnemyColliery:
+                    case Specifications.EnemyDiamonds:
+                    case Specifications.EnemyAnimals:
+                    case Specifications.EnemyRocks:
+                        enemy.ApplyCardParamFromEnemy(item);
+                        break;
+                    case Specifications.CostDiamonds:
+                        playerStatistic[Specifications.PlayerDiamonds] -= item.value;
+                        break;
+                    case Specifications.CostAnimals:
+                        playerStatistic[Specifications.PlayerAnimals] -= item.value;
+                        break;
+                    case Specifications.CostRocks:
+                        playerStatistic[Specifications.PlayerRocks] -= item.value;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
+
+        public void ApplyCardParamFromEnemy(CardParams item)
+        {
+            playerStatistic[item.key] += item.value;
+        }
+
         /// <summary>
         /// Генерация стандартных значений для игрока:
         /// стена, башня, шахты, ресурсы
@@ -98,7 +162,11 @@ namespace Arcomage.Core
                 }
             }
 
-            return QCard.Dequeue();
+            var returnVal = QCard.Dequeue();
+            playCards.Add(returnVal);
+
+            CountCard++;
+            return returnVal;
         }
 
     }
