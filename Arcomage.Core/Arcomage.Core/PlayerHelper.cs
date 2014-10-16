@@ -164,7 +164,8 @@ namespace Arcomage.Core
 
            // log.Info("playerName:" + playerName + ": " + playerStatistic[resutl]);
 
-          
+           
+            
             playerStatistic[resutl] += item.value;
             
           //  log.Info("playerName:" + playerName + ": " + playerStatistic[resutl]);
