@@ -40,3 +40,7 @@ Unity/Unity.userprefs
 
 
 Unity/Assets/Plugins/*.pdb
+Unity/Assembly-CSharp-vs.csproj
+Unity/Assembly-CSharp.csproj
+Unity/Unity-csharp.sln
+Unity/Unity.sln
