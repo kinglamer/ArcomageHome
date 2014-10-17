@@ -2,7 +2,20 @@ fileFormatVersion: 2
 guid: e4517a3e5ac8c5f458b6a3f3a77c0c31
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - PlayerName: {instanceID: 0}
+  - EnemyName: {instanceID: 0}
+  - PlayerTower: {instanceID: 0}
+  - PlayerWall: {instanceID: 0}
+  - EnemyTower: {instanceID: 0}
+  - EnemyWall: {instanceID: 0}
+  - PlayerDiamonds: {instanceID: 0}
+  - PlayerAnimal: {instanceID: 0}
+  - PlayerRock: {instanceID: 0}
+  - EnemyDiamonds: {instanceID: 0}
+  - EnemyAnimal: {instanceID: 0}
+  - EnemyRock: {instanceID: 0}
+  - mainSkin: {fileID: 11400000, guid: 1447250b4477b3e4491c92bb1dea1dbd, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

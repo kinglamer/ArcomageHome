@@ -1454,6 +1454,7 @@ MonoBehaviour:
   EnemyDiamonds: {fileID: 1019021211}
   EnemyAnimal: {fileID: 944151449}
   EnemyRock: {fileID: 116554157}
+  mainSkin: {fileID: 11400000, guid: aff24adb0e0b7c54cbc8e12073990214, type: 2}
 --- !u!1 &1657069290
 GameObject:
   m_ObjectHideFlags: 0
