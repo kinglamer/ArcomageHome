@@ -22,6 +22,15 @@ namespace Arcomage.Server {
         protected global::System.Web.UI.HtmlControls.HtmlForm frmAdd;
         
         /// <summary>
+        /// TSM1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.ToolkitScriptManager TSM1;
+        
+        /// <summary>
         /// lbError control.
         /// </summary>
         /// <remarks>
@@ -56,6 +65,24 @@ namespace Arcomage.Server {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox tbName;
+        
+        /// <summary>
+        /// lbDes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lbDes;
+        
+        /// <summary>
+        /// tbDes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Arcomage.Server.CustomEditor tbDes;
         
         /// <summary>
         /// tbTowerPlayer control.

@@ -17,31 +17,28 @@ namespace Arcomage.Server
         public string GetRandomCard()
         {
 
-            /*    var result = DatabaseHelper.GetCards();
+               var result = DatabaseHelper.GetCards();
 
               if (result.Count == 0)
               {
                   return "Empty";
               }
-            //  result.Randomize();
 
-           List<Card> returnVal = new List<Card>();
+              if (result.Count > 0)
+               result.Randomize();
+
+             List<Card> returnVal = new List<Card>();
 
               for (int i = 0; i < 5 || i < result.Count; i++)
               {
                   returnVal.Add(result[i]);
-              }*/
+              }
 
 
 
-            CardTest card = new CardTest();
-            card.id = 1;
-            card.name = "Test";
-
-            card.Paramses.Add(new CardParamsTest() { key = Specifications.CostAnimals, value = 10});
 
 
-            return JsonConvert.SerializeObject(card); 
+            return JsonConvert.SerializeObject(result); 
 
         }
 

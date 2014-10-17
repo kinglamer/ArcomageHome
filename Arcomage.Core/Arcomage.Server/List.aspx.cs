@@ -42,6 +42,8 @@ namespace Arcomage.Server
 
                     newRow["id"] = card.id;
 
+                    newRow["description"] = card.description;
+
                     foreach (var parm in card.cardParams)
                     {
                         newRow[parm.key.ToString()] = parm.value;
@@ -60,6 +62,7 @@ namespace Arcomage.Server
             dt = new DataTable();
             dt.Columns.Add("id");
             dt.Columns.Add("name");
+            dt.Columns.Add("description");
 
             foreach (Specifications suit in (Specifications[]) Enum.GetValues(typeof (Specifications)))
             {

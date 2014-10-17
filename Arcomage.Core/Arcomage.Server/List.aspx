@@ -1,4 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="List.aspx.cs" Inherits="Arcomage.Server.List" %>
+<%@ Register TagPrefix="custom" Namespace="Arcomage.Server" Assembly="Arcomage.Server" %>
 
 <!DOCTYPE html>
 
@@ -25,6 +26,17 @@
                 
                     <asp:BoundField DataField="id" HeaderText="id" ReadOnly="True"  />
                     <asp:BoundField DataField="name" HeaderText="name" InsertVisible="False" />
+                    
+                    <asp:TemplateField HeaderText="description" >
+                    <EditItemTemplate>
+                           <custom:CustomEditor ID="tbDes" Width="450px" Height="200px" runat="server"  Content='<%# Bind("description") %>'/> 
+                    </EditItemTemplate>
+                    <ItemTemplate>
+                        <asp:Label ID="Label1" runat="server" Text='<%# Bind("description") %>'></asp:Label>
+                    </ItemTemplate>
+                </asp:TemplateField>
+
+                    <asp:BoundField DataField="" HeaderText="description" InsertVisible="False" />
 
         <asp:BoundField DataField="PlayerTower" HeaderText="PlayerTower" />
         <asp:BoundField DataField="PlayerWall" HeaderText="PlayerWall"  />

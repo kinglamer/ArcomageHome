@@ -32,6 +32,16 @@ namespace Arcomage.Server
                     return;
                 }
 
+                if (tbDes.Content.Length > 0)
+                {
+                    item.description = tbDes.Content;
+                }
+                else
+                {
+                    lbError.Text = "Необходимо заполнить описание карты";
+                    return;
+                }
+
                 List<CardParams>  cardParam = new List<CardParams>();
 
                 var dicCost = GetDicCost();
