@@ -49,10 +49,6 @@ public class GameController : MonoBehaviour, ILog
 				PushCardOnDeck (new Vector3());
 
 
-
-
-
-
 		}
 
 		private Vector3 GetSpawn ()
@@ -62,12 +58,31 @@ public class GameController : MonoBehaviour, ILog
 				return spawnPosition;
 		}
 
-		private void PushCardOnDeck (Vector3 cardPos)
+		private void CreateCard (Card myCard,ref Vector3 spawnPosition)
 		{
 				Quaternion spawnRotation = new Quaternion ();
 				spawnRotation = Quaternion.identity;
-				
 
+				GameObject card = (GameObject)Instantiate (cards, spawnPosition, spawnRotation);
+				spawnPosition.x += 5f;
+				spawnPosition.z += 0.5f;
+				card.GetComponent<DoneCardScript> ().cardName = myCard.name;
+				string Paramscard = string.Empty;
+				foreach (var item in myCard.cardParams) {
+						if (item.key != Specifications.CostAnimals && item.key != Specifications.CostDiamonds && item.key != Specifications.CostRocks) {
+								Paramscard += item.key.ToString () + " " + item.value.ToString () + "\n";
+						}
+				}
+				var costCard = myCard.cardParams.FirstOrDefault (x => x.key == Specifications.CostAnimals ||
+		                                                 x.key == Specifications.CostDiamonds || x.key == Specifications.CostRocks).value;
+				card.GetComponent<DoneCardScript> ().cardId = myCard.id;
+				card.GetComponent<DoneCardScript> ().cardParam = Paramscard;
+				card.GetComponent<DoneCardScript> ().cardCost = costCard;
+		}
+
+		private void PushCardOnDeck (Vector3 cardPos)
+		{
+						
 				Vector3 spawnPosition;
 				if (cardPos.x != 0 && cardPos.y != 0  && cardPos.z != 0)
 				{
@@ -82,30 +97,7 @@ public class GameController : MonoBehaviour, ILog
 			
 						var myCard = ps.GetCard ();
 			
-						GameObject card = (GameObject)Instantiate (cards, spawnPosition, spawnRotation);
-						spawnPosition.x += 5f;
-						spawnPosition.z += 0.5f;
-						card.GetComponent<DoneCardScript> ().cardName = myCard.name;
-
-
-						string Paramscard = string.Empty;
-						foreach (var item in myCard.cardParams) {
-								if (item.key != Specifications.CostAnimals &&
-										item.key != Specifications.CostDiamonds &&
-										item.key != Specifications.CostRocks) {
-										Paramscard += item.key.ToString () + " " + item.value.ToString () + "\n";
-								}
-						}
-			
-						var costCard = myCard.cardParams.FirstOrDefault (x => x.key == Specifications.CostAnimals || 
-								x.key == Specifications.CostDiamonds ||
-								x.key == Specifications.CostRocks).value;
-
-						card.GetComponent<DoneCardScript> ().cardId = myCard.id;
-			
-						card.GetComponent<DoneCardScript> ().cardParam = Paramscard;
-						card.GetComponent<DoneCardScript> ().cardCost = costCard;
-			
+						CreateCard (myCard,ref spawnPosition);
 
 			
 				}
@@ -115,11 +107,26 @@ public class GameController : MonoBehaviour, ILog
 		//метод для отыгрывания карты
 		public void CardPlayed (int cardID, Vector3 cardPos)
 		{
-				ps.UseCard (cardID);
-				PushCardOnDeck (cardPos);
-				Debug.Log ("Card been destroyed " + cardID + " at position " + cardPos);//тест
+				if (ps.UseCard (cardID)) {
+						PushCardOnDeck (cardPos);
+						ps.CalculateMove();
+						MakeEnemyMove();
+				}
+				else 
+				{
+						var returnCard = ps.ReturnCard(cardID);
+						CreateCard (returnCard,ref cardPos);
+				}
+				//Debug.Log ("Card been destroyed " + cardID + " at position " + cardPos);//тест
 		}
 
+		
+		private void MakeEnemyMove()
+		{
+				//Todo: анимацию для хода противника
+			AIHelper.MakeMove (enemyInfo);
+			
+		}
 
 		// Update is called once per frame
 		void Update ()

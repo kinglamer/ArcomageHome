@@ -46,10 +46,9 @@ namespace Arcomage.Core
                 CountCard = 0;
                 
                 playerStatistic = GenerateDefault(); // new Dictionary<Specifications, int>();
-
-              
-            
         }
+
+
 
         public void SetTheEnemy(PlayerHelper newEnemy)
         {
@@ -68,14 +67,73 @@ namespace Arcomage.Core
         }
 
 
-        public void UseCard(int id)
+        public bool UseCard(int id)
         {
             int index = playCards.FindIndex(x => x.id == id);
 
-            ApplyCardParamsToPlayer(playCards[index].cardParams);
+            var costCard = playCards[index].cardParams.Where(x => x.key == Specifications.CostDiamonds ||
+                                                                  x.key == Specifications.CostAnimals ||
+                                                                  x.key == Specifications.CostRocks).ToList();
 
-            playCards.RemoveAt(index);
-            CountCard--;
+           // log.Info("costCard.Count() " + costCard.Count());
+            if (isCanUsed(costCard))
+            {
+                log.Info("Player: " + playerName + " use card: " + playCards[index].name);
+                ApplyCardParamsToPlayer(playCards[index].cardParams);
+
+                playCards.RemoveAt(index);
+                CountCard--;
+                return true;
+            }
+
+            return false;
+        }
+
+        public Card ReturnCard(int id)
+        {
+            return playCards.First(x => x.id == id);
+        }
+
+        public void CalculateMove()
+        {
+            PlusValue(Specifications.PlayerDiamonds, playerStatistic[Specifications.PlayerDiamondMines]);
+            PlusValue(Specifications.PlayerAnimals, playerStatistic[Specifications.PlayerMenagerie]);
+            PlusValue(Specifications.PlayerRocks, playerStatistic[Specifications.PlayerColliery]);
+        }
+
+        private bool isCanUsed(ICollection<CardParams> cardParams)
+        {
+            bool returnVal = false;
+            foreach (var item in cardParams)
+            {
+                switch (item.key)
+                {
+                    case Specifications.CostDiamonds:
+                       // log.Info(playerStatistic[Specifications.PlayerDiamonds] + " > " + item.value);
+                        if (playerStatistic[Specifications.PlayerDiamonds] >= item.value)
+                        {
+                            returnVal = true;
+                        }
+                        break;
+                    case Specifications.CostAnimals:
+                       // log.Info(playerStatistic[Specifications.PlayerAnimals] + " > " + item.value);
+                        if (playerStatistic[Specifications.PlayerAnimals] >= item.value)
+                        {
+                            returnVal = true;
+                        }
+                        break;
+                    case Specifications.CostRocks:
+                       // log.Info(playerStatistic[Specifications.PlayerRocks] + " > " + item.value);
+                        if (playerStatistic[Specifications.PlayerRocks] >= item.value)
+                        {
+                            returnVal = true;
+                        }
+                        break;
+                }
+            }
+
+           // log.Info("isCanUsed: " + returnVal);
+            return returnVal;
         }
 
         private void ApplyCardParamsToPlayer(ICollection<CardParams> cardParams)
@@ -97,7 +155,7 @@ namespace Arcomage.Core
                         case Specifications.PlayerDiamonds:
                         case Specifications.PlayerAnimals:
                         case Specifications.PlayerRocks:
-                            ChangeValue(item.key, item.value);
+                            PlusValue(item.key, item.value);
                             break;
                         case Specifications.EnemyTower:
                         case Specifications.EnemyWall:
@@ -143,7 +201,7 @@ namespace Arcomage.Core
 
         }
 
-        private void ChangeValue(Specifications specifications, int value)
+        private void PlusValue(Specifications specifications, int value)
         {
             if (playerStatistic[specifications] + value <= 0)
             {
@@ -193,7 +251,7 @@ namespace Arcomage.Core
 
            // log.Info("playerName:" + playerName + ": " + playerStatistic[resutl]);
 
-            ChangeValue(resutl, item.value);
+            PlusValue(resutl, item.value);
             
             
           //  log.Info("playerName:" + playerName + ": " + playerStatistic[resutl]);
@@ -211,9 +269,9 @@ namespace Arcomage.Core
             returnVal.Add(Specifications.PlayerWall,5);
             returnVal.Add(Specifications.PlayerTower, 10);
 
-            returnVal.Add(Specifications.PlayerMenagerie, 5);
-            returnVal.Add(Specifications.PlayerColliery, 5);
-            returnVal.Add(Specifications.PlayerDiamondMines, 5);
+            returnVal.Add(Specifications.PlayerMenagerie, 1);
+            returnVal.Add(Specifications.PlayerColliery, 1);
+            returnVal.Add(Specifications.PlayerDiamondMines, 1);
 
             returnVal.Add(Specifications.PlayerRocks, 5);
             returnVal.Add(Specifications.PlayerDiamonds, 5);
