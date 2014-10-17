@@ -84,7 +84,7 @@ public class GameController : MonoBehaviour, ILog
 		{
 						
 				Vector3 spawnPosition;
-				if (cardPos.x != 0 && cardPos.y != 0  && cardPos.z != 0)
+				if (cardPos.x != 0 || cardPos.y != 0  || cardPos.z != 0)
 				{
 						spawnPosition = cardPos;
 				} else {
