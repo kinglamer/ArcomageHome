@@ -67,6 +67,11 @@ namespace Arcomage.Core
         }
 
 
+        /// <summary>
+        /// Использование карты игроком
+        /// </summary>
+        /// <param name="id">Уникальный номер карты в БД</param>
+        /// <returns>если карту не удалось использовать возвращается false</returns>
         public bool UseCard(int id)
         {
             int index = playCards.FindIndex(x => x.id == id);
@@ -75,7 +80,7 @@ namespace Arcomage.Core
                                                                   x.key == Specifications.CostAnimals ||
                                                                   x.key == Specifications.CostRocks).ToList();
 
-           // log.Info("costCard.Count() " + costCard.Count());
+
             if (isCanUsed(costCard))
             {
                 log.Info("Player: " + playerName + " use card: " + playCards[index].name);
@@ -94,6 +99,10 @@ namespace Arcomage.Core
             return playCards.First(x => x.id == id);
         }
 
+
+        /// <summary>
+        /// Расчет прироста ресурсов игрока от его шахт
+        /// </summary>
         public void CalculateMove()
         {
             PlusValue(Specifications.PlayerDiamonds, playerStatistic[Specifications.PlayerDiamondMines]);
@@ -101,6 +110,10 @@ namespace Arcomage.Core
             PlusValue(Specifications.PlayerRocks, playerStatistic[Specifications.PlayerColliery]);
         }
 
+
+        /// <summary>
+        /// Проверка хватает ли ресурсов для использования карты
+        /// </summary>
         private bool isCanUsed(ICollection<CardParams> cardParams)
         {
             bool returnVal = false;
@@ -136,6 +149,9 @@ namespace Arcomage.Core
             return returnVal;
         }
 
+        /// <summary>
+        /// Применения параметров карты к игроку
+        /// </summary>
         private void ApplyCardParamsToPlayer(ICollection<CardParams> cardParams)
         {
 
