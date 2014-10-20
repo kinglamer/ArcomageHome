@@ -108,8 +108,12 @@ namespace Arcomage.Server
             dicParam.Add(Specifications.EnemyDiamondMines, tbDiamondMinesEnemy.Text);
             dicParam.Add(Specifications.EnemyColliery, tbCollieryEnemy.Text);
 
+<<<<<<< HEAD
             dicParam.Add(Specifications.EnemyDirectDamage, tbDirectDamageEnemy.Text);
             dicParam.Add(Specifications.PlayerDirectDamage, tbDirectDamagePlayer.Text);
+=======
+            dicParam.Add(Specifications.DirectDamage, tbDirectDamage.Text);
+>>>>>>> 11a4bab2bafe116c25e60707ed369e149fb7b81a
 
             if (cbGetNewCard.Checked)
                 dicParam.Add(Specifications.GetCard, Convert.ToInt16(cbGetNewCard.Checked).ToString());

@@ -247,6 +247,18 @@ namespace Arcomage.Server {
         protected global::System.Web.UI.WebControls.TextBox tbRocksEnemy;
         
         /// <summary>
+<<<<<<< HEAD
+=======
+        /// tbDirectDamage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox tbDirectDamage;
+        
+        /// <summary>
+>>>>>>> 11a4bab2bafe116c25e60707ed369e149fb7b81a
         /// cbGetNewCard control.
         /// </summary>
         /// <remarks>
