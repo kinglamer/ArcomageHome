@@ -12,9 +12,7 @@
 <body>
    <form id="frmAdd" runat="server">
    <div>
-           <ajaxToolkit:ToolkitScriptManager
-        ID="TSM1"
-        runat="server" />
+           <ajaxToolkit:ToolkitScriptManager ID="TSM1" runat="server" />
 
         <h1> <asp:Label CssClass="error" ID="lbError" runat="server" Text=""></asp:Label></h1> 
          <h2> <asp:Label ID="lbInfo" runat="server" Text=""></asp:Label></h2> 
@@ -28,7 +26,7 @@
           <p/>
 
             <asp:Label ID="lbDes" runat="server" Text="Описание карты"></asp:Label> 
-             <custom:CustomEditor ID="tbDes" Width="450px" Height="200px" runat="server" />
+            <custom:CustomEditor ID="tbDes" Width="450px" Height="200px" runat="server" />
  
         <p/>
        
@@ -79,8 +77,25 @@
                 <td><asp:TextBox ID="tbRocksPlayer" runat="server"></asp:TextBox></td>
                 <td><asp:TextBox ID="tbRocksEnemy" runat="server"></asp:TextBox></td>
             </tr>
+             
         </table>
-        
+         <p/>
+       
+         <table>
+            <tr>
+                <td>Специфичные параметры</td>
+            </tr>
+             <tr>
+                <td>Прямой урон</td>
+                <td><asp:TextBox ID="tbDirectDamage" runat="server"></asp:TextBox></td>
+            </tr>
+              <tr>
+                <td>Получить еще карту</td>
+                <td><asp:CheckBox ID="cbGetNewCard" runat="server" /></td>
+             </tr>
+         </table>
+       
+
         <p/>
         <table>
             <tr>
@@ -97,9 +112,10 @@
             <tr>
                 <td>Камни</td>
                 <td><asp:TextBox ID="tbCostRocks" runat="server"></asp:TextBox></td>
-            </tr>
+         
+            
         </table>
-        <asp:button ID="btSave" runat="server" text="Сохранить" OnClick="btSave_Click" />
+            <asp:button ID="btSave" runat="server" text="Сохранить" OnClick="btSave_Click" />
          </div>
     </form>
     
