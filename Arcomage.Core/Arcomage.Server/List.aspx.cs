@@ -33,7 +33,7 @@ namespace Arcomage.Server
         {
             MakeTableStruct();
 
-            List<Card> cards = DatabaseHelper.GetCards();
+            List<Card> cards = DatabaseHelper.GetCardsForSeriz();
 
                 foreach (var card in cards)
                 {
@@ -95,6 +95,7 @@ namespace Arcomage.Server
         {
             IOrderedDictionary dictionary = new OrderedDictionary();
 
+
             foreach (Control control in row.Controls)
             {
                 DataControlFieldCell cell = control as DataControlFieldCell;
@@ -110,6 +111,15 @@ namespace Arcomage.Server
             foreach (DictionaryEntry de in dictionary)
             {
                 values[de.Key.ToString()] = de.Value;
+            }
+
+
+            CheckBox chkBx = (CheckBox)row.FindControl("cbGetCard");
+            if (chkBx != null && chkBx.Checked)
+                values.Add("GetCard", "1");
+            else
+            {
+                values.Add("GetCard", null);
             }
 
             return values;

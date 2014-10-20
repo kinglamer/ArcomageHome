@@ -23,6 +23,10 @@
 
         CostDiamonds,
         CostAnimals,
-        CostRocks
+        CostRocks,
+
+        GetCard,
+        EnemyDirectDamage,
+        PlayerDirectDamage
     }
 }

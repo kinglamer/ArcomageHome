@@ -17,7 +17,7 @@ namespace Arcomage.Server
         public string GetRandomCard()
         {
 
-               var result = DatabaseHelper.GetCards();
+              var result = DatabaseHelper.GetCardsForSeriz();
 
               if (result.Count == 0)
               {
@@ -25,9 +25,9 @@ namespace Arcomage.Server
               }
 
               if (result.Count > 0)
-               result.Randomize();
+                    result.Randomize();
 
-             List<Card> returnVal = new List<Card>();
+              List<Card> returnVal = new List<Card>();
 
               for (int i = 0; i < 5 || i < result.Count; i++)
               {

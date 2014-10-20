@@ -12,6 +12,7 @@ namespace Arcomage.Entity
 
         //  public virtual List<Card> cards { get; set; }
 
+       // [JsonIgnore]
         public Card card { get; set; }
 
         public CardParams()

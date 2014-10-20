@@ -85,6 +85,24 @@ namespace Arcomage.Server {
         protected global::Arcomage.Server.CustomEditor tbDes;
         
         /// <summary>
+        /// tbDirectDamagePlayer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox tbDirectDamagePlayer;
+        
+        /// <summary>
+        /// tbDirectDamageEnemy control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox tbDirectDamageEnemy;
+        
+        /// <summary>
         /// tbTowerPlayer control.
         /// </summary>
         /// <remarks>
@@ -227,6 +245,15 @@ namespace Arcomage.Server {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox tbRocksEnemy;
+        
+        /// <summary>
+        /// cbGetNewCard control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox cbGetNewCard;
         
         /// <summary>
         /// tbCostDiamonds control.

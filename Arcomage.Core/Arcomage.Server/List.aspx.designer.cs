@@ -22,6 +22,15 @@ namespace Arcomage.Server {
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
         
         /// <summary>
+        /// TSM1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.ToolkitScriptManager TSM1;
+        
+        /// <summary>
         /// gvTable control.
         /// </summary>
         /// <remarks>

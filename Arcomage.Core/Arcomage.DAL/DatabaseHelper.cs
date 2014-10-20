@@ -26,11 +26,26 @@ namespace Arcomage.DAL
             }
         }
 
+        public static List<Card> GetCardsForSeriz()
+        {
+            using (CardContext db = new CardContext())
+            {
+                db.Configuration.ProxyCreationEnabled = false;
+                db.Configuration.LazyLoadingEnabled = false;
+
+                return db.Cards.Include(x=>x.cardParams).ToList();
+            }
+
+        }
+
         public static List<Card> GetCards()
         {
             List<Card> cards;
             using (var db = new CardContext())
             {
+                db.Configuration.ProxyCreationEnabled = true;
+                db.Configuration.LazyLoadingEnabled = true;
+
                 cards = db.Cards.ToList();
             }
             return cards;
@@ -56,10 +71,15 @@ namespace Arcomage.DAL
                 Card myCard = db.Cards.FirstOrDefault(x => x.id == id);
 
                 myCard.name = newValues["name"].ToString();
+               
+                if (newValues["description"] != null)
+                myCard.description = newValues["description"].ToString();
+
+              
 
                 foreach (var item in newValues)
                 {
-                    if (item.Key != "name" && item.Key != "id")
+                    if (item.Key != "name" && item.Key != "id" && item.Key != "description" && item.Key.Length > 0)
                     {
                         Specifications spec = (Specifications) Enum.Parse(typeof (Specifications), item.Key);
 
