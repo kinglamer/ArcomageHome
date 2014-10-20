@@ -22,7 +22,7 @@ public class GUIScript : MonoBehaviour
 
 		public GUISkin mainSkin;
 
-	private bool endgame;
+
 	private string endgametext;
 
 		private static PlayerHelper player { get; set; }
@@ -54,28 +54,12 @@ public class GUIScript : MonoBehaviour
 						EnemyRock.text = enemy.GetPlayerStat (Specifications.PlayerRocks).ToString () + " / +" + enemy.GetPlayerStat (Specifications.PlayerColliery).ToString ();
 
 				}
-		GUI.skin = mainSkin;
-				if (GUI.Button (new Rect (120, 200, 60, 25), "Pass")) {
-						//Тут действия на пас
-						Debug.Log ("Pass!");
-				}
+				
+				GUI.skin = mainSkin;
 
-				if (endgame) {
-			GUILayout.BeginArea(new Rect(Screen.width / 2-100, Screen.height / 2-50, 200, 100));
-			GUILayout.Box(endgametext+"You Win!");
-			GUILayout.BeginHorizontal();
-			if(GUILayout.Button("Replay"))
-				Debug.Log("Replay");
-			if (GUILayout.Button("Exit"))
-				Debug.Log("Exit");
-			GUILayout.EndHorizontal();
-			GUILayout.EndArea();
-		}
-		}
-	//Метод для вызова экрана конца игры
-	public void EndGame(string s){
-		endgame = true;
-		endgametext = s;
+				
 	}
+
+
 
 }

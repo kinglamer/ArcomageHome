@@ -33,22 +33,17 @@ public class GameController : MonoBehaviour, ILog
 		// Use this for initialization
 		void Start ()
 		{
-				
+			StartNewGame ();
+		}
 
-				enemyInfo = new PlayerHelper (this, "Comp");
-				
-				ps = new PlayerHelper (this, "Human");
-
-				ps.SetTheEnemy (enemyInfo);
-				enemyInfo.SetTheEnemy (ps);
-			
-				GUIScript guiS = new GUIScript (ps, enemyInfo);
-
-
-
-				PushCardOnDeck (new Vector3());
-
-
+		void StartNewGame ()
+		{
+			enemyInfo = new PlayerHelper (this, "Comp");
+			ps = new PlayerHelper (this, "Human");
+			ps.SetTheEnemy (enemyInfo);
+			enemyInfo.SetTheEnemy (ps);
+			GUIScript guiS = new GUIScript (ps, enemyInfo);
+			PushCardOnDeck (new Vector3 ());
 		}
 
 		private Vector3 GetSpawn ()
@@ -103,14 +98,25 @@ public class GameController : MonoBehaviour, ILog
 				}
 		}
 
+	private void EnemyMove ()
+	{
+		//Todo: анимацию для хода противника
+		AIHelper.MakeMove (enemyInfo);
+	}
 
 		//метод для отыгрывания карты
 		public void CardPlayed (int cardID, Vector3 cardPos)
 		{
-				if (ps.UseCard (cardID)) {
-						PushCardOnDeck (cardPos);
-						ps.CalculateMove();
-						MakeEnemyMove();
+				if (ps.UseCard (cardID)) 
+				{			 	
+
+					
+
+					PushCardOnDeck (cardPos);
+					ps.CalculateMove();
+
+					EnemyMove ();
+				
 				}
 				else 
 				{
@@ -120,12 +126,23 @@ public class GameController : MonoBehaviour, ILog
 				//Debug.Log ("Card been destroyed " + cardID + " at position " + cardPos);//тест
 		}
 
-		
-		private void MakeEnemyMove()
+
+
+		private bool ChechResult(string name, bool? result)
 		{
-				//Todo: анимацию для хода противника
-			AIHelper.MakeMove (enemyInfo);
-			
+				if(result == true)
+				{
+					EndGame(name + " WIN!");
+					return true;
+				}
+				else if(result == false)
+				{
+					EndGame(name + " LOSE!");
+					return true;
+				}
+
+				return false;
+
 		}
 
 		// Update is called once per frame
@@ -133,6 +150,50 @@ public class GameController : MonoBehaviour, ILog
 		{
 		
 		}
+
+	//Метод для вызова экрана конца игры
+		public void EndGame(string endgametext)
+		{
+			
+			GUILayout.BeginArea(new Rect(Screen.width / 2-100, Screen.height / 2-50, 200, 100));
+			GUILayout.Box(endgametext);
+			GUILayout.BeginHorizontal();
+		
+			if(GUILayout.Button("Replay"))
+			{
+				StartNewGame();
+				Debug.Log("Replay");
+			}
+				
+			if (GUILayout.Button("Exit"))
+			{
+				Application.Quit();
+			}
+
+
+			GUILayout.EndHorizontal();
+			GUILayout.EndArea();
+		
+		}
+
+
+	void OnGUI()
+	{
+		if (GUI.Button (new Rect (120, 200, 60, 25), "Pass")) {
+			//Тут действия на пас
+			EnemyMove();
+			Debug.Log ("Pass!");
+		}
+
+		if (ChechResult("Игрок",ps.IsPlayerWin()))
+		{
+			return;
+		}
+		else if(ChechResult("Компьютер",enemyInfo.IsPlayerWin()))
+		{
+			return;
+		}
+	}
 }
 
 

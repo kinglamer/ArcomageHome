@@ -1,4 +1,5 @@
-using System.ComponentModel.DataAnnotations;
+
+using Newtonsoft.Json;
 
 namespace Arcomage.Entity
 {
@@ -12,7 +13,7 @@ namespace Arcomage.Entity
 
         //  public virtual List<Card> cards { get; set; }
 
-       // [JsonIgnore]
+        [JsonIgnore]
         public Card card { get; set; }
 
         public CardParams()

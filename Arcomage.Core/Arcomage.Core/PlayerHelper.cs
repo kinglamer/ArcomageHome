@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 
 namespace Arcomage.Core
 {
+
     public class PlayerHelper
     {
         protected readonly ILog log;
@@ -22,6 +23,10 @@ namespace Arcomage.Core
 
 
         private const string url = "http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
+
+        private readonly Dictionary<Specifications, int> WinParams;
+        private readonly Dictionary<Specifications, int> LoseParams;
+
 
         /// <summary>
         /// Стэк карт с сервера, чтобы реже обращаться к нему
@@ -46,9 +51,50 @@ namespace Arcomage.Core
                 CountCard = 0;
                 
                 playerStatistic = GenerateDefault(); // new Dictionary<Specifications, int>();
+
+                LoseParams = new Dictionary<Specifications, int>();
+                LoseParams.Add(Specifications.PlayerTower, 0);
+
+            WinParams = new Dictionary<Specifications, int>();
+            WinParams.Add(Specifications.PlayerTower,50);
+            WinParams.Add(Specifications.PlayerAnimals,150);
+            WinParams.Add(Specifications.PlayerRocks, 150);
+            WinParams.Add(Specifications.PlayerDiamonds, 150);
         }
 
 
+        public bool? IsPlayerWin()
+        {
+           // log.Info("Проверка IsPlayerWin");
+            bool? returnVal = null;
+
+            foreach (var item in WinParams)
+            {
+
+               // log.Info("item.Key " + item.Key);
+                if (playerStatistic[item.Key] >= item.Value)
+                {
+                    returnVal = true;
+                    break;
+                }
+            }
+
+          //  log.Info("Проверка IsPlayerWin2");
+            if (returnVal == null)
+            {
+                foreach (var item in LoseParams)
+                {
+                   // log.Info("item.Key " + item.Key);
+                    if (playerStatistic[item.Key] <= item.Value)
+                    {
+                        returnVal = false;
+                        break;
+                    }
+                }
+            }
+
+            return returnVal;
+        }
 
         public void SetTheEnemy(PlayerHelper newEnemy)
         {
