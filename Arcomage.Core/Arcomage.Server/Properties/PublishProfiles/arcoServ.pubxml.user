@@ -11,7 +11,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
   </PropertyGroup>
   <ItemGroup>
     <File Include="Add.aspx">
-      <publishTime>10/20/2014 11:27:13</publishTime>
+      <publishTime>10/20/2014 16:20:58</publishTime>
     </File>
     <File Include="ArcoServer.svc">
       <publishTime>10/14/2014 13:32:37</publishTime>
@@ -35,13 +35,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/04/2014 20:59:25</publishTime>
     </File>
     <File Include="bin/Arcomage.DAL.dll">
-      <publishTime>10/20/2014 16:06:21</publishTime>
+      <publishTime>10/20/2014 16:42:25</publishTime>
     </File>
     <File Include="bin/Arcomage.Entity.dll">
-      <publishTime>10/20/2014 16:06:20</publishTime>
+      <publishTime>10/20/2014 16:42:24</publishTime>
     </File>
     <File Include="bin/Arcomage.Server.dll">
-      <publishTime>10/20/2014 16:06:21</publishTime>
+      <publishTime>10/20/2014 16:42:25</publishTime>
     </File>
     <File Include="bin/cs/AjaxControlToolkit.resources.dll">
       <publishTime>10/17/2014 12:37:33</publishTime>
@@ -203,7 +203,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/14/2014 13:32:37</publishTime>
     </File>
     <File Include="List.aspx">
-      <publishTime>10/20/2014 16:00:34</publishTime>
+      <publishTime>10/20/2014 16:20:58</publishTime>
     </File>
     <File Include="packages.config">
       <publishTime>10/17/2014 12:37:47</publishTime>

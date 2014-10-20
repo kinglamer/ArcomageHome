@@ -64,13 +64,11 @@
           <asp:BoundField DataField="EnemyDiamondMines" HeaderText="EnemyDiamondMines"  />
           <asp:BoundField DataField="EnemyColliery" HeaderText="EnemyColliery"  />    
               
-<<<<<<< HEAD
+
                     <asp:BoundField DataField="EnemyDirectDamage" HeaderText="EnemyDirectDamage" />
                     <asp:BoundField DataField="PlayerDirectDamage" HeaderText="PlayerDirectDamage" />
-=======
-                    <asp:BoundField DataField="DirectDamage" HeaderText="DirectDamage" />
-                    
->>>>>>> 11a4bab2bafe116c25e60707ed369e149fb7b81a
+
+
                     
              <asp:TemplateField HeaderText="GetCard" >
                     <EditItemTemplate>

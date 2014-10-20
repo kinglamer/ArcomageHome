@@ -33,8 +33,9 @@
         
         <table>
             <tr>
-                <td>Атрибуты применяемые к характеристикам игрока</td>
                 <td></td>
+                <td>Атрибуты применяемые к характеристикам игрока</td>
+                
                 <td>Атрибуты применяемые к характеристикам противника</td>
             </tr>
             
@@ -92,14 +93,12 @@
             <tr>
                 <td>Специфичные параметры</td>
             </tr>
-<<<<<<< HEAD
-   
-=======
+
              <tr>
                 <td>Прямой урон</td>
                 <td><asp:TextBox ID="tbDirectDamage" runat="server"></asp:TextBox></td>
             </tr>
->>>>>>> 11a4bab2bafe116c25e60707ed369e149fb7b81a
+
               <tr>
                 <td>Получить еще карту</td>
                 <td><asp:CheckBox ID="cbGetNewCard" runat="server" /></td>
