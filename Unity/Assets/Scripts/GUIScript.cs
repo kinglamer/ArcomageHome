@@ -20,7 +20,7 @@ public class GUIScript : MonoBehaviour
 		public GUIText EnemyAnimal;
 		public GUIText EnemyRock;
 
-		public GUISkin mainSkin;
+//		public GUISkin mainSkin;
 
 
 	private string endgametext;
@@ -55,7 +55,7 @@ public class GUIScript : MonoBehaviour
 
 				}
 				
-				GUI.skin = mainSkin;
+//				GUI.skin = mainSkin;
 
 				
 	}
