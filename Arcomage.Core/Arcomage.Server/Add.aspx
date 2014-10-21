@@ -94,12 +94,7 @@
                 <td>Специфичные параметры</td>
             </tr>
 
-             <tr>
-                <td>Прямой урон</td>
-                <td><asp:TextBox ID="tbDirectDamage" runat="server"></asp:TextBox></td>
-            </tr>
-
-              <tr>
+            <tr>
                 <td>Получить еще карту</td>
                 <td><asp:CheckBox ID="cbGetNewCard" runat="server" /></td>
              </tr>
