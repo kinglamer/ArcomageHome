@@ -154,6 +154,13 @@ public class GameController : MonoBehaviour, ILog
 	//Метод для вызова экрана конца игры
 		public void EndGame(string endgametext)
 		{
+
+			var hinges = GameObject.Find ("Done_Card(Clone)");
+		if (hinges != null) {
+						Destroy (hinges.gameObject);
+				}
+					
+			
 			
 			GUILayout.BeginArea(new Rect(Screen.width / 2-100, Screen.height / 2-50, 200, 100));
 			GUILayout.Box(endgametext);
