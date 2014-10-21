@@ -63,14 +63,22 @@ public class GameController : MonoBehaviour, ILog
 				spawnPosition.x += 5f;
 				spawnPosition.z += 0.5f;
 				card.GetComponent<DoneCardScript> ().cardName = myCard.name;
-				string Paramscard = string.Empty;
-				foreach (var item in myCard.cardParams) {
-						if (item.key != Specifications.CostAnimals && item.key != Specifications.CostDiamonds && item.key != Specifications.CostRocks) {
-								Paramscard += item.key.ToString () + " " + item.value.ToString () + "\n";
+				
+
+				string Paramscard = myCard.description;
+
+				if (Paramscard == null) 
+				{
+						foreach (var item in myCard.cardParams) {
+								if (item.key != Specifications.CostAnimals && item.key != Specifications.CostDiamonds && item.key != Specifications.CostRocks) {
+										Paramscard += item.key.ToString () + " " + item.value.ToString () + "\n";
+								}
 						}
 				}
+
 				var costCard = myCard.cardParams.FirstOrDefault (x => x.key == Specifications.CostAnimals ||
 		                                                 x.key == Specifications.CostDiamonds || x.key == Specifications.CostRocks).value;
+
 				card.GetComponent<DoneCardScript> ().cardId = myCard.id;
 				card.GetComponent<DoneCardScript> ().cardParam = Paramscard;
 				card.GetComponent<DoneCardScript> ().cardCost = costCard;
