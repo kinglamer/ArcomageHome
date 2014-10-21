@@ -129,22 +129,7 @@ public class GameController : MonoBehaviour, ILog
 
 
 
-		private bool ChechResult(string name, bool? result)
-		{
-				if(result == true)
-				{
-					EndGame(name + " WIN!");
-					return true;
-				}
-				else if(result == false)
-				{
-					EndGame(name + " LOSE!");
-					return true;
-				}
 
-				return false;
-
-		}
 
 		// Update is called once per frame
 		void Update ()
@@ -157,7 +142,7 @@ public class GameController : MonoBehaviour, ILog
 		{
 
 			var hinges = GameObject.Find ("Done_Card(Clone)");
-		if (hinges != null) {
+			if (hinges != null) {
 						Destroy (hinges.gameObject);
 				}
 					
@@ -194,14 +179,20 @@ public class GameController : MonoBehaviour, ILog
 			Debug.Log ("Pass!");
 		}
 
-		if (ChechResult("YOU",ps.IsPlayerWin()))
+		if (ps.IsPlayerWin () == true) 
 		{
-			return;
-		}
-		else if(ChechResult("Computer",enemyInfo.IsPlayerWin()))
+			EndGame ("YOU WIN!");		
+
+		} 
+		else 
 		{
-			return;
+			if (enemyInfo.IsPlayerWin() == true)
+			{
+				EndGame ("Computer WIN!");
+			
+			}
 		}
+
 	}
 }
 
