@@ -55,11 +55,11 @@ namespace Arcomage.Core
                 LoseParams = new Dictionary<Specifications, int>();
                 LoseParams.Add(Specifications.PlayerTower, 0);
 
-            WinParams = new Dictionary<Specifications, int>();
-            WinParams.Add(Specifications.PlayerTower,50);
-            WinParams.Add(Specifications.PlayerAnimals,150);
-            WinParams.Add(Specifications.PlayerRocks, 150);
-            WinParams.Add(Specifications.PlayerDiamonds, 150);
+                WinParams = new Dictionary<Specifications, int>();
+                WinParams.Add(Specifications.PlayerTower,50);
+                WinParams.Add(Specifications.PlayerAnimals,150);
+                WinParams.Add(Specifications.PlayerRocks, 150);
+                WinParams.Add(Specifications.PlayerDiamonds, 150);
         }
 
 

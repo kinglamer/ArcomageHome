@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arcomage.Core", "Arcomage.Core\Arcomage.Core.csproj", "{A08C490A-7C60-4FDA-B452-A7136A039FB9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arcomage.Server", "Arcomage.Server\Arcomage.Server.csproj", "{29799A9F-DD29-42A9-B1BB-2673F259265C}"
@@ -12,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arcomage.Entity", "Arcomage.Entity\Arcomage.Entity.csproj", "{69DC8E57-C976-4B60-B7CF-B16F20732F0F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arcomage.Common", "Arcomage.Common\Arcomage.Common.csproj", "{23650D10-2AB9-4068-93E8-ACE0C0729926}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arcomage.Tests", "Arcomage.Tests\Arcomage.Tests.csproj", "{BF1BCBD6-277E-4CF3-A59A-017D5C54744C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +47,10 @@ Global
 		{23650D10-2AB9-4068-93E8-ACE0C0729926}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23650D10-2AB9-4068-93E8-ACE0C0729926}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23650D10-2AB9-4068-93E8-ACE0C0729926}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF1BCBD6-277E-4CF3-A59A-017D5C54744C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF1BCBD6-277E-4CF3-A59A-017D5C54744C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF1BCBD6-277E-4CF3-A59A-017D5C54744C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF1BCBD6-277E-4CF3-A59A-017D5C54744C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
