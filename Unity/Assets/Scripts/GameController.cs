@@ -27,6 +27,7 @@ public class GameController : MonoBehaviour, ILog
 		public GameObject cards ;
 		private PlayerHelper ps;
 		private PlayerHelper enemyInfo ;
+		public GUISkin mainSkin;
 		
 
 
@@ -162,7 +163,7 @@ public class GameController : MonoBehaviour, ILog
 					
 			
 			
-			GUILayout.BeginArea(new Rect(Screen.width / 2-100, Screen.height / 2-50, 200, 100));
+			GUILayout.BeginArea(new Rect(Screen.width / 2-150, Screen.height / 2-50, 300, 100));
 			GUILayout.Box(endgametext);
 			GUILayout.BeginHorizontal();
 		
@@ -186,17 +187,18 @@ public class GameController : MonoBehaviour, ILog
 
 	void OnGUI()
 	{
+		GUI.skin = mainSkin;
 		if (GUI.Button (new Rect (120, 200, 60, 25), "Pass")) {
 			//Тут действия на пас
 			EnemyMove();
 			Debug.Log ("Pass!");
 		}
 
-		if (ChechResult("Игрок",ps.IsPlayerWin()))
+		if (ChechResult("YOU",ps.IsPlayerWin()))
 		{
 			return;
 		}
-		else if(ChechResult("Компьютер",enemyInfo.IsPlayerWin()))
+		else if(ChechResult("Computer",enemyInfo.IsPlayerWin()))
 		{
 			return;
 		}

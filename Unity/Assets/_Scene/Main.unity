@@ -1419,6 +1419,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   respawnCard: {fileID: 727518666}
   cards: {fileID: 100006, guid: 1a2f5df15465e534e8f64a577d629b2c, type: 2}
+  mainSkin: {fileID: 11400000, guid: aff24adb0e0b7c54cbc8e12073990214, type: 2}
 --- !u!4 &1653442297
 Transform:
   m_ObjectHideFlags: 0
@@ -1454,7 +1455,6 @@ MonoBehaviour:
   EnemyDiamonds: {fileID: 1019021211}
   EnemyAnimal: {fileID: 944151449}
   EnemyRock: {fileID: 116554157}
-  mainSkin: {fileID: 11400000, guid: aff24adb0e0b7c54cbc8e12073990214, type: 2}
 --- !u!1 &1657069290
 GameObject:
   m_ObjectHideFlags: 0
