@@ -27,7 +27,7 @@ namespace Arcomage.Core
         private readonly Dictionary<Specifications, int> WinParams;
         private readonly Dictionary<Specifications, int> LoseParams;
 
-
+        private IArcoServer host;
         /// <summary>
         /// Стэк карт с сервера, чтобы реже обращаться к нему
         /// </summary>
@@ -40,8 +40,17 @@ namespace Arcomage.Core
         /// <summary>
         /// Установка дефолтных значений
         /// </summary>
-        public PlayerHelper(ILog _log, string _playerName)
+        public PlayerHelper(ILog _log, string _playerName, IArcoServer server = null)
         {
+
+            if (server == null)
+            {
+                host = new ArcoServerClient(new BasicHttpBinding(), new EndpointAddress(url));
+            }
+            else
+            {
+                host = server;
+            }
 
             playerName = _playerName;
 
@@ -125,10 +134,16 @@ namespace Arcomage.Core
             var costCard = playCards[index].cardParams.Where(x => x.key == Specifications.CostDiamonds ||
                                                                   x.key == Specifications.CostAnimals ||
                                                                   x.key == Specifications.CostRocks).ToList();
-
+            
 
             if (isCanUsed(costCard))
             {
+                if (enemy == null)
+                {
+                    log.Error("Должен быть указан противник");
+                    return false;
+                }
+
                 log.Info("Player: " + playerName + " use card: " + playCards[index].name);
                 ApplyCardParamsToPlayer(playCards[index].cardParams);
 
@@ -136,6 +151,7 @@ namespace Arcomage.Core
                 CountCard--;
                 return true;
             }
+        
 
             return false;
         }
@@ -201,6 +217,7 @@ namespace Arcomage.Core
         private void ApplyCardParamsToPlayer(ICollection<CardParams> cardParams)
         {
 
+           
 
             foreach (var item in cardParams)
             {
@@ -349,7 +366,7 @@ namespace Arcomage.Core
         {
             if (QCard.Count == 0)
             {
-                ArcoServerClient host = new ArcoServerClient(new BasicHttpBinding(), new EndpointAddress(url));
+              
                 
                 string cardFromServer = host.GetRandomCard();
 
