@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Arcomage.Common;
 
-public class GameController : MonoBehaviour, ILog
+public class SceneScript : MonoBehaviour, ILog
 {
 	#region ILog implementation
 

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Security.Tokens;
+using System.Text;
 using Arcomage.Common;
 using Arcomage.Core.ArcomageService;
 using Arcomage.Entity;
@@ -9,23 +11,25 @@ using Newtonsoft.Json;
 
 namespace Arcomage.Core
 {
-
-    public class PlayerHelper
+    public enum TypePlayer
     {
-        protected readonly ILog log;
+        AI, Human
+    }
+
+    class GameController
+    {
         public readonly int MaxCard;
-        public int CountCard { get; private set; }
 
-        private string playerName { get; set; }
-        private PlayerHelper enemy { get; set; }
-
-        private Dictionary<Specifications, int> playerStatistic { get; set; }
-
-
-        private const string url = "http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
-
+        protected readonly ILog log;
         private readonly Dictionary<Specifications, int> WinParams;
         private readonly Dictionary<Specifications, int> LoseParams;
+        private const string url = "http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
+
+
+        private List<IPlayer> players { get; set; }
+        private int currentPlayer { get; set; }
+
+        private bool isGameEnd { get; set; }
 
         private IArcoServer host;
         /// <summary>
@@ -33,15 +37,22 @@ namespace Arcomage.Core
         /// </summary>
         private Queue<Card> QCard = new Queue<Card>();
 
-        /// <summary>
-        /// Список текущих карт игрока
-        /// </summary>
-        private List<Card> playCards = new List<Card>();
-        /// <summary>
-        /// Установка дефолтных значений
-        /// </summary>
-        public PlayerHelper(ILog _log, string _playerName, IArcoServer server = null)
+
+        public GameController(ILog _log, IArcoServer server = null)
         {
+            MaxCard = 5;
+            isGameEnd = true;
+
+            LoseParams = new Dictionary<Specifications, int>();
+            LoseParams.Add(Specifications.PlayerTower, 0);
+
+            WinParams = new Dictionary<Specifications, int>();
+            WinParams.Add(Specifications.PlayerTower, 50);
+            WinParams.Add(Specifications.PlayerAnimals, 150);
+            WinParams.Add(Specifications.PlayerRocks, 150);
+            WinParams.Add(Specifications.PlayerDiamonds, 150);
+
+            players = new List<IPlayer>();
 
             if (server == null)
             {
@@ -51,74 +62,75 @@ namespace Arcomage.Core
             {
                 host = server;
             }
-
-            playerName = _playerName;
-
-                log = _log;
-            
-                MaxCard = 5;
-                CountCard = 0;
-                
-                playerStatistic = GenerateDefault(); // new Dictionary<Specifications, int>();
-
-                LoseParams = new Dictionary<Specifications, int>();
-                LoseParams.Add(Specifications.PlayerTower, 0);
-
-                WinParams = new Dictionary<Specifications, int>();
-                WinParams.Add(Specifications.PlayerTower,50);
-                WinParams.Add(Specifications.PlayerAnimals,150);
-                WinParams.Add(Specifications.PlayerRocks, 150);
-                WinParams.Add(Specifications.PlayerDiamonds, 150);
         }
 
-
-        public bool? IsPlayerWin()
+        public void AddPlayer(TypePlayer tp, string name)
         {
-           // log.Info("Проверка IsPlayerWin");
-            bool? returnVal = null;
-
-            foreach (var item in WinParams)
+            if (players.Count == 2)
             {
+                log.Error("Достигнуто максимальное количество игроков");
+                return;
+            }
 
-               // log.Info("item.Key " + item.Key);
-                if (playerStatistic[item.Key] >= item.Value)
-                {
-                    returnVal = true;
+            switch (tp)
+            {
+                case TypePlayer.AI:
+                    players.Add(new AI(name));
                     break;
-                }
+                case TypePlayer.Human:
+                    players.Add(new Player(name));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("tp");
             }
+        }
 
-          //  log.Info("Проверка IsPlayerWin2");
-            if (returnVal == null)
+
+        public void StartGame()
+        {
+            if (players.Count == 0)
             {
-                foreach (var item in LoseParams)
-                {
-                   // log.Info("item.Key " + item.Key);
-                    if (playerStatistic[item.Key] <= item.Value)
-                    {
-                        returnVal = false;
-                        break;
-                    }
-                }
+                log.Error("Добавьте игрок в игру. Сейчас их " + players.Count);
+                return;
             }
 
-            return returnVal;
-        }
+            if (isGameEnd)
+            {
+                isGameEnd = false;
 
-        public void SetTheEnemy(PlayerHelper newEnemy)
-        {
-            if (enemy == null)
-            enemy = newEnemy;
-        }
-
-        public int GetPlayerStat(Specifications sp)
-        {
-            if (playerStatistic.ContainsKey(sp))
-                return playerStatistic[sp];
+                Random rnd = new Random();
+                currentPlayer = rnd.Next(0, 1);
+                
+            }
             else
             {
-                return -1;
+                log.Info("Игра уже итак запущена");
+                return;
             }
+
+
+        }
+
+
+        /// <summary>
+        /// Генерация стандартных значений для игрока:
+        /// стена, башня, шахты, ресурсы
+        /// </summary>
+        /// <returns></returns>
+        private Dictionary<Specifications, int> GenerateDefault()
+        {
+            Dictionary<Specifications, int> returnVal = new Dictionary<Specifications, int>();
+            returnVal.Add(Specifications.PlayerWall, 5);
+            returnVal.Add(Specifications.PlayerTower, 10);
+
+            returnVal.Add(Specifications.PlayerMenagerie, 1);
+            returnVal.Add(Specifications.PlayerColliery, 1);
+            returnVal.Add(Specifications.PlayerDiamondMines, 1);
+
+            returnVal.Add(Specifications.PlayerRocks, 5);
+            returnVal.Add(Specifications.PlayerDiamonds, 5);
+            returnVal.Add(Specifications.PlayerAnimals, 5);
+            return returnVal;
         }
 
 
@@ -134,7 +146,7 @@ namespace Arcomage.Core
             var costCard = playCards[index].cardParams.Where(x => x.key == Specifications.CostDiamonds ||
                                                                   x.key == Specifications.CostAnimals ||
                                                                   x.key == Specifications.CostRocks).ToList();
-            
+
 
             if (isCanUsed(costCard))
             {
@@ -151,16 +163,83 @@ namespace Arcomage.Core
                 CountCard--;
                 return true;
             }
-        
+
 
             return false;
         }
 
-        public Card ReturnCard(int id)
+        /// <summary>
+        /// Получает карту из стека карт
+        /// </summary>
+        /// <returns></returns>
+        public Card GetCard()
         {
-            return playCards.First(x => x.id == id);
+            if (QCard.Count == 0)
+            {
+
+
+                string cardFromServer = host.GetRandomCard();
+
+                List<Card> newParametrs = JsonConvert.DeserializeObject<List<Card>>(cardFromServer);
+
+                if (newParametrs.Count == 0)
+                    return null;
+
+                foreach (var item in newParametrs)
+                {
+                    if (QCard.Count == MaxCard)
+                    {
+                        break;
+                    }
+                    QCard.Enqueue(item);
+
+                }
+            }
+
+            var returnVal = QCard.Dequeue();
+            playCards.Add(returnVal);
+
+            CountCard++;
+            return returnVal;
         }
 
+        /// <summary>
+        /// Проверка хватает ли ресурсов для использования карты
+        /// </summary>
+        private bool isCanUsed(ICollection<CardParams> cardParams)
+        {
+            bool returnVal = false;
+            foreach (var item in cardParams)
+            {
+                switch (item.key)
+                {
+                    case Specifications.CostDiamonds:
+                        // log.Info(playerStatistic[Specifications.PlayerDiamonds] + " > " + item.value);
+                        if (playerStatistic[Specifications.PlayerDiamonds] >= item.value)
+                        {
+                            returnVal = true;
+                        }
+                        break;
+                    case Specifications.CostAnimals:
+                        // log.Info(playerStatistic[Specifications.PlayerAnimals] + " > " + item.value);
+                        if (playerStatistic[Specifications.PlayerAnimals] >= item.value)
+                        {
+                            returnVal = true;
+                        }
+                        break;
+                    case Specifications.CostRocks:
+                        // log.Info(playerStatistic[Specifications.PlayerRocks] + " > " + item.value);
+                        if (playerStatistic[Specifications.PlayerRocks] >= item.value)
+                        {
+                            returnVal = true;
+                        }
+                        break;
+                }
+            }
+
+            // log.Info("isCanUsed: " + returnVal);
+            return returnVal;
+        }
 
         /// <summary>
         /// Расчет прироста ресурсов игрока от его шахт
@@ -174,50 +253,12 @@ namespace Arcomage.Core
 
 
         /// <summary>
-        /// Проверка хватает ли ресурсов для использования карты
-        /// </summary>
-        private bool isCanUsed(ICollection<CardParams> cardParams)
-        {
-            bool returnVal = false;
-            foreach (var item in cardParams)
-            {
-                switch (item.key)
-                {
-                    case Specifications.CostDiamonds:
-                       // log.Info(playerStatistic[Specifications.PlayerDiamonds] + " > " + item.value);
-                        if (playerStatistic[Specifications.PlayerDiamonds] >= item.value)
-                        {
-                            returnVal = true;
-                        }
-                        break;
-                    case Specifications.CostAnimals:
-                       // log.Info(playerStatistic[Specifications.PlayerAnimals] + " > " + item.value);
-                        if (playerStatistic[Specifications.PlayerAnimals] >= item.value)
-                        {
-                            returnVal = true;
-                        }
-                        break;
-                    case Specifications.CostRocks:
-                       // log.Info(playerStatistic[Specifications.PlayerRocks] + " > " + item.value);
-                        if (playerStatistic[Specifications.PlayerRocks] >= item.value)
-                        {
-                            returnVal = true;
-                        }
-                        break;
-                }
-            }
-
-           // log.Info("isCanUsed: " + returnVal);
-            return returnVal;
-        }
-
-        /// <summary>
         /// Применения параметров карты к игроку
         /// </summary>
         private void ApplyCardParamsToPlayer(ICollection<CardParams> cardParams)
         {
 
-           
+
 
             foreach (var item in cardParams)
             {
@@ -292,13 +333,61 @@ namespace Arcomage.Core
             }
         }
 
+        public string WhoWin()
+        {
+            string returnVal = string.Empty;
+
+            foreach (var pla in players)
+            {
+                if (IsPlayerWin(player1.playerStatistic) || IsPlayerLose(player2.playerStatistic))
+                {
+                    returnVal = player1.playerName;
+                }
+            }
+            
+            else if (IsPlayerWin(player2.playerStatistic) || IsPlayerLose(player1.playerStatistic))
+            {
+                returnVal = player2.playerName;
+            }
+
+            return returnVal;
+        }
+
+        private bool IsPlayerWin(Dictionary<Specifications, int> playerStatistic)
+        {
+            foreach (var item in WinParams)
+            {
+                // log.Info("item.Key " + item.Key);
+                if (playerStatistic[item.Key] >= item.Value)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool IsPlayerLose(Dictionary<Specifications, int> playerStatistic)
+        {
+            foreach (var item in LoseParams)
+            {
+                // log.Info("item.Key " + item.Key);
+                if (playerStatistic[item.Key] <= item.Value)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Метод для изменения параметров противника
         /// </summary>
         /// <param name="item"></param>
         public void ApplyCardParamFromEnemy(CardParams item)
         {
-            
+
             Specifications resutl = Specifications.NotSet;
             switch (item.key)
             {
@@ -328,70 +417,13 @@ namespace Arcomage.Core
                     break;
             }
 
-           // log.Info("playerName:" + playerName + ": " + playerStatistic[resutl]);
+            // log.Info("playerName:" + playerName + ": " + playerStatistic[resutl]);
 
             PlusValue(resutl, item.value);
-            
-            
-          //  log.Info("playerName:" + playerName + ": " + playerStatistic[resutl]);
-            
+
+
+            //  log.Info("playerName:" + playerName + ": " + playerStatistic[resutl]);
+
         }
-
-        /// <summary>
-        /// Генерация стандартных значений для игрока:
-        /// стена, башня, шахты, ресурсы
-        /// </summary>
-        /// <returns></returns>
-        private Dictionary<Specifications, int> GenerateDefault()
-        {
-            Dictionary<Specifications, int> returnVal = new Dictionary<Specifications, int>();
-            returnVal.Add(Specifications.PlayerWall,5);
-            returnVal.Add(Specifications.PlayerTower, 10);
-
-            returnVal.Add(Specifications.PlayerMenagerie, 1);
-            returnVal.Add(Specifications.PlayerColliery, 1);
-            returnVal.Add(Specifications.PlayerDiamondMines, 1);
-
-            returnVal.Add(Specifications.PlayerRocks, 5);
-            returnVal.Add(Specifications.PlayerDiamonds, 5);
-            returnVal.Add(Specifications.PlayerAnimals, 5);
-            return returnVal;
-        }
-
-        /// <summary>
-        /// Получает карту из стека карт
-        /// </summary>
-        /// <returns></returns>
-        public Card GetCard()
-        {
-            if (QCard.Count == 0)
-            {
-              
-                
-                string cardFromServer = host.GetRandomCard();
-
-                List<Card> newParametrs = JsonConvert.DeserializeObject<List<Card>>(cardFromServer);
-
-                if (newParametrs.Count == 0)
-                    return null;
-
-                foreach (var item in newParametrs)
-                {
-                    if (QCard.Count == MaxCard)
-                    {
-                        break;
-                    }
-                    QCard.Enqueue(item);
-
-                }
-            }
-
-            var returnVal = QCard.Dequeue();
-            playCards.Add(returnVal);
-
-            CountCard++;
-            return returnVal;
-        }
-
     }
 }
