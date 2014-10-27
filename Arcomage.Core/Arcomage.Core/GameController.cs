@@ -16,21 +16,20 @@ namespace Arcomage.Core
         AI, Human
     }
 
-    class GameController
+    public class GameController
     {
         public readonly int MaxCard;
+        public List<IPlayer> players { get; set; }
+        public int currentPlayer { get; set; }
+
+
 
         protected readonly ILog log;
         private readonly Dictionary<Specifications, int> WinParams;
         private readonly Dictionary<Specifications, int> LoseParams;
         private const string url = "http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
 
-
-        private List<IPlayer> players { get; set; }
-        private int currentPlayer { get; set; }
-
         private bool isGameEnd { get; set; }
-
         private IArcoServer host;
         /// <summary>
         /// Стэк карт с сервера, чтобы реже обращаться к нему
@@ -42,7 +41,7 @@ namespace Arcomage.Core
         {
             MaxCard = 5;
             isGameEnd = true;
-
+            log = _log;
             LoseParams = new Dictionary<Specifications, int>();
             LoseParams.Add(Specifications.PlayerTower, 0);
 
@@ -72,17 +71,21 @@ namespace Arcomage.Core
                 return;
             }
 
+            IPlayer newPlayer;
             switch (tp)
             {
                 case TypePlayer.AI:
-                    players.Add(new AI(name));
+                    newPlayer = new AI(name);
                     break;
                 case TypePlayer.Human:
-                    players.Add(new Player(name));
+                    newPlayer = new Player(name);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("tp");
             }
+
+            newPlayer.Statistic = GenerateDefault();
+            players.Add(newPlayer);
         }
 
 
@@ -141,26 +144,26 @@ namespace Arcomage.Core
         /// <returns>если карту не удалось использовать возвращается false</returns>
         public bool UseCard(int id)
         {
-            int index = playCards.FindIndex(x => x.id == id);
+            if (isGameEnd)
+            {
+                log.Info("Игра уже закончилась");
+                return false;
+            }
 
-            var costCard = playCards[index].cardParams.Where(x => x.key == Specifications.CostDiamonds ||
+            int index = players[currentPlayer].Cards.FindIndex(x => x.id == id);
+
+            var costCard = players[currentPlayer].Cards[index].cardParams.Where(x => x.key == Specifications.CostDiamonds ||
                                                                   x.key == Specifications.CostAnimals ||
                                                                   x.key == Specifications.CostRocks).ToList();
 
 
             if (isCanUsed(costCard))
             {
-                if (enemy == null)
-                {
-                    log.Error("Должен быть указан противник");
-                    return false;
-                }
 
-                log.Info("Player: " + playerName + " use card: " + playCards[index].name);
-                ApplyCardParamsToPlayer(playCards[index].cardParams);
+                log.Info("Player: " + players[currentPlayer].playerName + " use card: " + players[currentPlayer].Cards[index].name);
+                ApplyCardParamsToPlayer(players[currentPlayer].Cards[index].cardParams);
 
-                playCards.RemoveAt(index);
-                CountCard--;
+                players[currentPlayer].Cards.RemoveAt(index);
                 return true;
             }
 
@@ -197,9 +200,8 @@ namespace Arcomage.Core
             }
 
             var returnVal = QCard.Dequeue();
-            playCards.Add(returnVal);
+            players[currentPlayer].Cards.Add(returnVal);
 
-            CountCard++;
             return returnVal;
         }
 
@@ -214,22 +216,22 @@ namespace Arcomage.Core
                 switch (item.key)
                 {
                     case Specifications.CostDiamonds:
-                        // log.Info(playerStatistic[Specifications.PlayerDiamonds] + " > " + item.value);
-                        if (playerStatistic[Specifications.PlayerDiamonds] >= item.value)
+                        // log.Info(Statistic[Specifications.PlayerDiamonds] + " > " + item.value);
+                        if (players[currentPlayer].Statistic[Specifications.PlayerDiamonds] >= item.value)
                         {
                             returnVal = true;
                         }
                         break;
                     case Specifications.CostAnimals:
-                        // log.Info(playerStatistic[Specifications.PlayerAnimals] + " > " + item.value);
-                        if (playerStatistic[Specifications.PlayerAnimals] >= item.value)
+                        // log.Info(Statistic[Specifications.PlayerAnimals] + " > " + item.value);
+                        if (players[currentPlayer].Statistic[Specifications.PlayerAnimals] >= item.value)
                         {
                             returnVal = true;
                         }
                         break;
                     case Specifications.CostRocks:
-                        // log.Info(playerStatistic[Specifications.PlayerRocks] + " > " + item.value);
-                        if (playerStatistic[Specifications.PlayerRocks] >= item.value)
+                        // log.Info(Statistic[Specifications.PlayerRocks] + " > " + item.value);
+                        if (players[currentPlayer].Statistic[Specifications.PlayerRocks] >= item.value)
                         {
                             returnVal = true;
                         }
@@ -244,11 +246,13 @@ namespace Arcomage.Core
         /// <summary>
         /// Расчет прироста ресурсов игрока от его шахт
         /// </summary>
-        public void CalculateMove()
+        public void EndMove()
         {
-            PlusValue(Specifications.PlayerDiamonds, playerStatistic[Specifications.PlayerDiamondMines]);
-            PlusValue(Specifications.PlayerAnimals, playerStatistic[Specifications.PlayerMenagerie]);
-            PlusValue(Specifications.PlayerRocks, playerStatistic[Specifications.PlayerColliery]);
+            PlusValue(Specifications.PlayerDiamonds, players[currentPlayer].Statistic[Specifications.PlayerDiamondMines], currentPlayer);
+            PlusValue(Specifications.PlayerAnimals, players[currentPlayer].Statistic[Specifications.PlayerMenagerie], currentPlayer);
+            PlusValue(Specifications.PlayerRocks, players[currentPlayer].Statistic[Specifications.PlayerColliery], currentPlayer);
+
+            currentPlayer = currentPlayer == 1 ? 0 : 1;
         }
 
 
@@ -275,7 +279,7 @@ namespace Arcomage.Core
                         case Specifications.PlayerDiamonds:
                         case Specifications.PlayerAnimals:
                         case Specifications.PlayerRocks:
-                            PlusValue(item.key, item.value);
+                            PlusValue(item.key, item.value, currentPlayer);
                             break;
                         case Specifications.EnemyTower:
                         case Specifications.EnemyWall:
@@ -285,7 +289,7 @@ namespace Arcomage.Core
                         case Specifications.EnemyDiamonds:
                         case Specifications.EnemyAnimals:
                         case Specifications.EnemyRocks:
-                            enemy.ApplyCardParamFromEnemy(item);
+                            ApplyCardParamFromEnemy(item);
                             break;
                         case Specifications.CostDiamonds:
                             ChangePlayerResourses(Specifications.PlayerDiamonds, item.value);
@@ -310,45 +314,49 @@ namespace Arcomage.Core
 
         private void ChangePlayerResourses(Specifications spec, int value)
         {
-            if (playerStatistic[spec] - value <= 0)
+            if (players[currentPlayer].Statistic[spec] - value <= 0)
             {
-                playerStatistic[spec] = 0;
+                players[currentPlayer].Statistic[spec] = 0;
             }
             else
             {
-                playerStatistic[spec] -= value;
+                players[currentPlayer].Statistic[spec] -= value;
             }
 
         }
 
-        private void PlusValue(Specifications specifications, int value)
+        private void PlusValue(Specifications specifications, int value, int index)
         {
-            if (playerStatistic[specifications] + value <= 0)
+            if (players[index].Statistic[specifications] + value <= 0)
             {
-                playerStatistic[specifications] = 0;
+                players[index].Statistic[specifications] = 0;
             }
             else
             {
-                playerStatistic[specifications] += value;
+                players[index].Statistic[specifications] += value;
             }
         }
 
+        /// <summary>
+        /// Метод для определения имени победителя
+        /// </summary>
+        /// <returns></returns>
         public string WhoWin()
         {
             string returnVal = string.Empty;
 
-            foreach (var pla in players)
+
+            for (int i = 0; i < players.Count; i ++)
             {
-                if (IsPlayerWin(player1.playerStatistic) || IsPlayerLose(player2.playerStatistic))
+                int Ememyindex = currentPlayer == 1 ? 0 : 1;
+
+                if (IsPlayerWin(players[i].Statistic) || IsPlayerLose(players[Ememyindex].Statistic))
                 {
-                    returnVal = player1.playerName;
+                    returnVal = players[i].playerName;
+                    break;
                 }
             }
-            
-            else if (IsPlayerWin(player2.playerStatistic) || IsPlayerLose(player1.playerStatistic))
-            {
-                returnVal = player2.playerName;
-            }
+         
 
             return returnVal;
         }
@@ -385,7 +393,7 @@ namespace Arcomage.Core
         /// Метод для изменения параметров противника
         /// </summary>
         /// <param name="item"></param>
-        public void ApplyCardParamFromEnemy(CardParams item)
+        private void ApplyCardParamFromEnemy(CardParams item)
         {
 
             Specifications resutl = Specifications.NotSet;
@@ -417,12 +425,13 @@ namespace Arcomage.Core
                     break;
             }
 
-            // log.Info("playerName:" + playerName + ": " + playerStatistic[resutl]);
+            // log.Info("playerName:" + playerName + ": " + Statistic[resutl]);
 
-            PlusValue(resutl, item.value);
+            int index = currentPlayer == 1 ? 0 : 1;
+            PlusValue(resutl, item.value, index);
 
 
-            //  log.Info("playerName:" + playerName + ": " + playerStatistic[resutl]);
+            //  log.Info("playerName:" + playerName + ": " + Statistic[resutl]);
 
         }
     }

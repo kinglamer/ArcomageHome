@@ -68,7 +68,7 @@
     <Compile Include="LogTest.cs" />
     <Compile Include="Moq\TestServer.cs" />
     <Compile Include="NUnitExample.cs" />
-    <Compile Include="PlayerHelperTest.cs" />
+    <Compile Include="GameControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

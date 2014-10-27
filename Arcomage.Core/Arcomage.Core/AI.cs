@@ -13,10 +13,9 @@ namespace Arcomage.Core
             throw new NotImplementedException();
         }
 
-        public int CountCard { get; private set; }
         public string playerName { get; set; }
-        public Dictionary<Specifications, int> playerStatistic { get; set; }
-        public List<Card> playCards { get; set; }
+        public Dictionary<Specifications, int> Statistic { get; set; }
+        public List<Card> Cards { get; set; }
         public Card ReturnCard(int id)
         {
             throw new NotImplementedException();

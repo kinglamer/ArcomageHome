@@ -7,17 +7,16 @@ using Arcomage.Entity;
 
 namespace Arcomage.Core
 {
-    interface IPlayer
+    public interface IPlayer
     {
       
      
-        int CountCard { get;   }
 
         string playerName { get; set; }
 
-        Dictionary<Specifications, int> playerStatistic { get; set; }
+        Dictionary<Specifications, int> Statistic { get; set; }
 
-        List<Card> playCards { get; set; }
+        List<Card> Cards { get; set; }
 
         Card ReturnCard(int id);
     }

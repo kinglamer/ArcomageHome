@@ -13,21 +13,17 @@ namespace Arcomage.Core
     public class Player : IPlayer
     {
        
-        public int CountCard { get; private set; }
 
         public string playerName { get; set; }
 
-        public Dictionary<Specifications, int> playerStatistic { get; set; }
-
-
-   
+        public Dictionary<Specifications, int> Statistic { get; set; }
 
 
 
         /// <summary>
         /// Список текущих карт игрока
         /// </summary>
-        public List<Card> playCards { get; set; }
+        public List<Card> Cards { get; set; }
 
         /// <summary>
         /// Установка дефолтных значений
@@ -37,15 +33,14 @@ namespace Arcomage.Core
             
             playerName = _playerName;
 
-            playCards = new List<Card>();
-            CountCard = 0;
+            Cards = new List<Card>();
 
         }
 
 
         public Card ReturnCard(int id)
         {
-            return playCards.First(x => x.id == id);
+            return Cards.First(x => x.id == id);
         }
 
 
