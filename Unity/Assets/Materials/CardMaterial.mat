@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Done_Card_Material
-  m_Shader: {fileID: 4800000, guid: 6a64e13db1f963e4e9f18d0a13e48325, type: 3}
+  m_Name: CardMaterial
+  m_Shader: {fileID: 4800000, guid: 89d90dea05792d143bc705d12e418398, type: 3}
   m_ShaderKeywords: []
   m_CustomRenderQueue: -1
   m_SavedProperties:
@@ -15,9 +15,16 @@ Material:
     m_TexEnvs:
       data:
         first:
+          name: _MainTex
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
           name: _CardBack
         second:
-          m_Texture: {fileID: 2800000, guid: c3c29831ee7376d4ab727ec55760e44e, type: 3}
+          m_Texture: {fileID: 2800000, guid: 99f0e47aee059d64182d1fc0a293dc06, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -27,16 +34,17 @@ Material:
           m_Texture: {fileID: 2800000, guid: 6887fda59afd9504da5f0fc1157b55ed, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _BlendTex
-        second:
-          m_Texture: {fileID: 2800000, guid: c9d2460a363c4e042ab93d0871069ac0, type: 3}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
     m_Floats:
       data:
         first:
           name: _Light
         second: .699999988
-    m_Colors: {}
+      data:
+        first:
+          name: _CardBackColor
+        second: 0
+    m_Colors:
+      data:
+        first:
+          name: _Color
+        second: {r: 1, g: 1, b: 1, a: 1}
