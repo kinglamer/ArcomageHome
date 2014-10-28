@@ -15,10 +15,10 @@ bin/
 obj/
 *.svd
 *.userprefs
-*.csproj
+/*.csproj
 *.pidb
 *.suo
-*.sln
+/*.sln
 *.user
 *.unityproj
 *.booproj
@@ -33,11 +33,12 @@ obj/
 .Trashes
 ehthumbs.db
 Thumbs.db
-Unity/Assembly-CSharp-vs.csproj.rej
-Unity/Unity.userprefs
+ Unity/Assets/Plugins/*.pdb
+Unity/Assembly-CSharp-vs.csproj
+Unity/Assembly-CSharp.csproj
+Unity/Unity-csharp.sln
+Unity/Unity.sln
 
-
-Unity/Assets/Plugins/*.pdb
+Unity/Arcomage-csharp.sln
+Unity/Arcomage.sln
 Unity/Arcomage.userprefs
-
-

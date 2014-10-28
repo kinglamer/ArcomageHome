@@ -23,6 +23,7 @@ namespace Arcomage.Tests.Moq
             returnVal.Add(new Card()
             {
                 id = 1,
+                name = "Win Card",
                 cardParams = paramsM
             });
 
@@ -64,6 +65,7 @@ namespace Arcomage.Tests.Moq
             returnVal.Add(new Card()
             {
                 id = 2,
+                name = "Check Params Change Card",
                 cardParams = paramsM2
             });
 
@@ -76,6 +78,7 @@ namespace Arcomage.Tests.Moq
             returnVal.Add(new Card()
             {
                 id = 3,
+                name = "Check new card params",
                 cardParams = paramsM3
             });
 
