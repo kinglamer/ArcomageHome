@@ -33,7 +33,7 @@ namespace Arcomage.Tests
          public void PlayerMustWin()
          {
        
-             var card = gm.GetCard();
+             gm.GetCard();
 
              Assert.AreEqual(gm.UseCard(1), true, "Не возможно использовать карту");
 

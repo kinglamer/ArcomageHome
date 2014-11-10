@@ -27,10 +27,11 @@ public class SceneScript : MonoBehaviour, ILog
 
 		public Transform respawnCard ;
 		public GameObject cards ;
-		private IPlayer ps;
-		private IPlayer enemyInfo ;
+		private IPlayer FirstPlayer;
+		private IPlayer SecondPlayer ;
 		public GUISkin mainSkin;
-		
+		private GameController gm;
+
 
 
 		// Use this for initialization
@@ -41,11 +42,16 @@ public class SceneScript : MonoBehaviour, ILog
 
 		void StartNewGame ()
 		{
-			enemyInfo = new Player ("Comp");
+			gm = new GameController(this);
+			gm.AddPlayer(TypePlayer.Human, "Comp");
+			gm.AddPlayer(TypePlayer.Human, "Human");
+			FirstPlayer = gm.players.First();
+			SecondPlayer = gm.players.Last();
+			/*enemyInfo = new Player ("Comp");
 			ps = new Player ("Human");
 			//ps.SetTheEnemy (enemyInfo);
-			//enemyInfo.SetTheEnemy (ps);
-			GUIScript guiS = new GUIScript (ps, enemyInfo);
+			//enemyInfo.SetTheEnemy (ps);*/
+			GUIScript guiS = new GUIScript (FirstPlayer, SecondPlayer);
 			PushCardOnDeck (new Vector3 ());
 		}
 
@@ -98,11 +104,12 @@ public class SceneScript : MonoBehaviour, ILog
 
 			
 			
-				/*	while (ps.CountCard < ps.MaxCard) {
+					while (gm.players[0].Cards.Count < gm.MaxCard) {
 			
-						var myCard = ps.GetCard ();
+					var myCard = gm.GetCard ();
 			
-						CreateCard (myCard,ref spawnPosition);*/
+					CreateCard (myCard,ref spawnPosition);
+				}
 
 			
 		}
@@ -117,22 +124,22 @@ public class SceneScript : MonoBehaviour, ILog
 		//метод для отыгрывания карты
 		public void CardPlayed (int cardID, Vector3 cardPos)
 		{
-				/*if (ps.UseCard (cardID)) 
+				if (gm.UseCard (cardID)) 
 				{			 	
 
 					
 
 					PushCardOnDeck (cardPos);
-					ps.CalculateMove();
+					gm.EndMove();
 
 					EnemyMove ();
 				
 				}
 				else 
 				{
-						var returnCard = ps.ReturnCard(cardID);
+						var returnCard = FirstPlayer.ReturnCard(cardID);
 						CreateCard (returnCard,ref cardPos);
-				}*/
+				}
 				//Debug.Log ("Card been destroyed " + cardID + " at position " + cardPos);//тест
 		}
 
@@ -188,19 +195,11 @@ public class SceneScript : MonoBehaviour, ILog
 			Debug.Log ("Pass!");
 		}
 
-		/*if (ps.IsPlayerWin () == true) 
+		if (gm.WhoWin ().Length > 0) 
 		{
-			EndGame ("YOU WIN!");		
+			EndGame (gm.WhoWin () + " WIN!");		
 
 		} 
-		else 
-		{
-			if (enemyInfo.IsPlayerWin() == true)
-			{
-				EndGame ("Computer WIN!");
-			
-			}
-		}*/
 
 	}
 
