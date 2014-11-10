@@ -8,6 +8,8 @@ using Arcomage.Common;
 
 public class SceneScript : MonoBehaviour, ILog
 {
+
+
 	#region ILog implementation
 
 	public void Error (string text)
@@ -25,8 +27,8 @@ public class SceneScript : MonoBehaviour, ILog
 
 		public Transform respawnCard ;
 		public GameObject cards ;
-		private PlayerHelper ps;
-		private PlayerHelper enemyInfo ;
+		private IPlayer ps;
+		private IPlayer enemyInfo ;
 		public GUISkin mainSkin;
 		
 
@@ -39,10 +41,10 @@ public class SceneScript : MonoBehaviour, ILog
 
 		void StartNewGame ()
 		{
-			enemyInfo = new PlayerHelper (this, "Comp");
-			ps = new PlayerHelper (this, "Human");
-			ps.SetTheEnemy (enemyInfo);
-			enemyInfo.SetTheEnemy (ps);
+			enemyInfo = new Player ("Comp");
+			ps = new Player ("Human");
+			//ps.SetTheEnemy (enemyInfo);
+			//enemyInfo.SetTheEnemy (ps);
 			GUIScript guiS = new GUIScript (ps, enemyInfo);
 			PushCardOnDeck (new Vector3 ());
 		}
@@ -88,35 +90,34 @@ public class SceneScript : MonoBehaviour, ILog
 		{
 						
 				Vector3 spawnPosition;
-				if (cardPos.x != 0 || cardPos.y != 0  || cardPos.z != 0)
-				{
+				if (cardPos.x != 0 || cardPos.y != 0 || cardPos.z != 0) {
 						spawnPosition = cardPos;
 				} else {
-					spawnPosition =GetSpawn();
+						spawnPosition = GetSpawn ();
 				}
 
 			
 			
-				while (ps.CountCard < ps.MaxCard) {
+				/*	while (ps.CountCard < ps.MaxCard) {
 			
 						var myCard = ps.GetCard ();
 			
-						CreateCard (myCard,ref spawnPosition);
+						CreateCard (myCard,ref spawnPosition);*/
 
 			
-				}
 		}
+		
 
 	private void EnemyMove ()
 	{
 		//Todo: анимацию для хода противника
-		AIHelper.MakeMove (enemyInfo);
+		//AIHelper.MakeMove (enemyInfo);
 	}
 
 		//метод для отыгрывания карты
 		public void CardPlayed (int cardID, Vector3 cardPos)
 		{
-				if (ps.UseCard (cardID)) 
+				/*if (ps.UseCard (cardID)) 
 				{			 	
 
 					
@@ -131,7 +132,7 @@ public class SceneScript : MonoBehaviour, ILog
 				{
 						var returnCard = ps.ReturnCard(cardID);
 						CreateCard (returnCard,ref cardPos);
-				}
+				}*/
 				//Debug.Log ("Card been destroyed " + cardID + " at position " + cardPos);//тест
 		}
 
@@ -187,7 +188,7 @@ public class SceneScript : MonoBehaviour, ILog
 			Debug.Log ("Pass!");
 		}
 
-		if (ps.IsPlayerWin () == true) 
+		/*if (ps.IsPlayerWin () == true) 
 		{
 			EndGame ("YOU WIN!");		
 
@@ -199,10 +200,13 @@ public class SceneScript : MonoBehaviour, ILog
 				EndGame ("Computer WIN!");
 			
 			}
-		}
+		}*/
 
 	}
+
 }
+
+
 
 
 

@@ -31,11 +31,11 @@ public class GUIScript : MonoBehaviour
 
 		private string endgametext;
 
-		private static PlayerHelper player { get; set; }
+		private static IPlayer player { get; set; }
 
-		private static PlayerHelper enemy { get; set; }
+		private static IPlayer enemy { get; set; }
 
-		public GUIScript (PlayerHelper ph, PlayerHelper ph2)
+		public GUIScript (IPlayer ph, IPlayer ph2)
 		{
 				player = ph;
 				enemy = ph2;
@@ -43,26 +43,27 @@ public class GUIScript : MonoBehaviour
 
 		void OnGUI ()
 		{
-				if (player != null && enemy != null) {
-						PlayerTower.text = "" + player.GetPlayerStat (Specifications.PlayerTower).ToString ();
-						PlayerWall.text = "" + player.GetPlayerStat (Specifications.PlayerWall).ToString ();
+				if (player != null && enemy != null) 
+				{
+						PlayerTower.text = "" + player.Statistic [Specifications.PlayerTower].ToString ();
+						PlayerWall.text = "" + player.Statistic [Specifications.PlayerWall].ToString ();
 		
-						PlayerDiamonds.text = player.GetPlayerStat (Specifications.PlayerDiamonds).ToString ();
-						PlayerAnimal.text = player.GetPlayerStat (Specifications.PlayerAnimals).ToString ();
-						PlayerRock.text = player.GetPlayerStat (Specifications.PlayerRocks).ToString ();
-						PlayerMine.text = player.GetPlayerStat (Specifications.PlayerColliery).ToString ();
-						PlayerMagic.text = player.GetPlayerStat (Specifications.PlayerDiamondMines).ToString ();
-						PlayerMenagerie.text = player.GetPlayerStat (Specifications.PlayerMenagerie).ToString ();
+						PlayerDiamonds.text = player.Statistic [Specifications.PlayerDiamonds].ToString ();
+						PlayerAnimal.text = player.Statistic [Specifications.PlayerAnimals].ToString ();
+						PlayerRock.text = player.Statistic [Specifications.PlayerRocks].ToString ();
+						PlayerMine.text = player.Statistic [Specifications.PlayerColliery].ToString ();
+						PlayerMagic.text = player.Statistic [Specifications.PlayerDiamondMines].ToString ();
+						PlayerMenagerie.text = player.Statistic [Specifications.PlayerMenagerie].ToString ();
 
-						EnemyTower.text = "" + enemy.GetPlayerStat (Specifications.PlayerTower).ToString ();
-						EnemyWall.text = "" + enemy.GetPlayerStat (Specifications.PlayerWall).ToString ();
+						EnemyTower.text = "" + enemy.Statistic [Specifications.PlayerTower].ToString ();
+						EnemyWall.text = "" + enemy.Statistic [Specifications.PlayerWall].ToString ();
 			
-						EnemyDiamonds.text = enemy.GetPlayerStat (Specifications.PlayerDiamonds).ToString ();
-						EnemyAnimal.text = enemy.GetPlayerStat (Specifications.PlayerAnimals).ToString ();
-						EnemyRock.text = enemy.GetPlayerStat (Specifications.PlayerRocks).ToString ();
-						EnemyMine.text = enemy.GetPlayerStat (Specifications.PlayerColliery).ToString ();
-						EnemyMagic.text = enemy.GetPlayerStat (Specifications.PlayerDiamondMines).ToString ();
-						EnemyMenagerie.text = enemy.GetPlayerStat (Specifications.PlayerMenagerie).ToString ();
+						EnemyDiamonds.text = enemy.Statistic [Specifications.PlayerDiamonds].ToString ();
+						EnemyAnimal.text = enemy.Statistic [Specifications.PlayerAnimals].ToString ();
+						EnemyRock.text = enemy.Statistic [Specifications.PlayerRocks].ToString ();
+						EnemyMine.text = enemy.Statistic [Specifications.PlayerColliery].ToString ();
+						EnemyMagic.text = enemy.Statistic [Specifications.PlayerDiamondMines].ToString ();
+						EnemyMenagerie.text = enemy.Statistic [Specifications.PlayerMenagerie].ToString ();
 				}
 				
 //				GUI.skin = mainSkin;
