@@ -1459,7 +1459,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   respawnCard: {fileID: 727518666}
-  cards: {fileID: 100006, guid: 1a2f5df15465e534e8f64a577d629b2c, type: 2}
+  cards: {fileID: 100006, guid: 886b3839ec02c8d48a6d95f2f1cfd6a1, type: 2}
   mainSkin: {fileID: 11400000, guid: aff24adb0e0b7c54cbc8e12073990214, type: 2}
 --- !u!4 &1653442297
 Transform:
