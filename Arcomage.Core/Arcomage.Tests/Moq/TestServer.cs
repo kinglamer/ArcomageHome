@@ -71,15 +71,37 @@ namespace Arcomage.Tests.Moq
 
 
             var paramsM3 = new List<CardParams>();
-            paramsM3.Add(new CardParams() { key = Specifications.GetCard, value = -50 });
             paramsM3.Add(new CardParams() { key = Specifications.EnemyDirectDamage, value = -50 });
-            paramsM3.Add(new CardParams() { key = Specifications.PlayerDirectDamage, value = -50 });
+            paramsM3.Add(new CardParams() { key = Specifications.CostAnimals, value = 0 });
 
             returnVal.Add(new Card()
             {
                 id = 3,
-                name = "Check new card params",
+                name = "Check new card params1",
                 cardParams = paramsM3
+            });
+
+            var paramsM4 = new List<CardParams>();
+            paramsM4.Add(new CardParams() { key = Specifications.PlayerDirectDamage, value = -50 });
+            paramsM4.Add(new CardParams() { key = Specifications.CostAnimals, value = 0 });
+
+            returnVal.Add(new Card()
+            {
+                id = 4,
+                name = "Check new card params2",
+                cardParams = paramsM4
+            });
+
+
+            var paramsM5 = new List<CardParams>();
+            paramsM5.Add(new CardParams() { key = Specifications.GetCard, value = -50 });
+            paramsM5.Add(new CardParams() { key = Specifications.CostAnimals, value = 0 });
+
+            returnVal.Add(new Card()
+            {
+                id = 5,
+                name = "Check new card params3",
+                cardParams = paramsM5
             });
 
             return JsonConvert.SerializeObject(returnVal);

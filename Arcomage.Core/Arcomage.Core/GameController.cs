@@ -16,13 +16,25 @@ namespace Arcomage.Core
         AI, Human
     }
 
+    public enum SelectPlayer
+    {
+        First = 0,
+        Second,
+        None
+    }
+
+    public enum EndMoveStatus
+    {
+        None, GetCard
+    }
+
     public class GameController
     {
         public readonly int MaxCard;
-        public List<IPlayer> players { get; set; }
-        public int currentPlayer { get; set; }
+        private List<IPlayer> players { get; set; }
+        private int currentPlayer { get; set; }
 
-
+        private EndMoveStatus status { get; set; }
 
         protected readonly ILog log;
         private readonly Dictionary<Specifications, int> WinParams;
@@ -63,6 +75,45 @@ namespace Arcomage.Core
             }
         }
 
+        public Dictionary<Specifications, int> GetParamsPlayer(SelectPlayer selectPlayer = SelectPlayer.None)
+        {
+            
+            if (selectPlayer == SelectPlayer.None)
+            {
+                selectPlayer = (SelectPlayer)currentPlayer;
+            }
+
+            int i = (int) selectPlayer;
+
+            if (players[i] != null)
+            {
+                return players[i].Statistic;
+            }
+            else
+            {
+                return GenerateDefault();
+            }
+        }
+
+        public int GetCountCard(SelectPlayer selectPlayer = SelectPlayer.None)
+        {
+            if (selectPlayer == SelectPlayer.None)
+            {
+                selectPlayer = (SelectPlayer)currentPlayer;
+            }
+
+            int i = (int)selectPlayer;
+            return players[i].Cards.Count;
+        }
+
+
+        public Card ReturnCard(int id)
+        {
+             int i = (int)currentPlayer;
+
+             return players[i].Cards.First(x => x.id == id);
+        }
+
         public void AddPlayer(TypePlayer tp, string name)
         {
             if (players.Count == 2)
@@ -75,10 +126,10 @@ namespace Arcomage.Core
             switch (tp)
             {
                 case TypePlayer.AI:
-                    newPlayer = new AI(name);
+                    newPlayer = new AI(name, tp);
                     break;
                 case TypePlayer.Human:
-                    newPlayer = new Player(name);
+                    newPlayer = new Player(name, tp);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("tp");
@@ -86,6 +137,12 @@ namespace Arcomage.Core
 
             newPlayer.Statistic = GenerateDefault();
             players.Add(newPlayer);
+
+            if (tp == TypePlayer.AI)
+            {
+                currentPlayer = players.Count - 1;
+                GetCard();
+            }
         }
 
 
@@ -100,10 +157,11 @@ namespace Arcomage.Core
             if (isGameEnd)
             {
                 isGameEnd = false;
+                status = EndMoveStatus.None;
 
                 Random rnd = new Random();
-                currentPlayer = rnd.Next(0, 1);
-                
+                currentPlayer =  rnd.Next(0, 1);
+                log.Info("Game is started. CurrentPlayer: " + currentPlayer);
             }
             else
             {
@@ -159,12 +217,15 @@ namespace Arcomage.Core
 
             if (isCanUsed(costCard))
             {
-
                 log.Info("Player: " + players[currentPlayer].playerName + " use card: " + players[currentPlayer].Cards[index].name);
                 ApplyCardParamsToPlayer(players[currentPlayer].Cards[index].cardParams);
 
                 players[currentPlayer].Cards.RemoveAt(index);
                 return true;
+            }
+            else
+            {
+                log.Info("Player: " + players[currentPlayer].playerName + " can't use card: " + players[currentPlayer].Cards[index].name);
             }
 
 
@@ -202,6 +263,9 @@ namespace Arcomage.Core
             var returnVal = QCard.Dequeue();
             players[currentPlayer].Cards.Add(returnVal);
 
+            if (status == EndMoveStatus.GetCard)
+                status = EndMoveStatus.None;
+
             return returnVal;
         }
 
@@ -216,21 +280,18 @@ namespace Arcomage.Core
                 switch (item.key)
                 {
                     case Specifications.CostDiamonds:
-                        // log.Info(Statistic[Specifications.PlayerDiamonds] + " > " + item.value);
                         if (players[currentPlayer].Statistic[Specifications.PlayerDiamonds] >= item.value)
                         {
                             returnVal = true;
                         }
                         break;
                     case Specifications.CostAnimals:
-                        // log.Info(Statistic[Specifications.PlayerAnimals] + " > " + item.value);
                         if (players[currentPlayer].Statistic[Specifications.PlayerAnimals] >= item.value)
                         {
                             returnVal = true;
                         }
                         break;
                     case Specifications.CostRocks:
-                        // log.Info(Statistic[Specifications.PlayerRocks] + " > " + item.value);
                         if (players[currentPlayer].Statistic[Specifications.PlayerRocks] >= item.value)
                         {
                             returnVal = true;
@@ -239,20 +300,68 @@ namespace Arcomage.Core
                 }
             }
 
-            // log.Info("isCanUsed: " + returnVal);
+            if (!returnVal)
+                log.Error("У карты не указана стоимость");
             return returnVal;
         }
 
         /// <summary>
-        /// Расчет прироста ресурсов игрока от его шахт
+        /// Расчет прироста ресурсов игрока от его шахт. А так же выполнения хода за компьютер
         /// </summary>
-        public void EndMove()
+        public EndMoveStatus EndMove()
         {
+            if (status == EndMoveStatus.GetCard)
+            {
+                return status;
+            }
+
+            if (WhoWin().Length > 0)
+            {
+                log.Info("EndMove - уже есть победитель.");
+                isGameEnd = true;
+                return EndMoveStatus.None;
+            }
+
             PlusValue(Specifications.PlayerDiamonds, players[currentPlayer].Statistic[Specifications.PlayerDiamondMines], currentPlayer);
             PlusValue(Specifications.PlayerAnimals, players[currentPlayer].Statistic[Specifications.PlayerMenagerie], currentPlayer);
             PlusValue(Specifications.PlayerRocks, players[currentPlayer].Statistic[Specifications.PlayerColliery], currentPlayer);
 
             currentPlayer = currentPlayer == 1 ? 0 : 1;
+
+            if (players[currentPlayer].type == TypePlayer.AI)
+            {
+                log.Info("Ход компьютера");
+                MakeMoveAI();
+
+
+                while (status != EndMoveStatus.None)
+                {
+                   var result = EndMove();
+
+                    if (result == EndMoveStatus.GetCard)
+                    {
+                        GetCard();
+                    }
+
+                }
+
+                currentPlayer = currentPlayer == 1 ? 0 : 1;
+                log.Info("Ход компьютера закончился.");
+            }
+
+            return status;
+        }
+
+        private void MakeMoveAI()
+        {
+            foreach (var item in players[currentPlayer].Cards)
+            {
+                if (UseCard(item.id))
+                {
+                    GetCard();
+                    break;
+                }
+            }
         }
 
 
@@ -292,13 +401,23 @@ namespace Arcomage.Core
                             ApplyCardParamFromEnemy(item);
                             break;
                         case Specifications.CostDiamonds:
-                            ChangePlayerResourses(Specifications.PlayerDiamonds, item.value);
+                            MinusValue(Specifications.PlayerDiamonds, item.value);
                             break;
                         case Specifications.CostAnimals:
-                            ChangePlayerResourses(Specifications.PlayerAnimals, item.value);
+                            MinusValue(Specifications.PlayerAnimals, item.value);
                             break;
                         case Specifications.CostRocks:
-                            ChangePlayerResourses(Specifications.PlayerRocks, item.value);
+                            MinusValue(Specifications.PlayerRocks, item.value);
+                            break;
+                        case Specifications.EnemyDirectDamage:
+                            int Ememyindex = currentPlayer == 1 ? 0 : 1;
+                            ApplyDirectDamage(item, Ememyindex);
+                            break;
+                        case Specifications.PlayerDirectDamage:
+                            ApplyDirectDamage(item, currentPlayer);
+                            break;
+                        case Specifications.GetCard:
+                            status = EndMoveStatus.GetCard;
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -312,7 +431,24 @@ namespace Arcomage.Core
 
         }
 
-        private void ChangePlayerResourses(Specifications spec, int value)
+        private void ApplyDirectDamage(CardParams item, int player)
+        {
+            int tempVal = players[player].Statistic[Specifications.PlayerWall] + item.value;
+
+            if (tempVal < 0)
+            {
+                PlusValue(Specifications.PlayerWall,
+                    - players[player].Statistic[Specifications.PlayerWall], player);
+
+                PlusValue(Specifications.PlayerTower, tempVal, player);
+            }
+            else
+            {
+                PlusValue(Specifications.PlayerWall, item.value, player);
+            }
+        }
+
+        private void MinusValue(Specifications spec, int value)
         {
             if (players[currentPlayer].Statistic[spec] - value <= 0)
             {

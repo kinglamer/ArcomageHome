@@ -31,40 +31,34 @@ public class GUIScript : MonoBehaviour
 
 		private string endgametext;
 
-		private static IPlayer player { get; set; }
 
-		private static IPlayer enemy { get; set; }
 
-		public GUIScript (IPlayer ph, IPlayer ph2)
-		{
-				player = ph;
-				enemy = ph2;
-		}
+
 
 		void OnGUI ()
 		{
-				if (player != null && enemy != null) 
-				{
-						PlayerTower.text = "" + player.Statistic [Specifications.PlayerTower].ToString ();
-						PlayerWall.text = "" + player.Statistic [Specifications.PlayerWall].ToString ();
-		
-						PlayerDiamonds.text = player.Statistic [Specifications.PlayerDiamonds].ToString ();
-						PlayerAnimal.text = player.Statistic [Specifications.PlayerAnimals].ToString ();
-						PlayerRock.text = player.Statistic [Specifications.PlayerRocks].ToString ();
-						PlayerMine.text = player.Statistic [Specifications.PlayerColliery].ToString ();
-						PlayerMagic.text = player.Statistic [Specifications.PlayerDiamondMines].ToString ();
-						PlayerMenagerie.text = player.Statistic [Specifications.PlayerMenagerie].ToString ();
 
-						EnemyTower.text = "" + enemy.Statistic [Specifications.PlayerTower].ToString ();
-						EnemyWall.text = "" + enemy.Statistic [Specifications.PlayerWall].ToString ();
+				
+						PlayerTower.text = "" + SceneScript.gm.GetParamsPlayer(SelectPlayer.First)[Specifications.PlayerTower].ToString ();
+						PlayerWall.text = "" + SceneScript.gm.GetParamsPlayer(SelectPlayer.First) [Specifications.PlayerWall].ToString ();
+		
+						PlayerDiamonds.text = SceneScript.gm.GetParamsPlayer(SelectPlayer.First) [Specifications.PlayerDiamonds].ToString ();
+						PlayerAnimal.text = SceneScript.gm.GetParamsPlayer(SelectPlayer.First)[Specifications.PlayerAnimals].ToString ();
+		PlayerRock.text = SceneScript.gm.GetParamsPlayer(SelectPlayer.First) [Specifications.PlayerRocks].ToString ();
+		PlayerMine.text = SceneScript.gm.GetParamsPlayer(SelectPlayer.First) [Specifications.PlayerColliery].ToString ();
+		PlayerMagic.text = SceneScript.gm.GetParamsPlayer(SelectPlayer.First) [Specifications.PlayerDiamondMines].ToString ();
+		PlayerMenagerie.text = SceneScript.gm.GetParamsPlayer(SelectPlayer.First) [Specifications.PlayerMenagerie].ToString ();
+
+		EnemyTower.text = "" +SceneScript.gm.GetParamsPlayer(SelectPlayer.Second) [Specifications.PlayerTower].ToString ();
+		EnemyWall.text = "" + SceneScript.gm.GetParamsPlayer(SelectPlayer.Second) [Specifications.PlayerWall].ToString ();
 			
-						EnemyDiamonds.text = enemy.Statistic [Specifications.PlayerDiamonds].ToString ();
-						EnemyAnimal.text = enemy.Statistic [Specifications.PlayerAnimals].ToString ();
-						EnemyRock.text = enemy.Statistic [Specifications.PlayerRocks].ToString ();
-						EnemyMine.text = enemy.Statistic [Specifications.PlayerColliery].ToString ();
-						EnemyMagic.text = enemy.Statistic [Specifications.PlayerDiamondMines].ToString ();
-						EnemyMenagerie.text = enemy.Statistic [Specifications.PlayerMenagerie].ToString ();
-				}
+		EnemyDiamonds.text = SceneScript.gm.GetParamsPlayer(SelectPlayer.Second)[Specifications.PlayerDiamonds].ToString ();
+		EnemyAnimal.text = SceneScript.gm.GetParamsPlayer(SelectPlayer.Second)[Specifications.PlayerAnimals].ToString ();
+		EnemyRock.text = SceneScript.gm.GetParamsPlayer(SelectPlayer.Second) [Specifications.PlayerRocks].ToString ();
+		EnemyMine.text = SceneScript.gm.GetParamsPlayer(SelectPlayer.Second) [Specifications.PlayerColliery].ToString ();
+		EnemyMagic.text = SceneScript.gm.GetParamsPlayer(SelectPlayer.Second)[Specifications.PlayerDiamondMines].ToString ();
+		EnemyMenagerie.text = SceneScript.gm.GetParamsPlayer(SelectPlayer.Second) [Specifications.PlayerMenagerie].ToString ();
+				
 				
 //				GUI.skin = mainSkin;
 

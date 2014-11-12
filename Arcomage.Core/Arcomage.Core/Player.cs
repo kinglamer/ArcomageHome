@@ -10,11 +10,12 @@ using Newtonsoft.Json;
 namespace Arcomage.Core
 {
 
-    public class Player : IPlayer
+    internal class Player : IPlayer
     {
        
 
         public string playerName { get; set; }
+        public TypePlayer type { get; set; }
 
         public Dictionary<Specifications, int> Statistic { get; set; }
 
@@ -28,20 +29,16 @@ namespace Arcomage.Core
         /// <summary>
         /// Установка дефолтных значений
         /// </summary>
-        public Player(string _playerName)
+        public Player(string _playerName, TypePlayer _type)
         {
             
             playerName = _playerName;
-
+            type = _type;
             Cards = new List<Card>();
 
         }
 
 
-        public Card ReturnCard(int id)
-        {
-            return Cards.First(x => x.id == id);
-        }
 
 
  

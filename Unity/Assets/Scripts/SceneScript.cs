@@ -27,10 +27,9 @@ public class SceneScript : MonoBehaviour, ILog
 
 		public Transform respawnCard ;
 		public GameObject cards ;
-		private IPlayer FirstPlayer;
-		private IPlayer SecondPlayer ;
+		
 		public GUISkin mainSkin;
-		private GameController gm;
+		public static GameController gm;
 
 
 
@@ -42,18 +41,18 @@ public class SceneScript : MonoBehaviour, ILog
 
 		void StartNewGame ()
 		{
-			gm = new GameController(this);
-			gm.AddPlayer(TypePlayer.Human, "Comp");
+			gm = new GameController (this);
 			gm.AddPlayer(TypePlayer.Human, "Human");
-			FirstPlayer = gm.players.First();
-			SecondPlayer = gm.players.Last();
+			gm.AddPlayer(TypePlayer.AI, "Comp");
+			gm.StartGame ();
 			/*enemyInfo = new Player ("Comp");
 			ps = new Player ("Human");
 			//ps.SetTheEnemy (enemyInfo);
 			//enemyInfo.SetTheEnemy (ps);*/
-			GUIScript guiS = new GUIScript (FirstPlayer, SecondPlayer);
+			//GUIScript guiS = new GUIScript (, SecondPlayer);
 			PushCardOnDeck (new Vector3 ());
-		}
+			
+	}
 
 		private Vector3 GetSpawn ()
 		{
@@ -104,7 +103,7 @@ public class SceneScript : MonoBehaviour, ILog
 
 			
 			
-					while (gm.players[0].Cards.Count < gm.MaxCard) {
+					while (gm.GetCountCard() < gm.MaxCard) {
 			
 					var myCard = gm.GetCard ();
 			
@@ -127,17 +126,24 @@ public class SceneScript : MonoBehaviour, ILog
 				if (gm.UseCard (cardID)) 
 				{			 	
 
+			var endMov = gm.EndMove();
 					
+					if (endMov == EndMoveStatus.GetCard)
+					{
 
-					PushCardOnDeck (cardPos);
-					gm.EndMove();
-
-					EnemyMove ();
+						PushCardOnDeck (cardPos);
+					}
+					else
+					{
+					
+						PushCardOnDeck (cardPos);
+						EnemyMove ();
+					}
 				
 				}
 				else 
 				{
-						var returnCard = FirstPlayer.ReturnCard(cardID);
+						var returnCard = gm.ReturnCard(cardID);
 						CreateCard (returnCard,ref cardPos);
 				}
 				//Debug.Log ("Card been destroyed " + cardID + " at position " + cardPos);//тест

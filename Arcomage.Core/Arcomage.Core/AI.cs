@@ -6,19 +6,20 @@ using Arcomage.Entity;
 
 namespace Arcomage.Core
 {
-    class AI : IPlayer
+    internal class AI : IPlayer
     {
-        public AI(string name)
+        public AI(string name, TypePlayer _type)
         {
-            throw new NotImplementedException();
+            playerName = name;
+            type = _type;
+            Cards = new List<Card>();
+
         }
 
         public string playerName { get; set; }
+        public TypePlayer type { get; set; }
         public Dictionary<Specifications, int> Statistic { get; set; }
         public List<Card> Cards { get; set; }
-        public Card ReturnCard(int id)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

@@ -14,10 +14,12 @@ namespace Arcomage.Core
 
         string playerName { get; set; }
 
+        TypePlayer type { get; set; }
+
         Dictionary<Specifications, int> Statistic { get; set; }
 
         List<Card> Cards { get; set; }
 
-        Card ReturnCard(int id);
+       
     }
 }
