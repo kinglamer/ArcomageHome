@@ -163,7 +163,7 @@ public class SceneScript : MonoBehaviour, ILog
 		public void EndGame(string endgametext)
 		{
 
-			var hinges = GameObject.Find ("Done_Card(Clone)");
+			var hinges = GameObject.Find ("Card(Clone)");
 			if (hinges != null) {
 						Destroy (hinges.gameObject);
 				}
