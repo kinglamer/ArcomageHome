@@ -10,7 +10,10 @@ namespace Arcomage.Core
     {
         public static string Parse(string originalText)
         {
-
+            if (originalText == null)
+            {
+                return string.Empty;
+            }
             string pattern = "(<[^>]*>)";
             string value = originalText;
                
