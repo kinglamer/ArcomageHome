@@ -261,6 +261,7 @@ namespace Arcomage.Core
             }
 
             var returnVal = QCard.Dequeue();
+            returnVal.description = ParseDescription.Parse(returnVal.description);
             players[currentPlayer].Cards.Add(returnVal);
 
             if (status == EndMoveStatus.GetCard)

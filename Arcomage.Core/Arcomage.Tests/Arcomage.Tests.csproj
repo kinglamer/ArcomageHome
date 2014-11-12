@@ -69,6 +69,7 @@
     <Compile Include="Moq\TestServer.cs" />
     <Compile Include="NUnitExample.cs" />
     <Compile Include="GameControllerTest.cs" />
+    <Compile Include="ParserDescripTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
