@@ -70,8 +70,7 @@ public class SceneScript : MonoBehaviour, ILog
 
 				string Paramscard = myCard.description;
 
-				if (Paramscard == null) 
-				{
+				if (Paramscard == null) {
 						foreach (var item in myCard.cardParams) {
 								if (item.key != Specifications.CostAnimals && item.key != Specifications.CostDiamonds && item.key != Specifications.CostRocks) {
 										Paramscard += item.key.ToString () + " " + item.value.ToString () + "\n";
@@ -80,11 +79,23 @@ public class SceneScript : MonoBehaviour, ILog
 				}
 
 				var costCard = myCard.cardParams.FirstOrDefault (x => x.key == Specifications.CostAnimals ||
-		                                                 x.key == Specifications.CostDiamonds || x.key == Specifications.CostRocks).value;
-
+						x.key == Specifications.CostDiamonds || x.key == Specifications.CostRocks);
+		
 				card.GetComponent<DoneCardScript> ().cardId = myCard.id;
 				card.GetComponent<DoneCardScript> ().cardParam = Paramscard;
-				card.GetComponent<DoneCardScript> ().cardCost = costCard;
+				card.GetComponent<DoneCardScript> ().cardCost = costCard.value;
+		
+				int typeCost = 0;
+				switch (costCard.key) {
+				case Specifications.CostRocks:
+						typeCost = 2;
+						break;
+				case Specifications.CostAnimals:
+						typeCost = 1;
+						break;
+				}
+		
+				card.GetComponent<DoneCardScript> ().SetCardGraph (typeCost, new Vector2 ());
 		}
 
 		private void PushCardOnDeck (Vector3 cardPos)
