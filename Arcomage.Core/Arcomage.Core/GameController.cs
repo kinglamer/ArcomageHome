@@ -464,9 +464,16 @@ namespace Arcomage.Core
 
         private void PlusValue(Specifications specifications, int value, int index)
         {
-            if (players[index].Statistic[specifications] + value <= 0)
+            int minValue = 0;
+            if (specifications == Specifications.PlayerDiamondMines || specifications == Specifications.PlayerColliery ||
+                specifications == Specifications.PlayerMenagerie)
             {
-                players[index].Statistic[specifications] = 0;
+                minValue = 1;
+            }
+
+            if (players[index].Statistic[specifications] + value <= minValue)
+            {
+                players[index].Statistic[specifications] = minValue;
             }
             else
             {
