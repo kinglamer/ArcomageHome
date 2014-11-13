@@ -114,9 +114,10 @@ public class DoneCardScript : MonoBehaviour
 				
 		}
 		//Устанавливает рубашку и картинку карты CardBack (RGB 2,1,0 соответственно), Pic - Резерв
-		public void SetCardGraph (int CardBack, Vector2 Pic)
+		public void SetCardGraph (int CardBack, Texture2D Pic)
 		{
 				renderer.material.SetFloat ("_CardBackColor", CardBack);
+				renderer.material.SetTexture ("_Picture", (Texture) Pic);
 		}
 
 }

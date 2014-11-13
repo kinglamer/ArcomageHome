@@ -12,43 +12,43 @@ public class SceneScript : MonoBehaviour, ILog
 
 	#region ILog implementation
 
-	public void Error (string text)
-	{
-		Debug.LogError (text);
-	}
+		public void Error (string text)
+		{
+				Debug.LogError (text);
+		}
 
-
-	public void Info (string text)
-	{
-		Debug.Log (text);
-	}
+		public void Info (string text)
+		{
+				Debug.Log (text);
+		}
 	#endregion
 
 
 		public Transform respawnCard ;
 		public GameObject cards ;
-		
 		public GUISkin mainSkin;
 		public static GameController gm;
+		public Texture2D PicAtlas;
+		public TextAsset AtlasRects;
 
 
 
 		// Use this for initialization
 		void Start ()
 		{
-			StartNewGame ();
+				StartNewGame ();
 		}
 
 		void StartNewGame ()
 		{
-			gm = new GameController (this);
-			gm.AddPlayer(TypePlayer.Human, "Human");
-			gm.AddPlayer(TypePlayer.AI, "Comp");
-			gm.StartGame ();
+				gm = new GameController (this);
+				gm.AddPlayer (TypePlayer.Human, "Human");
+				gm.AddPlayer (TypePlayer.AI, "Comp");
+				gm.StartGame ();
 
-			PushCardOnDeck (new Vector3 ());
+				PushCardOnDeck (new Vector3 ());
 			
-	}
+		}
 
 		private Vector3 GetSpawn ()
 		{
@@ -57,7 +57,7 @@ public class SceneScript : MonoBehaviour, ILog
 				return spawnPosition;
 		}
 
-		private void CreateCard (Card myCard,ref Vector3 spawnPosition)
+		private void CreateCard (Card myCard, ref Vector3 spawnPosition)
 		{
 				Quaternion spawnRotation = new Quaternion ();
 				spawnRotation = Quaternion.identity;
@@ -94,8 +94,27 @@ public class SceneScript : MonoBehaviour, ILog
 						typeCost = 1;
 						break;
 				}
-		
-				card.GetComponent<DoneCardScript> ().SetCardGraph (typeCost, new Vector2 ());
+				
+				Texture2D CardPic = GetCardPic (myCard.id);
+
+				card.GetComponent<DoneCardScript> ().SetCardGraph (typeCost, CardPic);
+		}
+		//метод для выборки из атласа картинки карты
+		private Texture2D GetCardPic (int cardID)
+		{
+				//тут надо поиск по строке AtlasRects.text, а пока заглушка
+				//4 = 0 0 1920 1200
+				int x = 0;
+				int y = 4096-0-1200;
+				int w = 1920;
+				int h = 1200;
+				/////////////////////////////////////////
+				Color[] pic = PicAtlas.GetPixels (x, y, w, h);
+				Texture2D PicTexture = new Texture2D (w,h);
+				PicTexture.SetPixels (pic);
+				PicTexture.Apply ();
+				return PicTexture;
+			
 		}
 
 		private void PushCardOnDeck (Vector3 cardPos)
@@ -110,57 +129,50 @@ public class SceneScript : MonoBehaviour, ILog
 
 			
 			
-					while (gm.GetCountCard() < gm.MaxCard) {
+				while (gm.GetCountCard() < gm.MaxCard) {
 			
-					var myCard = gm.GetCard ();
+						var myCard = gm.GetCard ();
 			
-					CreateCard (myCard,ref spawnPosition);
+						CreateCard (myCard, ref spawnPosition);
 				}
 
 			
 		}
-		
 
-	public void PassMove (int cardID, Vector3 cardPos)
-	{
+		public void PassMove (int cardID, Vector3 cardPos)
+		{
 
-		 if (gm.PassMove (cardID)) {
+				if (gm.PassMove (cardID)) {
 						PushCardOnDeck (cardPos);
 				}
 
-		gm.EndMove ();
-		EnemuMove ();
-	}
+				gm.EndMove ();
+				EnemuMove ();
+		}
 
-	private void EnemuMove()
-	{
-		//Todo: анимацию для хода противника
+		private void EnemuMove ()
+		{
+				//Todo: анимацию для хода противника
 		}
 
 		//метод для отыгрывания карты
 		public void CardPlayed (int cardID, Vector3 cardPos)
 		{
-				if (gm.UseCard (cardID)) 
-				{			 	
+				if (gm.UseCard (cardID)) {			 	
 
-			var endMov = gm.EndMove();
+						var endMov = gm.EndMove ();
 					
-					if (endMov == EndMoveStatus.GetCard)
-					{
+						if (endMov == EndMoveStatus.GetCard) {
 
-						PushCardOnDeck (cardPos);
-					}
-					else
-					{					
-						PushCardOnDeck (cardPos);
-						EnemuMove();
-					}
+								PushCardOnDeck (cardPos);
+						} else {					
+								PushCardOnDeck (cardPos);
+								EnemuMove ();
+						}
 				
-				}
-				else 
-				{
-						var returnCard = gm.ReturnCard(cardID);
-						CreateCard (returnCard,ref cardPos);
+				} else {
+						var returnCard = gm.ReturnCard (cardID);
+						CreateCard (returnCard, ref cardPos);
 				}
 				//Debug.Log ("Card been destroyed " + cardID + " at position " + cardPos);//тест
 		}
@@ -175,55 +187,51 @@ public class SceneScript : MonoBehaviour, ILog
 		
 		}
 
-	//Метод для вызова экрана конца игры
-		public void EndGame(string endgametext)
+		//Метод для вызова экрана конца игры
+		public void EndGame (string endgametext)
 		{
 
-			var hinges = GameObject.Find ("Card(Clone)");
-			if (hinges != null) {
+				var hinges = GameObject.Find ("Card(Clone)");
+				if (hinges != null) {
 						Destroy (hinges.gameObject);
 				}
 					
 			
 			
-			GUILayout.BeginArea(new Rect(Screen.width / 2-150, Screen.height / 2-50, 300, 100));
-			GUILayout.Box(endgametext);
-			GUILayout.BeginHorizontal();
+				GUILayout.BeginArea (new Rect (Screen.width / 2 - 150, Screen.height / 2 - 50, 300, 100));
+				GUILayout.Box (endgametext);
+				GUILayout.BeginHorizontal ();
 		
-			if(GUILayout.Button("Replay"))
-			{
-				StartNewGame();
-				Debug.Log("Replay");
-			}
+				if (GUILayout.Button ("Replay")) {
+						StartNewGame ();
+						Debug.Log ("Replay");
+				}
 				
-			if (GUILayout.Button("Exit"))
-			{
-				Application.Quit();
-			}
+				if (GUILayout.Button ("Exit")) {
+						Application.Quit ();
+				}
 
 
-			GUILayout.EndHorizontal();
-			GUILayout.EndArea();
+				GUILayout.EndHorizontal ();
+				GUILayout.EndArea ();
 		
 		}
 
-
-	void OnGUI()
-	{
-		GUI.skin = mainSkin;
+		void OnGUI ()
+		{
+				GUI.skin = mainSkin;
 //		if (GUI.Button (new Rect (120, 200, 60, 25), "Pass")) {
 //			//Тут действия на пас
 //			EnemyMove();
 //			Debug.Log ("Pass!");
 //		}
 
-		if (gm.WhoWin ().Length > 0) 
-		{
-			EndGame (gm.WhoWin () + " WIN!");		
+				if (gm.WhoWin ().Length > 0) {
+						EndGame (gm.WhoWin () + " WIN!");		
 
-		} 
+				} 
 
-	}
+		}
 
 }
 

@@ -1461,6 +1461,8 @@ MonoBehaviour:
   respawnCard: {fileID: 727518666}
   cards: {fileID: 100006, guid: 886b3839ec02c8d48a6d95f2f1cfd6a1, type: 2}
   mainSkin: {fileID: 11400000, guid: aff24adb0e0b7c54cbc8e12073990214, type: 2}
+  PicAtlas: {fileID: 2800000, guid: 47af4908ddde5fd4d9c6c080fd4a2f71, type: 3}
+  AtlasRects: {fileID: 4900000, guid: 970763fbe46293346832584846055a70, type: 3}
 --- !u!4 &1653442297
 Transform:
   m_ObjectHideFlags: 0
