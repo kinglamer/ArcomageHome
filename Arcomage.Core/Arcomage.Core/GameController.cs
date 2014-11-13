@@ -306,6 +306,30 @@ namespace Arcomage.Core
             return returnVal;
         }
 
+        public bool PassMove(int id)
+        {
+            if (isGameEnd)
+            {
+                log.Info("Игра уже закончилась");
+                return false;
+            }
+
+            int index = players[currentPlayer].Cards.FindIndex(x => x.id == id);
+
+            try
+            {
+                players[currentPlayer].Cards.RemoveAt(index);
+                return true;
+            }
+            catch
+            {
+                log.Error("Player: " + players[currentPlayer].playerName + " can't pass card " + players[currentPlayer].Cards[index].name);
+            }
+
+
+            return false;
+        }
+
         /// <summary>
         /// Расчет прироста ресурсов игрока от его шахт. А так же выполнения хода за компьютер
         /// </summary>

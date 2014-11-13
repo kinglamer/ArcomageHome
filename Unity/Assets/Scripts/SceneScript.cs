@@ -45,11 +45,7 @@ public class SceneScript : MonoBehaviour, ILog
 			gm.AddPlayer(TypePlayer.Human, "Human");
 			gm.AddPlayer(TypePlayer.AI, "Comp");
 			gm.StartGame ();
-			/*enemyInfo = new Player ("Comp");
-			ps = new Player ("Human");
-			//ps.SetTheEnemy (enemyInfo);
-			//enemyInfo.SetTheEnemy (ps);*/
-			//GUIScript guiS = new GUIScript (, SecondPlayer);
+
 			PushCardOnDeck (new Vector3 ());
 			
 	}
@@ -114,11 +110,21 @@ public class SceneScript : MonoBehaviour, ILog
 		}
 		
 
-	public void EnemyMove ()
+	public void PassMove (int cardID, Vector3 cardPos)
+	{
+
+		 if (gm.PassMove (cardID)) {
+						PushCardOnDeck (cardPos);
+				}
+
+		gm.EndMove ();
+		EnemuMove ();
+	}
+
+	private void EnemuMove()
 	{
 		//Todo: анимацию для хода противника
-		//AIHelper.MakeMove (enemyInfo);
-	}
+		}
 
 		//метод для отыгрывания карты
 		public void CardPlayed (int cardID, Vector3 cardPos)
@@ -134,10 +140,9 @@ public class SceneScript : MonoBehaviour, ILog
 						PushCardOnDeck (cardPos);
 					}
 					else
-					{
-					
+					{					
 						PushCardOnDeck (cardPos);
-						EnemyMove ();
+						EnemuMove();
 					}
 				
 				}
