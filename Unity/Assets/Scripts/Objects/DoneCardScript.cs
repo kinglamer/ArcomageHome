@@ -82,7 +82,12 @@ public class DoneCardScript : MonoBehaviour
 								Destroy (gameObject);
 						}
 						lastClickTime = currentTime;
-				}	
+				}
+		if(Input.GetMouseButtonDown (1)){
+			gameController.GetComponent<SceneScript>().EnemyMove();
+			Destroy (gameObject);
+			Debug.Log ("Pass!");
+		}
 		}
 	
 		void OnMouseExit ()
