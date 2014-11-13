@@ -114,7 +114,7 @@ public class SceneScript : MonoBehaviour, ILog
 		}
 		
 
-	private void EnemyMove ()
+	public void EnemyMove ()
 	{
 		//Todo: анимацию для хода противника
 		//AIHelper.MakeMove (enemyInfo);
@@ -195,11 +195,11 @@ public class SceneScript : MonoBehaviour, ILog
 	void OnGUI()
 	{
 		GUI.skin = mainSkin;
-		if (GUI.Button (new Rect (120, 200, 60, 25), "Pass")) {
-			//Тут действия на пас
-			EnemyMove();
-			Debug.Log ("Pass!");
-		}
+//		if (GUI.Button (new Rect (120, 200, 60, 25), "Pass")) {
+//			//Тут действия на пас
+//			EnemyMove();
+//			Debug.Log ("Pass!");
+//		}
 
 		if (gm.WhoWin ().Length > 0) 
 		{
