@@ -31,41 +31,34 @@ public class SceneScript : MonoBehaviour, ILog
 		public GUISkin mainSkin;
 		public static GameController gm;
 		public Texture2D PicAtlas;
-		
 		List<TextAtlasCoordinate> coordinates ;
 
 
 		// Use this for initialization
 		void Start ()
 		{
-				StartNewGame ();
-
 				LoadTextures ();
+				StartNewGame ();
 		}
 
-	private void LoadTextures()
-	{		 
-		TextAsset mydata = Resources.Load ("atlas_map") as TextAsset;
-		coordinates = new List<TextAtlasCoordinate> ();
-		string[] lines = mydata.text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+		private void LoadTextures ()
+		{		 
+				TextAsset mydata = Resources.Load ("atlas_map") as TextAsset;
+				coordinates = new List<TextAtlasCoordinate> ();
+				string[] lines = mydata.text.Split (new string[] { "\r\n" }, StringSplitOptions.None);
 
 
-		foreach (string line in lines)
-		{
-			try
-			{
-				if (line.Length > 0)
-				coordinates.Add(new TextAtlasCoordinate(line));
-			}
-			catch(Exception ex)
-			{
-				Debug.LogError(" Line: " + line + "Ex: " + ex);
-			}
+				foreach (string line in lines) {
+						try {
+								if (line.Length > 0)
+										coordinates.Add (new TextAtlasCoordinate (line));
+						} catch (Exception ex) {
+								Debug.LogError (" Line: " + line + "Ex: " + ex);
+						}
+				}
 		}
-	}
 
-
-		 private void StartNewGame ()
+		private void StartNewGame ()
 		{
 				gm = new GameController (this);
 				gm.AddPlayer (TypePlayer.Human, "Human");
@@ -128,15 +121,16 @@ public class SceneScript : MonoBehaviour, ILog
 		//метод для выборки из атласа картинки карты
 		private Texture2D GetCardPic (int cardID)
 		{
-				//тут надо поиск по строке AtlasRects.text, а пока заглушка
-				//4 = 0 0 1920 1200
-				int x = 0;
-				int y = 4096-0-1200;
-				int w = 1920;
-				int h = 1200;
-				/////////////////////////////////////////
+				TextAtlasCoordinate item = coordinates.FirstOrDefault (el => el.id == cardID);
+				if (item == null) {
+						item = coordinates.FirstOrDefault (el => el.id == 1);
+				}
+				int x = item.x;
+				int y = PicAtlas.width - item.y - item.height;
+				int w = item.width;
+				int h = item.height;
 				Color[] pic = PicAtlas.GetPixels (x, y, w, h);
-				Texture2D PicTexture = new Texture2D (w,h);
+				Texture2D PicTexture = new Texture2D (w, h);
 				PicTexture.SetPixels (pic);
 				PicTexture.Apply ();
 				return PicTexture;
