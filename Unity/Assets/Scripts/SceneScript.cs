@@ -5,6 +5,8 @@ using Arcomage.Entity;
 using System.Collections.Generic;
 using System.Linq;
 using Arcomage.Common;
+using AssemblyCSharp;
+using System;
 
 public class SceneScript : MonoBehaviour, ILog
 {
@@ -29,17 +31,41 @@ public class SceneScript : MonoBehaviour, ILog
 		public GUISkin mainSkin;
 		public static GameController gm;
 		public Texture2D PicAtlas;
-		public TextAsset AtlasRects;
-
+		
+		List<TextAtlasCoordinate> coordinates ;
 
 
 		// Use this for initialization
 		void Start ()
 		{
 				StartNewGame ();
+
+				LoadTextures ();
 		}
 
-		void StartNewGame ()
+	private void LoadTextures()
+	{		 
+		TextAsset mydata = Resources.Load ("atlas_map") as TextAsset;
+		coordinates = new List<TextAtlasCoordinate> ();
+		string[] lines = mydata.text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+
+
+		foreach (string line in lines)
+		{
+			try
+			{
+				if (line.Length > 0)
+				coordinates.Add(new TextAtlasCoordinate(line));
+			}
+			catch(Exception ex)
+			{
+				Debug.LogError(" Line: " + line + "Ex: " + ex);
+			}
+		}
+	}
+
+
+		 private void StartNewGame ()
 		{
 				gm = new GameController (this);
 				gm.AddPlayer (TypePlayer.Human, "Human");
