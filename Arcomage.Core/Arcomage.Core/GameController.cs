@@ -166,7 +166,7 @@ namespace Arcomage.Core
                 status = EndMoveStatus.None;
 
                 Random rnd = new Random();
-                currentPlayer =  rnd.Next(0, 1);
+                currentPlayer =  rnd.Next(0, 2);
                 log.Info("Game is started. CurrentPlayer: " + currentPlayer);
             }
             else
@@ -361,23 +361,7 @@ namespace Arcomage.Core
 
             if (players[currentPlayer].type == TypePlayer.AI)
             {
-                log.Info("Ход компьютера");
                 MakeMoveAI();
-
-
-                while (status != EndMoveStatus.None)
-                {
-                   var result = EndMove();
-
-                    if (result == EndMoveStatus.GetCard)
-                    {
-                        GetCard();
-                    }
-
-                }
-
-                currentPlayer = currentPlayer == 1 ? 0 : 1;
-                log.Info("Ход компьютера закончился.");
             }
 
             return status;
@@ -385,6 +369,8 @@ namespace Arcomage.Core
 
         private void MakeMoveAI()
         {
+            log.Info("Ход компьютера");
+
             foreach (var item in players[currentPlayer].Cards)
             {
                 if (UseCard(item.id))
@@ -393,6 +379,21 @@ namespace Arcomage.Core
                     break;
                 }
             }
+
+          
+            while (status != EndMoveStatus.None)
+            {
+                var result = EndMove();
+
+                if (result == EndMoveStatus.GetCard)
+                {
+                    GetCard();
+                }
+
+            }
+
+            currentPlayer = currentPlayer == 1 ? 0 : 1;
+            log.Info("Ход компьютера закончился.");
         }
 
 
