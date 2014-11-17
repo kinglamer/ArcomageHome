@@ -116,6 +116,12 @@ namespace Arcomage.Core
 
         public void AddPlayer(TypePlayer tp, string name)
         {
+
+            if (!isGameEnd)
+            {
+                log.Error("Невозможно добавить игроков во время игры");
+                return;
+            }
             if (players.Count == 2)
             {
                 log.Error("Достигнуто максимальное количество игроков");
@@ -140,8 +146,8 @@ namespace Arcomage.Core
 
             if (tp == TypePlayer.AI)
             {
-                currentPlayer = players.Count - 1;
-                GetCard();
+                 currentPlayer = players.Count - 1;
+                  GetCard();
             }
         }
 
@@ -516,7 +522,7 @@ namespace Arcomage.Core
 
             for (int i = 0; i < players.Count; i ++)
             {
-                int Ememyindex = currentPlayer == 1 ? 0 : 1;
+                int Ememyindex = i == 1 ? 0 : 1;
 
                 if (IsPlayerWin(players[i].Statistic) || IsPlayerLose(players[Ememyindex].Statistic))
                 {

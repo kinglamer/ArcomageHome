@@ -42,6 +42,19 @@ namespace Arcomage.Tests
              
          }
 
+         [Test]
+         public void ComputerMustWin()
+         {
+             gm.EndMove();
+             gm.GetCard();
+
+             Assert.AreEqual(gm.UseCard(1), true, "Не возможно использовать карту");
+
+             Assert.AreEqual(gm.GetParamsPlayer(SelectPlayer.First)[Specifications.PlayerTower], 0, "Башня врага должна быть уничтожена");
+             Assert.AreEqual(gm.WhoWin(), "Loser", "Компьютер не может проиграть!");
+
+         }
+
 
          [Test]
          public void PlayerCanUserCard()
@@ -67,6 +80,8 @@ namespace Arcomage.Tests
              Assert.AreEqual(gm.GetCountCard(), 1, " Должно быть хотя бы одна карта");
          }
 
+
+         
 
          [Test]
          public void CheckApplyCardParams()
