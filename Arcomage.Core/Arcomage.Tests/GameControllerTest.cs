@@ -157,11 +157,11 @@ namespace Arcomage.Tests
              Assert.AreEqual(gm.UseCard(5), true, "Не возможно использовать карту");
 
 
-             Assert.AreEqual(gm.EndMove(), EndMoveStatus.GetCard, "Не правильно применен параметр GetNewCard");
+             Assert.AreEqual(gm.EndMove(), CurrentAction.GetPlayerCard, "Не правильно применен параметр GetNewCard");
 
              gm.GetCard();
 
-             Assert.AreEqual(gm.EndMove(), EndMoveStatus.None, "Должен быть доступен переход хода");
+             Assert.AreEqual(gm.EndMove(), CurrentAction.None, "Должен быть доступен переход хода");
          }
 
     }

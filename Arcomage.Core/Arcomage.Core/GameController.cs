@@ -23,10 +23,17 @@ namespace Arcomage.Core
         None
     }
 
-    public enum EndMoveStatus
+    public enum CurrentAction
     {
-        None, GetCard
+        None, 
+        GetPlayerCard,
+        WaitHumanMove,
+        HumanUseCard,
+        UpdateHumanStat,
+        AIMove
     }
+
+   
 
     public class GameController
     {
@@ -34,13 +41,14 @@ namespace Arcomage.Core
         private List<IPlayer> players { get; set; }
         private int currentPlayer { get; set; }
 
-        private EndMoveStatus status { get; set; }
+        private CurrentAction status { get; set; }
 
         protected readonly ILog log;
         private readonly Dictionary<Specifications, int> WinParams;
         private readonly Dictionary<Specifications, int> LoseParams;
         private const string url = "http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
 
+        public CurrentAction currentAction { get; private set; }
         private bool isGameEnd { get; set; }
         private IArcoServer host;
         /// <summary>
@@ -73,6 +81,17 @@ namespace Arcomage.Core
             {
                 host = server;
             }
+        }
+
+        public bool GameNotification(Dictionary<string, object> information)
+        {
+            if (information == null || information.Count == 0 )
+            {
+                log.Error("Нет информации о событие");
+                return false;
+            }
+
+            return true;
         }
 
         public Dictionary<Specifications, int> GetParamsPlayer(SelectPlayer selectPlayer = SelectPlayer.None)
@@ -163,7 +182,7 @@ namespace Arcomage.Core
             if (isGameEnd)
             {
                 isGameEnd = false;
-                status = EndMoveStatus.None;
+                status = CurrentAction.None;
 
                 Random rnd = new Random();
                 currentPlayer =  rnd.Next(0, 2);
@@ -270,8 +289,8 @@ namespace Arcomage.Core
             returnVal.description = ParseDescription.Parse(returnVal.description);
             players[currentPlayer].Cards.Add(returnVal);
 
-            if (status == EndMoveStatus.GetCard)
-                status = EndMoveStatus.None;
+            if (status == CurrentAction.GetPlayerCard)
+                status = CurrentAction.None;
 
             return returnVal;
         }
@@ -339,9 +358,9 @@ namespace Arcomage.Core
         /// <summary>
         /// Расчет прироста ресурсов игрока от его шахт. А так же выполнения хода за компьютер
         /// </summary>
-        public EndMoveStatus EndMove()
+        public CurrentAction EndMove()
         {
-            if (status == EndMoveStatus.GetCard)
+            if (status == CurrentAction.GetPlayerCard)
             {
                 return status;
             }
@@ -350,7 +369,7 @@ namespace Arcomage.Core
             {
                 log.Info("EndMove - уже есть победитель.");
                 isGameEnd = true;
-                return EndMoveStatus.None;
+                return CurrentAction.None;
             }
 
             PlusValue(Specifications.PlayerDiamonds, players[currentPlayer].Statistic[Specifications.PlayerDiamondMines], currentPlayer);
@@ -381,11 +400,11 @@ namespace Arcomage.Core
             }
 
           
-            while (status != EndMoveStatus.None)
+            while (status != CurrentAction.None)
             {
                 var result = EndMove();
 
-                if (result == EndMoveStatus.GetCard)
+                if (result == CurrentAction.GetPlayerCard)
                 {
                     GetCard();
                 }
@@ -449,7 +468,7 @@ namespace Arcomage.Core
                             ApplyDirectDamage(item, currentPlayer);
                             break;
                         case Specifications.GetCard:
-                            status = EndMoveStatus.GetCard;
+                            status = CurrentAction.GetPlayerCard;
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -540,7 +559,6 @@ namespace Arcomage.Core
         {
             foreach (var item in WinParams)
             {
-                // log.Info("item.Key " + item.Key);
                 if (playerStatistic[item.Key] >= item.Value)
                 {
                     return true;
@@ -554,7 +572,6 @@ namespace Arcomage.Core
         {
             foreach (var item in LoseParams)
             {
-                // log.Info("item.Key " + item.Key);
                 if (playerStatistic[item.Key] <= item.Value)
                 {
                     return true;
