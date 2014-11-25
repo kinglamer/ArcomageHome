@@ -25,12 +25,19 @@ namespace Arcomage.Core
 
     public enum CurrentAction
     {
-        None, 
-        GetPlayerCard,
-        WaitHumanMove,
-        HumanUseCard,
-        UpdateHumanStat,
-        AIMove
+        None, //Произошел первый запуск
+        StartGame, //Начало игры
+        GetPlayerCard, //Получить карты для игрока
+        WaitHumanMove, //Ожидание хода игрока
+        HumanUseCard, //Игрок использовал карту
+        HumanCanPlayAgain, //Игрок может сходить еще раз
+        AnimateHumanMove, //Анимация использования карты игрока
+        UpdateStat, //Обновление статистики игроков
+        EndHumanMove, //Завершение хода игрока
+        AIMoveAnimation, //Анимация стола противника
+        AIUseCardAnimation, //Анимация использование хода противника
+        EndAIMove, //Завершение хода противника
+        EndGame //Завершение игры
     }
 
    
@@ -41,7 +48,7 @@ namespace Arcomage.Core
         private List<IPlayer> players { get; set; }
         private int currentPlayer { get; set; }
 
-        private CurrentAction status { get; set; }
+        private CurrentAction status  { get; set; }
 
         protected readonly ILog log;
         private readonly Dictionary<Specifications, int> WinParams;
@@ -49,8 +56,9 @@ namespace Arcomage.Core
         private const string url = "http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
 
         public CurrentAction currentAction { get; private set; }
-        private bool isGameEnd { get; set; }
+      
         private IArcoServer host;
+
         /// <summary>
         /// Стэк карт с сервера, чтобы реже обращаться к нему
         /// </summary>
@@ -60,7 +68,7 @@ namespace Arcomage.Core
         public GameController(ILog _log, IArcoServer server = null)
         {
             MaxCard = 5;
-            isGameEnd = true;
+            status = CurrentAction.None;
             log = _log;
             LoseParams = new Dictionary<Specifications, int>();
             LoseParams.Add(Specifications.PlayerTower, 0);
@@ -91,6 +99,40 @@ namespace Arcomage.Core
                 return false;
             }
 
+            switch (status)
+            {
+                case CurrentAction.None:
+                    log.Info("Для статуса " + CurrentAction.None + " нет уведомлений");
+                    return true;
+                case CurrentAction.StartGame:
+                    break;
+                case CurrentAction.GetPlayerCard:
+                    break;
+                case CurrentAction.WaitHumanMove:
+                    break;
+                case CurrentAction.HumanUseCard:
+                    break;
+                case CurrentAction.HumanCanPlayAgain:
+                    break;
+                case CurrentAction.AnimateHumanMove:
+                    break;
+                case CurrentAction.UpdateStat:
+                    break;
+                case CurrentAction.EndHumanMove:
+                    break;
+                case CurrentAction.AIMoveAnimation:
+                    break;
+                case CurrentAction.AIUseCardAnimation:
+                    break;
+                case CurrentAction.EndAIMove:
+                    break;
+                case CurrentAction.EndGame:
+                    break;
+                default:
+                    log.Error("Cтатус " + status + " не описан в коде");
+                    break;
+            }
+
             return true;
         }
 
@@ -114,33 +156,16 @@ namespace Arcomage.Core
             }
         }
 
-        public int GetCountCard(SelectPlayer selectPlayer = SelectPlayer.None)
-        {
-            if (selectPlayer == SelectPlayer.None)
-            {
-                selectPlayer = (SelectPlayer)currentPlayer;
-            }
-
-            int i = (int)selectPlayer;
-            return players[i].Cards.Count;
-        }
-
-
-        public Card ReturnCard(int id)
-        {
-             int i = (int)currentPlayer;
-
-             return players[i].Cards.First(x => x.id == id);
-        }
 
         public void AddPlayer(TypePlayer tp, string name)
         {
 
-            if (!isGameEnd)
+            if (status == CurrentAction.StartGame)
             {
                 log.Error("Невозможно добавить игроков во время игры");
                 return;
             }
+
             if (players.Count == 2)
             {
                 log.Error("Достигнуто максимальное количество игроков");
@@ -175,24 +200,23 @@ namespace Arcomage.Core
         {
             if (players.Count == 0)
             {
-                log.Error("Добавьте игрок в игру. Сейчас их " + players.Count);
+                log.Error("Добавьте игроков в игру. Сейчас их " + players.Count);
                 return;
             }
 
-            if (isGameEnd)
+            if (!isGameEnded())
             {
-                isGameEnd = false;
-                status = CurrentAction.None;
+                log.Info("Игра еще не закончилась");
+                return;
+            }
+
+
+            status = CurrentAction.StartGame;
 
                 Random rnd = new Random();
                 currentPlayer =  rnd.Next(0, 2);
                 log.Info("Game is started. CurrentPlayer: " + currentPlayer);
-            }
-            else
-            {
-                log.Info("Игра уже итак запущена");
-                return;
-            }
+           
 
 
         }
@@ -227,7 +251,7 @@ namespace Arcomage.Core
         /// <returns>если карту не удалось использовать возвращается false</returns>
         public bool UseCard(int id)
         {
-            if (isGameEnd)
+            if (isGameEnded())
             {
                 log.Info("Игра уже закончилась");
                 return false;
@@ -257,11 +281,21 @@ namespace Arcomage.Core
             return false;
         }
 
+        private bool isGameEnded()
+        {
+            if (status == CurrentAction.None || status == CurrentAction.EndGame)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Получает карту из стека карт
         /// </summary>
         /// <returns></returns>
-        public Card GetCard()
+        public List<Card> GetCard()
         {
             if (QCard.Count == 0)
             {
@@ -285,13 +319,18 @@ namespace Arcomage.Core
                 }
             }
 
-            var returnVal = QCard.Dequeue();
-            returnVal.description = ParseDescription.Parse(returnVal.description);
-            players[currentPlayer].Cards.Add(returnVal);
+            List<Card> returnVal = new List<Card>();
 
-            if (status == CurrentAction.GetPlayerCard)
-                status = CurrentAction.None;
+            while (players[currentPlayer].Cards.Count <= MaxCard)
+            {
+                var newCard = QCard.Dequeue();
+                newCard.description = ParseDescription.Parse(newCard.description);
+                returnVal.Add(newCard);
+            }
+            
 
+            players[currentPlayer].Cards.AddRange(returnVal);
+            
             return returnVal;
         }
 
@@ -333,7 +372,7 @@ namespace Arcomage.Core
 
         public bool PassMove(int id)
         {
-            if (isGameEnd)
+            if (isGameEnded())
             {
                 log.Info("Игра уже закончилась");
                 return false;
@@ -368,8 +407,8 @@ namespace Arcomage.Core
             if (WhoWin().Length > 0)
             {
                 log.Info("EndMove - уже есть победитель.");
-                isGameEnd = true;
-                return CurrentAction.None;
+                status = CurrentAction.EndGame;
+                return status;
             }
 
             PlusValue(Specifications.PlayerDiamonds, players[currentPlayer].Statistic[Specifications.PlayerDiamondMines], currentPlayer);

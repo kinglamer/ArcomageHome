@@ -75,9 +75,9 @@ namespace Arcomage.Tests
          
              Assert.IsNotNull(gm.GetParamsPlayer(), "Стартовые параметры игрока не должны быть пустыми");
 
-             gm.GetCard();
 
-             Assert.AreEqual(gm.GetCountCard(), 1, " Должно быть хотя бы одна карта");
+
+             Assert.IsTrue(gm.GetCard().Count > 1, " Должно быть хотя бы одна карта");
          }
 
 
