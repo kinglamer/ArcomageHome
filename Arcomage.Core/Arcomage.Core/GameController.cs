@@ -48,14 +48,13 @@ namespace Arcomage.Core
         private List<IPlayer> players { get; set; }
         private int currentPlayer { get; set; }
 
-        private CurrentAction status  { get; set; }
+        public CurrentAction status { get; private set; }
 
         protected readonly ILog log;
         private readonly Dictionary<Specifications, int> WinParams;
         private readonly Dictionary<Specifications, int> LoseParams;
         private const string url = "http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
 
-        public CurrentAction currentAction { get; private set; }
       
         private IArcoServer host;
 
@@ -136,7 +135,7 @@ namespace Arcomage.Core
             return true;
         }
 
-        public Dictionary<Specifications, int> GetParamsPlayer(SelectPlayer selectPlayer = SelectPlayer.None)
+        public Dictionary<Specifications, int> GetPlayerParams(SelectPlayer selectPlayer = SelectPlayer.None)
         {
             
             if (selectPlayer == SelectPlayer.None)
@@ -249,7 +248,7 @@ namespace Arcomage.Core
         /// </summary>
         /// <param name="id">Уникальный номер карты в БД</param>
         /// <returns>если карту не удалось использовать возвращается false</returns>
-        public bool UseCard(int id)
+        private bool UseCard(int id)
         {
             if (isGameEnded())
             {
@@ -264,7 +263,7 @@ namespace Arcomage.Core
                                                                   x.key == Specifications.CostRocks).ToList();
 
 
-            if (isCanUsed(costCard))
+            if (IsCanUseCard(costCard))
             {
                 log.Info("Player: " + players[currentPlayer].playerName + " use card: " + players[currentPlayer].Cards[index].name);
                 ApplyCardParamsToPlayer(players[currentPlayer].Cards[index].cardParams);
@@ -337,7 +336,7 @@ namespace Arcomage.Core
         /// <summary>
         /// Проверка хватает ли ресурсов для использования карты
         /// </summary>
-        private bool isCanUsed(ICollection<CardParams> cardParams)
+        public bool IsCanUseCard(ICollection<CardParams> cardParams)
         {
             bool returnVal = false;
             foreach (var item in cardParams)
@@ -370,7 +369,7 @@ namespace Arcomage.Core
             return returnVal;
         }
 
-        public bool PassMove(int id)
+        private bool PassMove(int id)
         {
             if (isGameEnded())
             {
@@ -397,7 +396,7 @@ namespace Arcomage.Core
         /// <summary>
         /// Расчет прироста ресурсов игрока от его шахт. А так же выполнения хода за компьютер
         /// </summary>
-        public CurrentAction EndMove()
+        private CurrentAction EndMove()
         {
             if (status == CurrentAction.GetPlayerCard)
             {
