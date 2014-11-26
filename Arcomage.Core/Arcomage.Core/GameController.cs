@@ -195,7 +195,7 @@ namespace Arcomage.Core
         }
 
 
-        public void StartGame()
+        private void StartGame()
         {
             if (players.Count == 0)
             {
