@@ -90,24 +90,80 @@ namespace Arcomage.Core
             }
         }
 
-        public bool GameNotification(Dictionary<string, object> information)
+        public bool SendGameNotification(Dictionary<string, object> information)
         {
-            if (information == null || information.Count == 0 )
+            if (information == null || information.Count == 0  || !information.ContainsKey("CurrentAction"))
             {
                 log.Error("Нет информации о событие");
                 return false;
             }
 
+         
+
+
             switch (status)
             {
                 case CurrentAction.None:
-                    log.Info("Для статуса " + CurrentAction.None + " нет уведомлений");
+                   
+                        if (information["CurrentAction"].ToString() == "StartGame")
+                        {
+                            StartGame();
+                            status = CurrentAction.StartGame;
+
+                            if (information.ContainsKey("currentPlayer"))
+                            {
+
+                                var op = ConvertObjToEnum<TypePlayer>(information["currentPlayer"]);
+
+                                if (op == TypePlayer.Human && players[currentPlayer].type == TypePlayer.AI)
+                                {
+                                    currentPlayer = currentPlayer == 1 ? 0 : 1;
+                                }
+                                else if (op == TypePlayer.AI && players[currentPlayer].type == TypePlayer.Human)
+                                {
+                                    currentPlayer = currentPlayer == 1 ? 0 : 1;
+                                }
+                            }
+
+
+                            Dictionary<string, object> notify = new Dictionary<string, object>();
+                            if (players[currentPlayer].type == TypePlayer.AI)
+                            {
+                                notify.Add("CurrentAction", CurrentAction.AIMoveAnimation);
+                            }
+                            else
+                            {
+                                notify.Add("CurrentAction", CurrentAction.GetPlayerCard);
+                            }
+
+                            SendGameNotification(notify);
+                        }
+                    
                     return true;
                 case CurrentAction.StartGame:
+                    if (information["CurrentAction"].ToString() == "AIMoveAnimation")
+                    {
+                        status = CurrentAction.AIMoveAnimation;
+                    }
+                    else if (information["CurrentAction"].ToString() == "GetPlayerCard")
+                    {
+                        status = CurrentAction.GetPlayerCard;
+                    }
                     break;
                 case CurrentAction.GetPlayerCard:
+                    if (information["CurrentAction"].ToString() == ("WaitHumanMove"))
+                    {
+                          status = CurrentAction.WaitHumanMove;
+                    }
                     break;
                 case CurrentAction.WaitHumanMove:
+                    if (information["CurrentAction"].ToString() == ("HumanUseCard"))
+                    {
+                        if (UseCard((int)information["ID"]))
+                            status = CurrentAction.HumanUseCard;
+                    }
+
+             
                     break;
                 case CurrentAction.HumanUseCard:
                     break;
@@ -133,6 +189,11 @@ namespace Arcomage.Core
             }
 
             return true;
+        }
+        public T ConvertObjToEnum<T>(object o)
+        {
+            T enumVal = (T)Enum.Parse(typeof(T), o.ToString());
+            return enumVal;
         }
 
         public Dictionary<Specifications, int> GetPlayerParams(SelectPlayer selectPlayer = SelectPlayer.None)
@@ -190,7 +251,7 @@ namespace Arcomage.Core
             if (tp == TypePlayer.AI)
             {
                  currentPlayer = players.Count - 1;
-                  GetCard();
+                 GetCard();
             }
         }
 
@@ -209,15 +270,9 @@ namespace Arcomage.Core
                 return;
             }
 
-
-            status = CurrentAction.StartGame;
-
-                Random rnd = new Random();
-                currentPlayer =  rnd.Next(0, 2);
-                log.Info("Game is started. CurrentPlayer: " + currentPlayer);
-           
-
-
+            Random rnd = new Random();
+            currentPlayer =  rnd.Next(0, 2);
+            log.Info("Game is started. CurrentPlayer: " + currentPlayer);
         }
 
 
@@ -256,11 +311,8 @@ namespace Arcomage.Core
                 return false;
             }
 
-            int index = players[currentPlayer].Cards.FindIndex(x => x.id == id);
-
-            var costCard = players[currentPlayer].Cards[index].cardParams.Where(x => x.key == Specifications.CostDiamonds ||
-                                                                  x.key == Specifications.CostAnimals ||
-                                                                  x.key == Specifications.CostRocks).ToList();
+            int index;
+            List<CardParams> costCard = GetCardById(id, out index);
 
 
             if (IsCanUseCard(costCard))
@@ -278,6 +330,16 @@ namespace Arcomage.Core
 
 
             return false;
+        }
+
+        private List<CardParams> GetCardById(int id, out int index)
+        {
+            index = players[currentPlayer].Cards.FindIndex(x => x.id == id);
+
+            List<CardParams> costCard = players[currentPlayer].Cards[index].cardParams.Where(x => x.key == Specifications.CostDiamonds ||
+                                                                                 x.key == Specifications.CostAnimals ||
+                                                                                 x.key == Specifications.CostRocks).ToList();
+            return costCard;
         }
 
         private bool isGameEnded()
@@ -320,7 +382,7 @@ namespace Arcomage.Core
 
             List<Card> returnVal = new List<Card>();
 
-            while (players[currentPlayer].Cards.Count <= MaxCard)
+            while (returnVal.Count < MaxCard)
             {
                 var newCard = QCard.Dequeue();
                 newCard.description = ParseDescription.Parse(newCard.description);
@@ -340,6 +402,42 @@ namespace Arcomage.Core
         {
             bool returnVal = false;
             foreach (var item in cardParams)
+            {
+                switch (item.key)
+                {
+                    case Specifications.CostDiamonds:
+                        if (players[currentPlayer].Statistic[Specifications.PlayerDiamonds] >= item.value)
+                        {
+                            returnVal = true;
+                        }
+                        break;
+                    case Specifications.CostAnimals:
+                        if (players[currentPlayer].Statistic[Specifications.PlayerAnimals] >= item.value)
+                        {
+                            returnVal = true;
+                        }
+                        break;
+                    case Specifications.CostRocks:
+                        if (players[currentPlayer].Statistic[Specifications.PlayerRocks] >= item.value)
+                        {
+                            returnVal = true;
+                        }
+                        break;
+                }
+            }
+
+            if (!returnVal)
+                log.Error("У карты не указана стоимость");
+            return returnVal;
+        }
+
+        public bool IsCanUseCard(int id)
+        {
+            int index;
+            List<CardParams> costCard = GetCardById(id, out index);
+
+            bool returnVal = false;
+            foreach (var item in costCard)
             {
                 switch (item.key)
                 {
