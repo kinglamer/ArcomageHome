@@ -36,35 +36,23 @@ namespace Arcomage.Tests
          [Test]
          public void GameIsStarted()
          {
-             Assert.AreEqual(gm.status, CurrentAction.StartGame, "Игра не стартовала");
+             Assert.AreEqual(gm.status, CurrentAction.GetPlayerCard, "Игра не стартовала");
          }
 
          [Test]
          public void PlayerMustWin()
          {
-             //карты можно получить только, при соответствущем ходе
-             Assert.AreEqual(gm.status, CurrentAction.GetPlayerCard, "Сейчас не ход игрока");
-             gm.GetCard();
-
-             //после получения карты, игра должно уведомить о том, что игрок все получил и ждем его хода
-             Dictionary<string, object> notify1 = new Dictionary<string, object>();
-             notify1.Add("CurrentAction", CurrentAction.WaitHumanMove);
-             gm.SendGameNotification(notify1);
-             Assert.AreEqual(gm.status, CurrentAction.WaitHumanMove, "Должно быть ожидание хода игрока");
+             getCards();
 
 
-             Assert.AreEqual(gm.IsCanUseCard(1), true, "Не возможно использовать карту");
-
-             //перед информацию о том, какую карту использовал игрок
-             Dictionary<string, object> notify = new Dictionary<string, object>();
-             notify.Add("CurrentAction", CurrentAction.HumanUseCard);
-             notify.Add("ID", 1);
-             gm.SendGameNotification(notify);
+             useCard(1);
 
              Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.Second)[Specifications.PlayerTower], 0, "Башня врага должна быть уничтожена");
              Assert.AreEqual(gm.WhoWin(), "Winner", "Игрок не может проиграть!");
              
          }
+
+
 
          [Test]
          public void ComputerMustWin()
@@ -83,11 +71,8 @@ namespace Arcomage.Tests
          [Test]
          public void PlayerCanUserCard()
          {
-           
-
-             var card = gm.GetCard();
-             
-            // Assert.AreEqual(gm.UseCard(1), true, "Не возможно использовать карту");
+             gm.GetCard();
+             Assert.AreEqual(gm.IsCanUseCard(1), true, "Не возможно использовать карту");
 
          }
 
@@ -122,13 +107,11 @@ namespace Arcomage.Tests
              returnVal.Add(Specifications.PlayerRocks, 5);
              returnVal.Add(Specifications.PlayerDiamonds, 5);
              returnVal.Add(Specifications.PlayerAnimals, 5);*/
-             
 
-             gm.GetCard();
-             gm.GetCard();
 
-           //  Assert.AreEqual(gm.UseCard(2), true, "Не возможно использовать карту");
+             getCards();
 
+             useCard(2);
 
 
              Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.First)[Specifications.PlayerWall], 5 - 4, "Не правильно применен параметр PlayerWall");
@@ -152,41 +135,120 @@ namespace Arcomage.Tests
              
          }
 
+         private void getCards()
+         {
+//карты можно получить только, при соответствущем ходе
+             Assert.AreEqual(gm.status, CurrentAction.GetPlayerCard, "Сейчас не ход игрока");
+             gm.GetCard();
+
+             //после получения карты, игра должно уведомить о том, что игрок все получил и ждем его хода
+             Dictionary<string, object> notify1 = new Dictionary<string, object>();
+             notify1.Add("CurrentAction", CurrentAction.WaitHumanMove);
+             gm.SendGameNotification(notify1);
+
+             Assert.AreEqual(gm.status, CurrentAction.WaitHumanMove, "Должно быть ожидание хода игрока");
+         }
 
 
          [Test]
-         public void CheckApplyNewCardParams()
+         public void CheckApplyEnemyDirectDamage()
          {
-             for (int i = 0; i < 5; i++)
-             {
-                 gm.GetCard();
-             }
+             getCards();
 
 
-
-          //   Assert.AreEqual(gm.UseCard(3), true, "Не возможно использовать карту");
+             useCard(3);
 
 
              Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.Second)[Specifications.PlayerWall], 0, "Не правильно применен параметр EnemyDirectDamage");
              Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.Second)[Specifications.PlayerTower], 0, "Не правильно применен параметр EnemyDirectDamage");
 
 
-          //   Assert.AreEqual(gm.UseCard(4), true, "Не возможно использовать карту");
-
-
-             Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.First)[Specifications.PlayerWall], 0, "Не правильно применен параметр PlayerDirectDamage");
-             Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.First)[Specifications.PlayerTower], 0, "Не правильно применен параметр PlayerDirectDamage");
-
-
-          //   Assert.AreEqual(gm.UseCard(5), true, "Не возможно использовать карту");
-
-
-          //   Assert.AreEqual(gm.EndMove(), CurrentAction.GetPlayerCard, "Не правильно применен параметр GetNewCard");
-
-             gm.GetCard();
-
-          //   Assert.AreEqual(gm.EndMove(), CurrentAction.None, "Должен быть доступен переход хода");
+     
          }
 
-    }
+         private void useCard(int id)
+         {
+             Assert.AreEqual(gm.IsCanUseCard(id), true, "Не возможно использовать карту");
+
+             //перед информацию о том, какую карту использовал игрок
+             Dictionary<string, object> notify = new Dictionary<string, object>();
+             notify.Add("CurrentAction", CurrentAction.HumanUseCard);
+             notify.Add("ID", id);
+             gm.SendGameNotification(notify);
+         }
+
+         [Test]
+         public void CheckApplyPlayerDirectDamage()
+         {
+             getCards();
+
+             useCard(4);
+
+
+             Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.First)[Specifications.PlayerWall], 0,
+                 "Не правильно применен параметр PlayerDirectDamage");
+             Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.First)[Specifications.PlayerTower], 0,
+                 "Не правильно применен параметр PlayerDirectDamage");
+
+         }
+
+
+         [Test]
+         public void CheckApplyGetNewCard()
+         {
+             getCards();
+
+             useCard(5);
+           
+
+
+            Assert.AreEqual(gm.status, CurrentAction.GetPlayerCard, "Не правильно применен параметр GetNewCard");
+               
+
+             //   Assert.AreEqual(gm.EndMove(), CurrentAction.None, "Должен быть доступен переход хода");
+         }
+
+
+         [Test]
+         public void PlayerCanPassMove()
+         {
+             getCards();
+
+             
+             Dictionary<string, object> notify = new Dictionary<string, object>();
+             notify.Add("CurrentAction", CurrentAction.PassStroke);
+             notify.Add("ID", 1);
+
+             gm.SendGameNotification(notify);
+             Assert.AreEqual(gm.status, CurrentAction.PassStroke, "Текущий статус должен быть равным сбросу карты");
+
+
+             Dictionary<string, object> notify2 = new Dictionary<string, object>();
+             notify2.Add("CurrentAction", CurrentAction.AnimateHumanMove);
+            
+
+             gm.SendGameNotification(notify2);
+
+             Assert.AreEqual(gm.status, CurrentAction.UpdateStatHuman, "Текущий статус должен быть равным обновлению статистики игрока");
+
+             Dictionary<string, object> notify3 = new Dictionary<string, object>();
+             notify3.Add("CurrentAction", CurrentAction.EndHumanMove);
+             gm.SendGameNotification(notify3);
+
+             Assert.AreEqual(gm.status, CurrentAction.AIUseCardAnimation, "Текущий статус должен быть равным прорисовке хода компьютера");
+
+             Dictionary<string, object> notify4 = new Dictionary<string, object>();
+             notify4.Add("CurrentAction", CurrentAction.AIMoveIsAnimated);
+             gm.SendGameNotification(notify4);
+             
+             Assert.AreEqual(gm.status, CurrentAction.UpdateStatAI, "Текущий статус должен быть равным обновлению статистики компьютера");
+
+             Dictionary<string, object> notify5 = new Dictionary<string, object>();
+             notify5.Add("CurrentAction", CurrentAction.EndAIMove);
+             gm.SendGameNotification(notify5);
+
+             Assert.AreEqual(gm.status, CurrentAction.WaitHumanMove, "Текущий статус должен быть равным ожиданию хода игрока");
+         }
+
+     }
 }
