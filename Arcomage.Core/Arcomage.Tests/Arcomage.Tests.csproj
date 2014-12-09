@@ -65,6 +65,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameControllerAITest.cs" />
+    <Compile Include="GameControllerTestHelper.cs" />
     <Compile Include="LogTest.cs" />
     <Compile Include="Moq\TestServer.cs" />
     <Compile Include="NUnitExample.cs" />

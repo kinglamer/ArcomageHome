@@ -68,6 +68,8 @@ namespace Arcomage.Core
         /// </summary>
         private Queue<Card> QCard = new Queue<Card>();
 
+        private List<Card> usedCards = new List<Card>();
+        private Queue<int> AIUsedCard = new Queue<int>();
 
         public GameController(ILog _log, IArcoServer server = null)
         {
@@ -169,8 +171,13 @@ namespace Arcomage.Core
                     {
                         if (UseCard((int) information["ID"]))
                         {
-                            if (status != CurrentAction.GetPlayerCard)
-                                    status = CurrentAction.HumanUseCard;
+                            Winner = CheckPlayerParams();
+                            if (Winner.Length > 0)
+                            {
+                                status = CurrentAction.EndGame;
+                            }
+                            else if (status != CurrentAction.GetPlayerCard)
+                                status = CurrentAction.HumanUseCard;
                         }
 
                         returnVal = true;
@@ -214,16 +221,34 @@ namespace Arcomage.Core
                 case CurrentAction.UpdateStatHuman:
                     if (information["CurrentAction"].ToString() == "EndHumanMove")
                     {
-                        status = CurrentAction.EndHumanMove;
-                        SendGameNotification(information);
+                        Winner = CheckPlayerParams();
+                        if (Winner.Length > 0)
+                        {
+                            status = CurrentAction.EndGame;
+                        }
+                        else
+                        {
+                            status = CurrentAction.EndHumanMove;
+                            SendGameNotification(information);
+                        }
+
                         returnVal = true;
                     }
                     break;
                 case CurrentAction.UpdateStatAI:
                     if (information["CurrentAction"].ToString() == "EndAIMove")
                     {
-                        status = CurrentAction.EndAIMove;
-                        SendGameNotification(information);
+                        Winner = CheckPlayerParams();
+                        if (Winner.Length > 0)
+                        {
+                            status = CurrentAction.EndGame;
+                        }
+                        else
+                        {
+                            status = CurrentAction.EndAIMove;
+                            SendGameNotification(information);
+                        }
+
                         returnVal = true;
                     }
                     break;
@@ -234,7 +259,6 @@ namespace Arcomage.Core
                             MakeMoveAI();
                             status = CurrentAction.AIUseCardAnimation;
                         }
-
                     returnVal = true;
                     break;
                 case CurrentAction.AIMoveIsAnimated:
@@ -259,7 +283,13 @@ namespace Arcomage.Core
                     returnVal = true;
                     break;
                 case CurrentAction.EndGame:
-                    returnVal = true;
+                    if (information["CurrentAction"].ToString() == "StartGame")
+                    {
+                       
+                        status = CurrentAction.None;
+                        SendGameNotification(information);
+                        returnVal = true;
+                    }
                     break;
                 default:
                     log.Error("Cтатус " + status + " не описан в коде");
@@ -394,6 +424,7 @@ namespace Arcomage.Core
                 log.Info("Player: " + players[currentPlayer].playerName + " use card: " + players[currentPlayer].Cards[index].name);
                 ApplyCardParamsToPlayer(players[currentPlayer].Cards[index].cardParams);
 
+                usedCards.Add(players[currentPlayer].Cards[index]);
                 players[currentPlayer].Cards.RemoveAt(index);
                 return true;
             }
@@ -568,29 +599,7 @@ namespace Arcomage.Core
             return false;
         }
 
-        /// <summary>
-        /// Расчет прироста ресурсов игрока от его шахт. А так же выполнения хода за компьютер
-        /// </summary>
-        private CurrentAction EndMove()
-        {
-            if (status == CurrentAction.GetPlayerCard)
-            {
-                return status;
-            }
 
-            if (WhoWin().Length > 0)
-            {
-                log.Info("EndMove - уже есть победитель.");
-                status = CurrentAction.EndGame;
-                return status;
-            }
-
-            UpdateStatistic();
-
-         
-
-            return status;
-        }
 
         private void UpdateStatistic()
         {
@@ -611,6 +620,7 @@ namespace Arcomage.Core
             {
                 if (UseCard(item.id))
                 {
+                    AIUsedCard.Enqueue(item.id);
                     GetCard();
                     break;
                 }
@@ -634,6 +644,23 @@ namespace Arcomage.Core
             log.Info("Ход компьютера закончился.");
         }
 
+
+        public List<Card> GetAIUsedCard()
+        {
+             List<Card> returnVal = new List<Card>();
+            while (AIUsedCard.Count > 0)
+            {
+                int id = AIUsedCard.Dequeue();
+
+                var card = usedCards.Where(x=>x.id == id).FirstOrDefault();
+
+                if (card != null)
+                    returnVal.Add(card);
+
+            }
+
+            return returnVal;
+        }
 
         /// <summary>
         /// Применения параметров карты к игроку
@@ -753,11 +780,13 @@ namespace Arcomage.Core
         /// <summary>
         /// Метод для определения имени победителя
         /// </summary>
-        /// <returns></returns>
-        public string WhoWin()
+ 
+
+        public string Winner { get; set; }
+
+        private string CheckPlayerParams()
         {
             string returnVal = string.Empty;
-
 
             for (int i = 0; i < players.Count; i ++)
             {
@@ -769,8 +798,6 @@ namespace Arcomage.Core
                     break;
                 }
             }
-         
-
             return returnVal;
         }
 
