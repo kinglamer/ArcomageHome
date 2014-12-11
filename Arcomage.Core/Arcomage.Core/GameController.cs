@@ -76,17 +76,10 @@ namespace Arcomage.Core
             MaxCard = 5;
             status = CurrentAction.None;
             log = _log;
-            LoseParams = new Dictionary<Specifications, int>();
-            LoseParams.Add(Specifications.PlayerTower, 0);
-
-            WinParams = new Dictionary<Specifications, int>();
-            WinParams.Add(Specifications.PlayerTower, 50);
-            WinParams.Add(Specifications.PlayerAnimals, 150);
-            WinParams.Add(Specifications.PlayerRocks, 150);
-            WinParams.Add(Specifications.PlayerDiamonds, 150);
-
+            LoseParams = GameControllerHelper.GetLoseParams();
+            WinParams = GameControllerHelper.GetWinParams();
             players = new List<IPlayer>();
-
+           
             if (server == null)
             {
                 host = new ArcoServerClient(new BasicHttpBinding(), new EndpointAddress(url));
@@ -106,9 +99,6 @@ namespace Arcomage.Core
                 return false;
             }
 
-         
-
-
             switch (status)
             {
                 case CurrentAction.None:
@@ -121,7 +111,7 @@ namespace Arcomage.Core
                             if (information.ContainsKey("currentPlayer"))
                             {
 
-                                var op = ConvertObjToEnum<TypePlayer>(information["currentPlayer"]);
+                                var op = GameControllerHelper.ConvertObjToEnum<TypePlayer>(information["currentPlayer"]);
 
                                 if (op != players[currentPlayer].type)
                                 {
@@ -226,7 +216,7 @@ namespace Arcomage.Core
                 case CurrentAction.UpdateStatHuman:
                     if (information["CurrentAction"].ToString() == "EndHumanMove")
                     {
-                        Winner = CheckPlayerParams();
+                        Winner = GameControllerHelper.CheckPlayerParams(players, WinParams, LoseParams);
                         if (Winner.Length > 0)
                         {
                             status = CurrentAction.EndGame;
@@ -243,7 +233,7 @@ namespace Arcomage.Core
                 case CurrentAction.UpdateStatAI:
                     if (information["CurrentAction"].ToString() == "EndAIMove")
                     {
-                        Winner = CheckPlayerParams();
+                        Winner = GameControllerHelper.CheckPlayerParams(players, WinParams, LoseParams);
                         if (Winner.Length > 0)
                         {
                             status = CurrentAction.EndGame;
@@ -304,11 +294,6 @@ namespace Arcomage.Core
 
             return returnVal;
         }
-        private T ConvertObjToEnum<T>(object o)
-        {
-            T enumVal = (T)Enum.Parse(typeof(T), o.ToString());
-            return enumVal;
-        }
 
         public Dictionary<Specifications, int> GetPlayerParams(SelectPlayer selectPlayer = SelectPlayer.None)
         {
@@ -326,7 +311,7 @@ namespace Arcomage.Core
             }
             else
             {
-                return GenerateDefault();
+                return GameControllerHelper.GenerateDefault();
             }
         }
 
@@ -359,7 +344,7 @@ namespace Arcomage.Core
                     throw new ArgumentOutOfRangeException("tp");
             }
 
-            newPlayer.Statistic = GenerateDefault();
+            newPlayer.Statistic = GameControllerHelper.GenerateDefault();
             players.Add(newPlayer);
         
         }
@@ -382,28 +367,6 @@ namespace Arcomage.Core
             Random rnd = new Random();
             currentPlayer =  rnd.Next(0, 2);
             log.Info("Game is started. CurrentPlayer: " + currentPlayer);
-        }
-
-
-        /// <summary>
-        /// Генерация стандартных значений для игрока:
-        /// стена, башня, шахты, ресурсы
-        /// </summary>
-        /// <returns></returns>
-        private Dictionary<Specifications, int> GenerateDefault()
-        {
-            Dictionary<Specifications, int> returnVal = new Dictionary<Specifications, int>();
-            returnVal.Add(Specifications.PlayerWall, 5);
-            returnVal.Add(Specifications.PlayerTower, 10);
-
-            returnVal.Add(Specifications.PlayerMenagerie, 1);
-            returnVal.Add(Specifications.PlayerColliery, 1);
-            returnVal.Add(Specifications.PlayerDiamondMines, 1);
-
-            returnVal.Add(Specifications.PlayerRocks, 5);
-            returnVal.Add(Specifications.PlayerDiamonds, 5);
-            returnVal.Add(Specifications.PlayerAnimals, 5);
-            return returnVal;
         }
 
 
@@ -608,11 +571,11 @@ namespace Arcomage.Core
 
         private void UpdateStatistic()
         {
-            PlusValue(Specifications.PlayerDiamonds, players[currentPlayer].Statistic[Specifications.PlayerDiamondMines],
-                currentPlayer);
-            PlusValue(Specifications.PlayerAnimals, players[currentPlayer].Statistic[Specifications.PlayerMenagerie],
-                currentPlayer);
-            PlusValue(Specifications.PlayerRocks, players[currentPlayer].Statistic[Specifications.PlayerColliery], currentPlayer);
+            var playerParams = players[currentPlayer].Statistic;
+
+            GameControllerHelper.PlusValue(Specifications.PlayerDiamonds, playerParams[Specifications.PlayerDiamondMines], players[currentPlayer]);
+            GameControllerHelper.PlusValue(Specifications.PlayerAnimals, playerParams[Specifications.PlayerMenagerie], players[currentPlayer]);
+            GameControllerHelper.PlusValue(Specifications.PlayerRocks, playerParams[Specifications.PlayerColliery], players[currentPlayer]);
         }
 
         private void MakeMoveAI()
@@ -679,7 +642,7 @@ namespace Arcomage.Core
             {
                 try
                 {
-
+                    log.Info(string.Format("BEFORE type: {0} val: {1} diamonds: {2}", item.key, item.value, players[currentPlayer].Statistic[Specifications.PlayerDiamonds]));
                     switch (item.key)
                     {
                         case Specifications.PlayerTower:
@@ -690,7 +653,7 @@ namespace Arcomage.Core
                         case Specifications.PlayerDiamonds:
                         case Specifications.PlayerAnimals:
                         case Specifications.PlayerRocks:
-                            PlusValue(item.key, item.value, currentPlayer);
+                            GameControllerHelper.PlusValue(item.key, item.value, players[currentPlayer]);
                             break;
                         case Specifications.EnemyTower:
                         case Specifications.EnemyWall:
@@ -703,13 +666,13 @@ namespace Arcomage.Core
                             ApplyCardParamFromEnemy(item);
                             break;
                         case Specifications.CostDiamonds:
-                            MinusValue(Specifications.PlayerDiamonds, item.value);
+                            GameControllerHelper.MinusValue(Specifications.PlayerDiamonds, item.value, players[currentPlayer]);
                             break;
                         case Specifications.CostAnimals:
-                            MinusValue(Specifications.PlayerAnimals, item.value);
+                            GameControllerHelper.MinusValue(Specifications.PlayerAnimals, item.value, players[currentPlayer]);
                             break;
                         case Specifications.CostRocks:
-                            MinusValue(Specifications.PlayerRocks, item.value);
+                            GameControllerHelper.MinusValue(Specifications.PlayerRocks, item.value,  players[currentPlayer]);
                             break;
                         case Specifications.EnemyDirectDamage:
                             int Ememyindex = currentPlayer == 1 ? 0 : 1;
@@ -724,12 +687,15 @@ namespace Arcomage.Core
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
+
+                    log.Info(string.Format("AFTER type: {0} val: {1} diamonds: {2}", item.key, item.value, players[currentPlayer].Statistic[Specifications.PlayerDiamonds]));
                 }
                 catch (Exception ex)
                 {
                     log.Error("Ex: " + ex + "\n Additional Info: " + item.key);
                 }
             }
+
 
         }
 
@@ -739,97 +705,14 @@ namespace Arcomage.Core
 
             if (tempVal < 0)
             {
-                PlusValue(Specifications.PlayerWall,
-                    - players[player].Statistic[Specifications.PlayerWall], player);
+                GameControllerHelper.PlusValue(Specifications.PlayerWall, -players[player].Statistic[Specifications.PlayerWall], players[player]);
 
-                PlusValue(Specifications.PlayerTower, tempVal, player);
+                GameControllerHelper.PlusValue(Specifications.PlayerTower, tempVal, players[player]);
             }
             else
             {
-                PlusValue(Specifications.PlayerWall, item.value, player);
+                GameControllerHelper.PlusValue(Specifications.PlayerWall, item.value, players[player]);
             }
-        }
-
-        private void MinusValue(Specifications spec, int value)
-        {
-            if (players[currentPlayer].Statistic[spec] - value <= 0)
-            {
-                players[currentPlayer].Statistic[spec] = 0;
-            }
-            else
-            {
-                players[currentPlayer].Statistic[spec] -= value;
-            }
-
-        }
-
-        private void PlusValue(Specifications specifications, int value, int index)
-        {
-            int minValue = 0;
-            if (specifications == Specifications.PlayerDiamondMines || specifications == Specifications.PlayerColliery ||
-                specifications == Specifications.PlayerMenagerie)
-            {
-                minValue = 1;
-            }
-
-            if (players[index].Statistic[specifications] + value <= minValue)
-            {
-                players[index].Statistic[specifications] = minValue;
-            }
-            else
-            {
-                players[index].Statistic[specifications] += value;
-            }
-        }
-
-        /// <summary>
-        /// Метод для определения имени победителя
-        /// </summary>
- 
-
-      
-
-        private string CheckPlayerParams()
-        {
-            string returnVal = string.Empty;
-
-            for (int i = 0; i < players.Count; i ++)
-            {
-                int Ememyindex = i == 1 ? 0 : 1;
-
-                if (IsPlayerWin(players[i].Statistic) || IsPlayerLose(players[Ememyindex].Statistic))
-                {
-                    returnVal = players[i].playerName;
-                    break;
-                }
-            }
-            return returnVal;
-        }
-
-        private bool IsPlayerWin(Dictionary<Specifications, int> playerStatistic)
-        {
-            foreach (var item in WinParams)
-            {
-                if (playerStatistic[item.Key] >= item.Value)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private bool IsPlayerLose(Dictionary<Specifications, int> playerStatistic)
-        {
-            foreach (var item in LoseParams)
-            {
-                if (playerStatistic[item.Key] <= item.Value)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         /// <summary>
@@ -871,7 +754,7 @@ namespace Arcomage.Core
             // log.Info("playerName:" + playerName + ": " + Statistic[resutl]);
 
             int index = currentPlayer == 1 ? 0 : 1;
-            PlusValue(resutl, item.value, index);
+            GameControllerHelper.PlusValue(resutl, item.value, players[index]);
 
 
             //  log.Info("playerName:" + playerName + ": " + Statistic[resutl]);

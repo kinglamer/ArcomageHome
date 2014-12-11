@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="AI.cs" />
     <Compile Include="GameController.cs" />
+    <Compile Include="GameControllerHelper.cs" />
     <Compile Include="IPlayer.cs" />
     <Compile Include="ParseDescription.cs" />
     <Compile Include="Player.cs" />
