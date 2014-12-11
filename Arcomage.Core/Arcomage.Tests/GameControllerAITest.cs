@@ -15,21 +15,21 @@ namespace Arcomage.Tests
     {
         private GameController gm;
 
+        //TODO: нужен еще тест, что комп может пропустить ход, если нет подходящей карты
+
+        /// <summary>
+        /// Инициализация начала игры
+        /// </summary>
         [SetUp]
         public void Init()
         {
-            LogTest log = new LogTest();
-            gm = new GameController(log, new TestServer());
-            gm.AddPlayer(TypePlayer.Human, "Winner");
-            gm.AddPlayer(TypePlayer.AI, "Loser");
-
-
-            Dictionary<string, object> notify = new Dictionary<string, object>();
-            notify.Add("CurrentAction", CurrentAction.StartGame);
-            notify.Add("currentPlayer", TypePlayer.Human); //делаем подтасовку небольшую, чтобы начал свой ход человек
-            gm.SendGameNotification(notify);
+           gm = GameControllerTestHelper.InitDemoGame();
         }
 
+        /// <summary>
+        /// Цель: проверить, что компьютер использовал карту
+        /// Результат: компьютер должен использовать карту с id == 1, т.к. на данный момент она подходит под все условия
+        /// </summary>
         [Test]
         public void WhichCardUseAI()
         {
@@ -50,11 +50,13 @@ namespace Arcomage.Tests
             Assert.AreEqual(gm.GetAIUsedCard().First().id, 1, "Компьютер должен использовать первую карту");
         }
 
-        //TODO: нужен еще тест, что комп может пропустить ход, если нет подходящей карты
+    
 
-        //TODO: продумать когда определяется, что игра закончилась и что происходит со статусами
-        //TODO: нужно написать тест, что игра перешла в состояние выйграша игрока
-
+  
+        /// <summary>
+        /// Цель: проверить, что компьютер может выйграть 
+        /// Результат: башня игрока должна быть уничтожена, в переменной Winner должно храниться имя компьютера (у нас он является Loser) 
+        /// </summary>
         [Test]
         public void ComputerMustWin()
         {

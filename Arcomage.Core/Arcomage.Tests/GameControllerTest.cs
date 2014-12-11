@@ -15,30 +15,30 @@ namespace Arcomage.Tests
     class GameControllerTest
      {
 
+         //TODO: сделать тест, что нельзя использовать карту
 
          private GameController gm;
 
          [SetUp]
          public void Init()
          {
-             LogTest log = new LogTest();
-             gm = new GameController(log, new TestServer());
-             gm.AddPlayer(TypePlayer.Human, "Winner");
-             gm.AddPlayer(TypePlayer.AI, "Loser");
-
-
-             Dictionary<string, object> notify = new Dictionary<string, object>();
-             notify.Add("CurrentAction", CurrentAction.StartGame);
-             notify.Add("currentPlayer", TypePlayer.Human); //делаем подтасовку небольшую, чтобы начал свой ход человек
-             gm.SendGameNotification(notify);
+             gm = GameControllerTestHelper.InitDemoGame();
          }
 
+         /// <summary>
+         /// Цель: Проверка, что игра стартовала
+         /// Результат: статус игры должен быть равным "GetPlayerCard" - он означает, что игрок должен получить карты
+         /// </summary>
          [Test]
          public void GameIsStarted()
          {
              Assert.AreEqual(gm.status, CurrentAction.GetPlayerCard, "Игра не стартовала");
          }
 
+         /// <summary>
+         /// Цель: проверить, что игрок может победить
+         /// Результат:  башня противника должна быть уничтожена, в переменной Winner должно храниться имя пользователя 
+         /// </summary>
          [Test]
          public void PlayerMustWin()
          {
@@ -54,7 +54,10 @@ namespace Arcomage.Tests
          }
 
 
-
+         /// <summary>
+         /// Цель: Проверка, что человек может использовать карту
+         /// Результат: геймконтролер сообщает, что карту возможно использовать
+         /// </summary>
          [Test]
          public void PlayerCanUserCard()
          {
@@ -65,6 +68,10 @@ namespace Arcomage.Tests
 
         
 
+         /// <summary>
+         /// Цель: проверить, что при инициализации параметры игрока не пусты
+         /// Результат: должны быть значения и количество карты не равно 0
+         /// </summary>
          [Test]
          public void CheckPlayerInit()
          {
@@ -78,7 +85,10 @@ namespace Arcomage.Tests
 
 
          
-
+         /// <summary>
+         /// Цель: проверить как применяются параметры карты к параметрам игроков
+         /// Результат: при вычитание или сложение параметров игрока с параметрами карты, должны получить конкретное значение
+         /// </summary>
          [Test]
          public void CheckApplyCardParams()
          {
@@ -122,7 +132,10 @@ namespace Arcomage.Tests
              
          }
 
-
+         /// <summary>
+         /// Цель: проверить, как распределяется прямой урон по врагу
+         /// Результат: получить определенные значения башни и стены
+         /// </summary>
          [Test]
          public void CheckApplyEnemyDirectDamage()
          {
@@ -150,6 +163,10 @@ namespace Arcomage.Tests
              gm.SendGameNotification(notify);
          }
 
+         /// <summary>
+         /// Цель: проверить, как распределяется прямой урон по игроку
+         /// Результат: получить определенные значения башни и стены
+         /// </summary>
          [Test]
          public void CheckApplyPlayerDirectDamage()
          {
@@ -166,19 +183,25 @@ namespace Arcomage.Tests
          }
 
 
+         /// <summary>
+         /// Цель: проверить,что игрок может получить новую карту, после использования карты с параметром "Взять еще одну карту"
+         /// Результат: статус игры должен быть равным "Игрок должен получить карту" 
+         /// </summary>
          [Test]
          public void CheckApplyGetNewCard()
          {
              GameControllerTestHelper.getCards(gm);
 
              useCard(5);
-           
 
 
             Assert.AreEqual(gm.status, CurrentAction.GetPlayerCard, "Не правильно применен параметр GetNewCard");
          }
 
-
+         /// <summary>
+         /// Цель: Проверка, что игрок может пропустить ход
+         /// Результат: Статус должен сообщить, что текущий ход у противника (AI)
+         /// </summary>
          [Test]
          public void PlayerCanPassMove()
          {

@@ -49,7 +49,7 @@ namespace Arcomage.Core
 
     public class GameController
     {
-        public readonly int MaxCard;
+        private readonly int MaxCard;
         private List<IPlayer> players { get; set; }
         private int currentPlayer { get; set; }
 
@@ -60,7 +60,7 @@ namespace Arcomage.Core
         private readonly Dictionary<Specifications, int> LoseParams;
         private const string url = "http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
 
-      
+        public string Winner { get; set; }
         private IArcoServer host;
 
         /// <summary>
@@ -171,13 +171,14 @@ namespace Arcomage.Core
                     {
                         if (UseCard((int) information["ID"]))
                         {
-                            Winner = CheckPlayerParams();
-                            if (Winner.Length > 0)
+                            if (status != CurrentAction.GetPlayerCard)
                             {
-                                status = CurrentAction.EndGame;
-                            }
-                            else if (status != CurrentAction.GetPlayerCard)
                                 status = CurrentAction.HumanUseCard;
+                                UpdateStatistic();
+                                Dictionary<string, object> notify = new Dictionary<string, object>();
+                                notify.Add("CurrentAction", CurrentAction.HumanUseCard);
+                                SendGameNotification(notify);
+                            }
                         }
 
                         returnVal = true;
@@ -210,7 +211,11 @@ namespace Arcomage.Core
                     
                     break;
                 case CurrentAction.HumanUseCard:
-                    returnVal = true;
+                    if (information["CurrentAction"].ToString() == "HumanUseCard")
+                    {
+                        status = CurrentAction.UpdateStatHuman;
+                        returnVal = true;
+                    }
                     break;
                 case CurrentAction.HumanCanPlayAgain:
                     returnVal = true;
@@ -299,7 +304,7 @@ namespace Arcomage.Core
 
             return returnVal;
         }
-        public T ConvertObjToEnum<T>(object o)
+        private T ConvertObjToEnum<T>(object o)
         {
             T enumVal = (T)Enum.Parse(typeof(T), o.ToString());
             return enumVal;
@@ -782,7 +787,7 @@ namespace Arcomage.Core
         /// </summary>
  
 
-        public string Winner { get; set; }
+      
 
         private string CheckPlayerParams()
         {

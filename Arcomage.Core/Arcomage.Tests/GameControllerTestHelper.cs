@@ -4,15 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Arcomage.Core;
+using Arcomage.Tests.Moq;
 using NUnit.Framework;
 
 namespace Arcomage.Tests
 {
     class GameControllerTestHelper
     {
+        /// <summary>
+        /// Последовательность действий, позволяющая игроку получить карты
+        /// </summary>
+        /// <param name="gmController"></param>
         public static void getCards(GameController gmController)
         {
-//карты можно получить только, при соответствущем ходе
+            //карты можно получить только, при соответствущем ходе
             Assert.AreEqual(gmController.status, CurrentAction.GetPlayerCard, "Сейчас не ход игрока");
             gmController.GetCard();
 
@@ -24,6 +29,11 @@ namespace Arcomage.Tests
             Assert.AreEqual(gmController.status, CurrentAction.WaitHumanMove, "Должно быть ожидание хода игрока");
         }
 
+
+        /// <summary>
+        /// Последовательность действий позволяющая игроку сбросить свой ход
+        /// </summary>
+        /// <param name="gameController"></param>
         public static void PassStroke(GameController gameController)
         {
             Dictionary<string, object> notify = new Dictionary<string, object>();
@@ -41,6 +51,22 @@ namespace Arcomage.Tests
             notify3.Add("CurrentAction", CurrentAction.EndHumanMove);
             gameController.SendGameNotification(notify3);
             Assert.AreEqual(gameController.status, CurrentAction.AIUseCardAnimation, "Текущий статус должен быть равным прорисовке хода компьютера");
+        }
+
+        public static GameController InitDemoGame()
+        {
+            LogTest log = new LogTest();
+            GameController gm = new GameController(log, new TestServer());
+            gm.AddPlayer(TypePlayer.Human, "Winner");
+            gm.AddPlayer(TypePlayer.AI, "Loser");
+
+
+            Dictionary<string, object> notify = new Dictionary<string, object>();
+            notify.Add("CurrentAction", CurrentAction.StartGame);
+            notify.Add("currentPlayer", TypePlayer.Human); //делаем подтасовку небольшую, чтобы начал свой ход человек
+            gm.SendGameNotification(notify);
+
+            return gm;
         }
     }
 }
