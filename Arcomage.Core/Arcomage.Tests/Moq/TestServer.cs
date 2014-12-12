@@ -104,6 +104,19 @@ namespace Arcomage.Tests.Moq
                 cardParams = paramsM5
             });
 
+
+            var paramsM6 = new List<CardParams>();
+            paramsM6.Add(new CardParams() { key = Specifications.PlayerDiamonds, value = 11 });
+            paramsM6.Add(new CardParams() { key = Specifications.CostAnimals, value = 0 });
+
+            returnVal.Add(new Card()
+            {
+                id = 6,
+                name = "Check Change Diamonds",
+                cardParams = paramsM6
+            });
+
+
             return JsonConvert.SerializeObject(returnVal);
         }
     }

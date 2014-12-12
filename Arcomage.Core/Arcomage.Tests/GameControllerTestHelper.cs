@@ -53,10 +53,21 @@ namespace Arcomage.Tests
             Assert.AreEqual(gameController.status, CurrentAction.AIUseCardAnimation, "Текущий статус должен быть равным прорисовке хода компьютера");
         }
 
-        public static GameController InitDemoGame()
+        public static GameController InitDemoGame(int server = 0)
         {
             LogTest log = new LogTest();
-            GameController gm = new GameController(log, new TestServer());
+            GameController gm = null;
+
+            if (server == 0)
+            {
+                gm = new GameController(log, new TestServer());
+            }
+            else if (server == 2)
+            {
+                gm = new GameController(log, new TestServer2());
+            }
+
+           Assert.AreNotEqual(gm, null, "Геймконтроллер не должен быть пустым");
             gm.AddPlayer(TypePlayer.Human, "Winner");
             gm.AddPlayer(TypePlayer.AI, "Loser");
 

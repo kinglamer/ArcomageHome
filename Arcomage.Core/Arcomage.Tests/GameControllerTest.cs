@@ -95,6 +95,8 @@ namespace Arcomage.Tests
          /// <summary>
          /// Цель: проверить как применяются параметры карты к параметрам игроков
          /// Результат: при вычитание или сложение параметров игрока с параметрами карты, должны получить конкретное значение
+         /// для человека - сумма должна быть равна кол-во стартовых кристалов + количество кристалов в карте + прирост шахты кристалов . В одном из параметров еще идет вычет значений стоимости карты
+         /// для компьютера - только стартовое значение + параметры карты 
          /// </summary>
          [Test]
          public void CheckApplyCardParams()
@@ -117,18 +119,19 @@ namespace Arcomage.Tests
 
              useCard(2);
 
-             var playerParams = gm.GetPlayerParams();
+             var playerParams = gm.GetPlayerParams(SelectPlayer.First);
 
+            
              Assert.AreEqual(playerParams[Specifications.PlayerWall], 5 - 4, "Не правильно применен параметр PlayerWall");
              Assert.AreEqual(playerParams[Specifications.PlayerTower], 10 - 8, "Не правильно применен параметр PlayerTower");
              Assert.AreEqual(playerParams[Specifications.PlayerDiamondMines], 1 + 2, "Не правильно применен параметр PlayerDiamondMines");
              Assert.AreEqual(playerParams[Specifications.PlayerMenagerie], 1 + 3, "Не правильно применен параметр PlayerMenagerie");
              Assert.AreEqual(playerParams[Specifications.PlayerColliery], 1 + 4, "Не правильно применен параметр PlayerColliery");
-             Assert.AreEqual(playerParams[Specifications.PlayerDiamonds], 5 + 11, "Не правильно применен параметр PlayerDiamonds");
-             Assert.AreEqual(playerParams[Specifications.PlayerAnimals], 5 + 12 - 5, "Не правильно применен параметр PlayerAnimals");
-             Assert.AreEqual(playerParams[Specifications.PlayerRocks], 5 + 13, "Не правильно применен параметр PlayerRocks");
+             Assert.AreEqual(playerParams[Specifications.PlayerDiamonds], 5 + 11 + 3, "Не правильно применен параметр PlayerDiamonds");
+             Assert.AreEqual(playerParams[Specifications.PlayerAnimals], 5 + 12 - 5 + 4, "Не правильно применен параметр PlayerAnimals");
+             Assert.AreEqual(playerParams[Specifications.PlayerRocks], 5 + 13 + 5, "Не правильно применен параметр PlayerRocks");
 
-
+             playerParams = gm.GetPlayerParams(SelectPlayer.Second);
              Assert.AreEqual(playerParams[Specifications.PlayerWall], 5 - 4, "Не правильно применен параметр EnemyWall");
              Assert.AreEqual(playerParams[Specifications.PlayerTower], 10 - 8, "Не правильно применен параметр EnemyTower");
              Assert.AreEqual(playerParams[Specifications.PlayerDiamondMines], 1 + 2, "Не правильно применен параметр EnemyDiamondMines");
@@ -138,6 +141,24 @@ namespace Arcomage.Tests
              Assert.AreEqual(playerParams[Specifications.PlayerAnimals], 5 + 12, "Не правильно применен параметр EnemyAnimals");
              Assert.AreEqual(playerParams[Specifications.PlayerRocks], 5 + 13, "Не правильно применен параметр EnemyRocks");
              
+         }
+
+         /// <summary>
+         /// цель: проверить применение одного параметра
+         /// результат: сумма должна быть равна кол-во стартовых кристалов + количество кристалов в карте + прирост шахты кристалов 
+         /// </summary>
+         [Test]
+         public void CheckAddDiamonds()
+         {
+             gm = GameControllerTestHelper.InitDemoGame(2);
+
+             GameControllerTestHelper.getCards(gm);
+
+             useCard(6);
+             Console.WriteLine("Status " + gm.status);
+             var playerParams = gm.GetPlayerParams(SelectPlayer.First);
+
+             Assert.AreEqual(playerParams[Specifications.PlayerDiamonds], 5 + 11 + 1, "Не правильно применен параметр PlayerDiamonds");
          }
 
          /// <summary>

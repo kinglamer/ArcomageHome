@@ -118,6 +118,7 @@ namespace Arcomage.Core
                                     currentPlayer = currentPlayer == 1 ? 0 : 1;
                                 }
                             }
+                            log.Info("Game is started. CurrentPlayer: " + currentPlayer);
 
 
                             Dictionary<string, object> notify = new Dictionary<string, object>();
@@ -307,6 +308,7 @@ namespace Arcomage.Core
 
             if (players[i] != null)
             {
+                log.Info("GetPlayerParams type: " + players[i].type);
                 return players[i].Statistic;
             }
             else
@@ -366,7 +368,7 @@ namespace Arcomage.Core
 
             Random rnd = new Random();
             currentPlayer =  rnd.Next(0, 2);
-            log.Info("Game is started. CurrentPlayer: " + currentPlayer);
+            
         }
 
 
@@ -457,6 +459,9 @@ namespace Arcomage.Core
 
             while (returnVal.Count < MaxCard)
             {
+                if (QCard.Count == 0)
+                    break;
+
                 var newCard = QCard.Dequeue();
                 newCard.description = ParseDescription.Parse(newCard.description);
                 returnVal.Add(newCard);
@@ -573,6 +578,7 @@ namespace Arcomage.Core
         {
             var playerParams = players[currentPlayer].Statistic;
 
+            log.Info("Current state" + status + ".Update Stat for player " + players[currentPlayer].type);
             GameControllerHelper.PlusValue(Specifications.PlayerDiamonds, playerParams[Specifications.PlayerDiamondMines], players[currentPlayer]);
             GameControllerHelper.PlusValue(Specifications.PlayerAnimals, playerParams[Specifications.PlayerMenagerie], players[currentPlayer]);
             GameControllerHelper.PlusValue(Specifications.PlayerRocks, playerParams[Specifications.PlayerColliery], players[currentPlayer]);
@@ -642,7 +648,7 @@ namespace Arcomage.Core
             {
                 try
                 {
-                    log.Info(string.Format("BEFORE type: {0} val: {1} diamonds: {2}", item.key, item.value, players[currentPlayer].Statistic[Specifications.PlayerDiamonds]));
+                 
                     switch (item.key)
                     {
                         case Specifications.PlayerTower:
@@ -653,7 +659,16 @@ namespace Arcomage.Core
                         case Specifications.PlayerDiamonds:
                         case Specifications.PlayerAnimals:
                         case Specifications.PlayerRocks:
+                      /*      log.Info(string.Format("BEFORE player: {3} type: {0} val: {1} currentVal: {2}", item.key, item.value,
+                     players[currentPlayer].Statistic.ContainsKey(item.key) ? players[currentPlayer].Statistic[item.key].ToString() : "Ключа нет"
+                     , players[currentPlayer].type));*/
+
                             GameControllerHelper.PlusValue(item.key, item.value, players[currentPlayer]);
+
+                        /*    log.Info(string.Format("AFTER player: {3} type: {0} val: {1} currentVal: {2}", item.key, item.value,
+                   players[currentPlayer].Statistic.ContainsKey(item.key) ? players[currentPlayer].Statistic[item.key].ToString() : "Ключа нет"
+                   , players[currentPlayer].type));*/
+
                             break;
                         case Specifications.EnemyTower:
                         case Specifications.EnemyWall:
@@ -687,8 +702,7 @@ namespace Arcomage.Core
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
-
-                    log.Info(string.Format("AFTER type: {0} val: {1} diamonds: {2}", item.key, item.value, players[currentPlayer].Statistic[Specifications.PlayerDiamonds]));
+                  
                 }
                 catch (Exception ex)
                 {
@@ -753,9 +767,18 @@ namespace Arcomage.Core
 
             // log.Info("playerName:" + playerName + ": " + Statistic[resutl]);
 
+
             int index = currentPlayer == 1 ? 0 : 1;
+
+         /*   log.Info(string.Format("BEFORE player: {3} type: {0} val: {1} currentVal: {2}", item.key, item.value,
+                      players[index].Statistic.ContainsKey(resutl) ? players[index].Statistic[resutl].ToString() : "Ключа нет"
+                      , players[index].type));*/
+
             GameControllerHelper.PlusValue(resutl, item.value, players[index]);
 
+        /*    log.Info(string.Format("BEFORE player: {3} type: {0} val: {1} currentVal: {2}", item.key, item.value,
+                      players[index].Statistic.ContainsKey(resutl) ? players[index].Statistic[resutl].ToString() : "Ключа нет"
+                      , players[index].type));*/
 
             //  log.Info("playerName:" + playerName + ": " + Statistic[resutl]);
 
