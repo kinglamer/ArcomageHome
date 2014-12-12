@@ -10,7 +10,7 @@ namespace Arcomage.WebConsole
 {
     class Program
     {
-        private const string url = "http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
+        private const string url = "http://arcomage.somee.com/ArcoServer.svc?wsdl";//"http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
         static void Main(string[] args)
         {
 

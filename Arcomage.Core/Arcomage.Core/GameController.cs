@@ -58,7 +58,7 @@ namespace Arcomage.Core
         protected readonly ILog log;
         private readonly Dictionary<Specifications, int> WinParams;
         private readonly Dictionary<Specifications, int> LoseParams;
-        private const string url = "http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
+        private const string url = "http://arcomage.somee.com/ArcoServer.svc?wsdl"; //"http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
 
         public string Winner { get; set; }
         private IArcoServer host;
