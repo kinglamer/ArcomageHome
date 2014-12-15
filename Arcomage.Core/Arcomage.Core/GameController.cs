@@ -38,11 +38,13 @@ namespace Arcomage.Core
         UpdateStatHuman, //Обновление статистики игрока
         UpdateStatAI, //Обновление статистики компьютера
         EndHumanMove, //Завершение хода игрока
+        AIUseCard, //Флаг того, что компьютер завершил использование всех карт (появилось в следствие того, что есть карты, которые заставляют брать еще карту)
         AIMoveIsAnimated, //Анимация стола противника
         AIUseCardAnimation, //Анимация использование хода противника
         EndAIMove, //Завершение хода противника
         EndGame, //Завершение игры
-        PassStroke //пропуск хода
+        PassStroke, //пропуск хода
+        GetAICard //компьютер берет следующую добавочную карту
     }
 
    
@@ -50,20 +52,47 @@ namespace Arcomage.Core
 
     public class GameController
     {
+
+        #region Variables 
+
         private readonly int MaxCard;
         private List<IPlayer> players { get; set; }
         private int currentPlayer { get; set; }
 
-        public CurrentAction status { get; private set; }
+      
+        private CurrentAction _status;
+        public CurrentAction Status {
+            get {   return _status;}
+            set
+            {
+                if (log != null)
+                log.Info("Статус " + Status + " изменен на " + value);
+                _status = value;
+                
+            }
+        }
 
-        
+        private bool isGameEnded
+        {
+            get
+            {
+                if (Status == CurrentAction.None || Status == CurrentAction.EndGame)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
 
         protected readonly ILog log;
         private readonly Dictionary<Specifications, int> WinParams;
         private readonly Dictionary<Specifications, int> LoseParams;
         private const string url = "http://arcomage.somee.com/ArcoServer.svc?wsdl"; //"http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
 
-        public string Winner { get; set; }
+        public string Winner { get;private set; }
         private IArcoServer host;
 
         private Dictionary<CurrentAction, EventMethod> eventHandlers;
@@ -73,13 +102,15 @@ namespace Arcomage.Core
         /// </summary>
         private Queue<Card> QCard = new Queue<Card>();
 
-        private List<Card> usedCards = new List<Card>();
-        private Queue<int> AIUsedCard = new Queue<int>();
+        public List<GameCardLog> logCard = new List<GameCardLog>();
+
+        #endregion
+
 
         public GameController(ILog _log, IArcoServer server = null)
         {
             MaxCard = 5;
-            status = CurrentAction.None;
+            Status = CurrentAction.None;
             log = _log;
             LoseParams = GameControllerHelper.GetLoseParams();
             WinParams = GameControllerHelper.GetWinParams();
@@ -117,16 +148,15 @@ namespace Arcomage.Core
         public List<Card> GetAIUsedCard()
         {
             List<Card> returnVal = new List<Card>();
-            while (AIUsedCard.Count > 0)
-            {
-                int id = AIUsedCard.Dequeue();
+           
+             
 
-                var card = usedCards.Where(x => x.id == id).FirstOrDefault();
+                var result = logCard.Where(x => x.gameEvent == GameEvent.Used && x.player.type == TypePlayer.AI).FirstOrDefault();
 
-                if (card != null)
-                    returnVal.Add(card);
+                if (result != null)
+                    returnVal.Add(result.card);
 
-            }
+            
 
             return returnVal;
         }
@@ -138,13 +168,13 @@ namespace Arcomage.Core
                 log.Error("Нет информации о событие");
             }
 
-            if (eventHandlers.ContainsKey(status))
+            if (eventHandlers.ContainsKey(Status))
             {
-                eventHandlers[status](information);
+                eventHandlers[Status](information);
             }
             else
             {
-                log.Error("Cтатус " + status + " не описан в коде");
+                log.Error("Cтатус " + Status + " не описан в коде");
             }
         }
 
@@ -175,7 +205,7 @@ namespace Arcomage.Core
         public void AddPlayer(TypePlayer tp, string name)
         {
 
-            if (status == CurrentAction.StartGame)
+            if (Status == CurrentAction.StartGame)
             {
                 log.Error("Невозможно добавить игроков во время игры");
                 return;
@@ -211,7 +241,8 @@ namespace Arcomage.Core
         /// <returns></returns>
         public List<Card> GetCard()
         {
-            if (QCard.Count == 0)
+
+            if (QCard.Count < MaxCard)
             {
 
 
@@ -224,18 +255,20 @@ namespace Arcomage.Core
 
                 foreach (var item in newParametrs)
                 {
-                    if (QCard.Count == MaxCard)
-                    {
-                        break;
-                    }
                     QCard.Enqueue(item);
-
                 }
             }
 
+            log.Info("Стэк карт равен " + QCard.Count);
+
             List<Card> returnVal = new List<Card>();
 
-            while (returnVal.Count < MaxCard)
+            int playerCountCard = 0;
+
+            if (players[currentPlayer].Cards != null)
+                playerCountCard = players[currentPlayer].Cards.Count;
+
+            while (playerCountCard < MaxCard)
             {
                 if (QCard.Count == 0)
                     break;
@@ -243,9 +276,10 @@ namespace Arcomage.Core
                 var newCard = QCard.Dequeue();
                 newCard.description = ParseDescription.Parse(newCard.description);
                 returnVal.Add(newCard);
+                playerCountCard++;
             }
 
-
+            log.Info("Player: " + players[currentPlayer].playerName + " GET " + returnVal.Count + " cards");
             players[currentPlayer].Cards.AddRange(returnVal);
 
             return returnVal;
@@ -328,7 +362,11 @@ namespace Arcomage.Core
                 log.Info("Player: " + players[currentPlayer].playerName + " use card: " + players[currentPlayer].Cards[index].name);
                 ApplyCardParamsToPlayer(players[currentPlayer].Cards[index].cardParams);
 
-                usedCards.Add(players[currentPlayer].Cards[index]);
+                logCard.Add(new GameCardLog() {
+                    card = players[currentPlayer].Cards[index],
+                    gameEvent = GameEvent.Used,
+                    player = players[currentPlayer]});
+
                 players[currentPlayer].Cards.RemoveAt(index);
                 return true;
             }
@@ -351,20 +389,6 @@ namespace Arcomage.Core
             return costCard;
         }
 
-        private bool isGameEnded
-        {
-            get
-            {
-                if (status == CurrentAction.None || status == CurrentAction.EndGame)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
 
     
 
@@ -378,9 +402,19 @@ namespace Arcomage.Core
 
             int index = players[currentPlayer].Cards.FindIndex(x => x.id == id);
 
+
+
             try
             {
-                players[currentPlayer].Cards.RemoveAt(index);
+                logCard.Add(new GameCardLog()
+                {
+                    card = players[currentPlayer].Cards[index],
+                    gameEvent = GameEvent.Droped,
+                    player = players[currentPlayer]
+                });
+
+                log.Info("Player: " + players[currentPlayer].playerName + " DROP CARD " + players[currentPlayer].Cards[index].name);
+                players[currentPlayer].Cards.RemoveAt(index);               
                 return true;
             }
             catch
@@ -398,7 +432,7 @@ namespace Arcomage.Core
         {
             var playerParams = players[currentPlayer].Statistic;
 
-            log.Info("Current state" + status + ".Update Stat for player " + players[currentPlayer].type);
+            log.Info("Current state" + Status + ".Update Stat for player " + players[currentPlayer].type);
             GameControllerHelper.PlusValue(Specifications.PlayerDiamonds, playerParams[Specifications.PlayerDiamondMines], players[currentPlayer]);
             GameControllerHelper.PlusValue(Specifications.PlayerAnimals, playerParams[Specifications.PlayerMenagerie], players[currentPlayer]);
             GameControllerHelper.PlusValue(Specifications.PlayerRocks, playerParams[Specifications.PlayerColliery], players[currentPlayer]);
@@ -406,36 +440,44 @@ namespace Arcomage.Core
 
         private void MakeMoveAI()
         {
-            log.Info("Ход компьютера");
+            log.Info("----===== Ход компьютера =====----");
 
             GetCard();
 
-            foreach (var item in players[currentPlayer].Cards)
+          
+
+            while (Status != CurrentAction.AIUseCard)
             {
-                if (UseCard(item.id))
+                  if (Status == CurrentAction.GetAICard)
+                    Status = CurrentAction.AIUseCard;
+
+                foreach (var item in players[currentPlayer].Cards)
                 {
-                    AIUsedCard.Enqueue(item.id);
-                    GetCard();
-                    break;
+                    if (UseCard(item.id))
+                    {
+                        GetCard();
+
+                        if (Status == CurrentAction.EndHumanMove)
+                            Status = CurrentAction.AIUseCard;
+
+                        break;
+                    }
                 }
+
+              
+                if (Status == CurrentAction.EndHumanMove)
+                    break;
+              
+             
             }
 
-          
-         /*   while (status != CurrentAction.None)
+               //если компьютер не использовал карту и ему не нужно брать еще одну, тогда пропускаем ход
+            if (Status != CurrentAction.AIUseCard)
             {
-                var result = EndMove();
+                PassMove(players[currentPlayer].Cards.First().id);
+            }
 
-                if (result == CurrentAction.GetPlayerCard)
-                {
-                    GetCard();
-                }
-
-            }*/
-
-          
-
-           
-            log.Info("Ход компьютера закончился.");
+            log.Info("----===== Ход компьютера закончился =====----");
         }
 
 
@@ -502,7 +544,12 @@ namespace Arcomage.Core
                             ApplyDirectDamage(item, currentPlayer);
                             break;
                         case Specifications.GetCard:
-                            status = CurrentAction.GetPlayerCard;
+                            if (Status != CurrentAction.EndHumanMove)
+                                Status = CurrentAction.GetPlayerCard;
+                            else
+                            {
+                                Status = CurrentAction.GetAICard;
+                            }
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -597,7 +644,7 @@ namespace Arcomage.Core
         {
             if (information["CurrentAction"].ToString() == "StartGame")
             {
-                status = CurrentAction.None;
+                Status = CurrentAction.None;
                 SendGameNotification(information);
             }
         }
@@ -605,14 +652,14 @@ namespace Arcomage.Core
         private void EndAIMove(Dictionary<string, object> information = null)
         {
             currentPlayer = currentPlayer == 1 ? 0 : 1;
-            status = CurrentAction.WaitHumanMove;
+            Status = CurrentAction.WaitHumanMove;
         }
 
         private void AIUseCardAnimation(Dictionary<string, object> information)
         {
             if (information["CurrentAction"].ToString() == "AIMoveIsAnimated")
             {
-                status = CurrentAction.AIMoveIsAnimated;
+                Status = CurrentAction.AIMoveIsAnimated;
                 SendGameNotification(information);
             }
         }
@@ -622,7 +669,7 @@ namespace Arcomage.Core
             if (information["CurrentAction"].ToString() == "AIMoveIsAnimated")
             {
                 UpdateStatistic();
-                status = CurrentAction.UpdateStatAI;
+                Status = CurrentAction.UpdateStatAI;
             }
         }
 
@@ -632,7 +679,7 @@ namespace Arcomage.Core
             if (players[currentPlayer].type == TypePlayer.AI)
             {
                 MakeMoveAI();
-                status = CurrentAction.AIUseCardAnimation;
+                Status = CurrentAction.AIUseCardAnimation;
             }
         }
 
@@ -643,11 +690,11 @@ namespace Arcomage.Core
                 Winner = GameControllerHelper.CheckPlayerParams(players, WinParams, LoseParams);
                 if (Winner.Length > 0)
                 {
-                    status = CurrentAction.EndGame;
+                    Status = CurrentAction.EndGame;
                 }
                 else
                 {
-                    status = CurrentAction.EndAIMove;
+                    Status = CurrentAction.EndAIMove;
                     SendGameNotification(information);
                 }
             }
@@ -660,11 +707,11 @@ namespace Arcomage.Core
                 Winner = GameControllerHelper.CheckPlayerParams(players, WinParams, LoseParams);
                 if (Winner.Length > 0)
                 {
-                    status = CurrentAction.EndGame;
+                    Status = CurrentAction.EndGame;
                 }
                 else
                 {
-                    status = CurrentAction.EndHumanMove;
+                    Status = CurrentAction.EndHumanMove;
                     SendGameNotification(information);
                 }
             }
@@ -674,7 +721,7 @@ namespace Arcomage.Core
         {
             if (information["CurrentAction"].ToString() == "HumanUseCard")
             {
-                status = CurrentAction.UpdateStatHuman;
+                Status = CurrentAction.UpdateStatHuman;
             }
         }
 
@@ -684,11 +731,11 @@ namespace Arcomage.Core
             {
                 if (players[currentPlayer].type == TypePlayer.Human)
                 {
-                    status = CurrentAction.UpdateStatHuman;
+                    Status = CurrentAction.UpdateStatHuman;
                 }
                 else
                 {
-                    status = CurrentAction.UpdateStatAI;
+                    Status = CurrentAction.UpdateStatAI;
                 }
                 UpdateStatistic();
             }
@@ -700,9 +747,9 @@ namespace Arcomage.Core
             {
                 if (UseCard((int)information["ID"]))
                 {
-                    if (status != CurrentAction.GetPlayerCard)
+                    if (Status != CurrentAction.GetPlayerCard)
                     {
-                        status = CurrentAction.HumanUseCard;
+                        Status = CurrentAction.HumanUseCard;
                         UpdateStatistic();
                         Dictionary<string, object> notify = new Dictionary<string, object>();
                         notify.Add("CurrentAction", CurrentAction.HumanUseCard);
@@ -714,7 +761,7 @@ namespace Arcomage.Core
             {
                 if (PassMove((int)information["ID"]))
                 {
-                    status = CurrentAction.PassStroke;
+                    Status = CurrentAction.PassStroke;
                 }
             }
         }
@@ -723,7 +770,7 @@ namespace Arcomage.Core
         {
             if (information["CurrentAction"].ToString() == ("WaitHumanMove"))
             {
-                status = CurrentAction.WaitHumanMove;
+                Status = CurrentAction.WaitHumanMove;
             }
         }
 
@@ -731,11 +778,11 @@ namespace Arcomage.Core
         {
             if (information["CurrentAction"].ToString() == "AIUseCardAnimation")
             {
-                status = CurrentAction.AIUseCardAnimation;
+                Status = CurrentAction.AIUseCardAnimation;
             }
             else if (information["CurrentAction"].ToString() == "GetPlayerCard")
             {
-                status = CurrentAction.GetPlayerCard;
+                Status = CurrentAction.GetPlayerCard;
             }
         }
 
@@ -756,7 +803,7 @@ namespace Arcomage.Core
                 }
 
 
-                status = CurrentAction.StartGame;
+                Status = CurrentAction.StartGame;
 
                 if (information.ContainsKey("currentPlayer"))
                 {

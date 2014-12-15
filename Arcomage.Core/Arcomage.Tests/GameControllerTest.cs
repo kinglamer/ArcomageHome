@@ -22,7 +22,7 @@ namespace Arcomage.Tests
          [SetUp]
          public void Init()
          {
-             gm = GameControllerTestHelper.InitDemoGame();
+            
          }
 
          /// <summary>
@@ -32,7 +32,8 @@ namespace Arcomage.Tests
          [Test]
          public void GameIsStarted()
          {
-             Assert.AreEqual(gm.status, CurrentAction.GetPlayerCard, "Игра не стартовала");
+             gm = GameControllerTestHelper.InitDemoGame();
+             Assert.AreEqual(gm.Status, CurrentAction.GetPlayerCard, "Игра не стартовала");
          }
 
          /// <summary>
@@ -42,6 +43,7 @@ namespace Arcomage.Tests
          [Test]
          public void PlayerMustWin()
          {
+             gm = GameControllerTestHelper.InitDemoGame();
              GameControllerTestHelper.getCards(gm);
 
 
@@ -49,17 +51,16 @@ namespace Arcomage.Tests
 
              Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.Second)[Specifications.PlayerTower], 0, "Башня врага должна быть уничтожена");
 
-             Assert.AreEqual(gm.status, CurrentAction.UpdateStatHuman, "Текущий статус должен быть равным обновлению статистики игрока");
+             Assert.AreEqual(gm.Status, CurrentAction.UpdateStatHuman, "Текущий статус должен быть равным обновлению статистики игрока");
 
              Dictionary<string, object> notify3 = new Dictionary<string, object>();
              notify3.Add("CurrentAction", CurrentAction.EndHumanMove);
              gm.SendGameNotification(notify3);
 
-             Assert.AreEqual(gm.Winner, "Winner", "Игрок не может проиграть!");
+             Assert.AreEqual(gm.Winner, "Human", "Игрок не может проиграть!");
 
              
          }
-
 
          /// <summary>
          /// Цель: Проверка, что человек может использовать карту
@@ -68,6 +69,7 @@ namespace Arcomage.Tests
          [Test]
          public void PlayerCanUserCard()
          {
+             gm = GameControllerTestHelper.InitDemoGame();
              gm.GetCard();
              Assert.AreEqual(gm.IsCanUseCard(1), true, "Не возможно использовать карту");
 
@@ -82,6 +84,7 @@ namespace Arcomage.Tests
          [Test]
          public void CheckPlayerInit()
          {
+             gm = GameControllerTestHelper.InitDemoGame();
          
              Assert.IsNotNull(gm.GetPlayerParams(), "Стартовые параметры игрока не должны быть пустыми");
 
@@ -114,7 +117,7 @@ namespace Arcomage.Tests
              returnVal.Add(Specifications.PlayerDiamonds, 5);
              returnVal.Add(Specifications.PlayerAnimals, 5);*/
 
-
+             gm = GameControllerTestHelper.InitDemoGame();
              GameControllerTestHelper.getCards(gm);
 
              useCard(2);
@@ -150,12 +153,13 @@ namespace Arcomage.Tests
          [Test]
          public void CheckAddDiamonds()
          {
+
              gm = GameControllerTestHelper.InitDemoGame(2);
 
              GameControllerTestHelper.getCards(gm);
 
              useCard(6);
-             Console.WriteLine("Status " + gm.status);
+             Console.WriteLine("Status " + gm.Status);
              var playerParams = gm.GetPlayerParams(SelectPlayer.First);
 
              Assert.AreEqual(playerParams[Specifications.PlayerDiamonds], 5 + 11 + 1, "Не правильно применен параметр PlayerDiamonds");
@@ -168,6 +172,7 @@ namespace Arcomage.Tests
          [Test]
          public void CheckApplyEnemyDirectDamage()
          {
+             gm = GameControllerTestHelper.InitDemoGame();
              GameControllerTestHelper.getCards(gm);
 
 
@@ -199,6 +204,7 @@ namespace Arcomage.Tests
          [Test]
          public void CheckApplyPlayerDirectDamage()
          {
+             gm = GameControllerTestHelper.InitDemoGame();
              GameControllerTestHelper.getCards(gm);
 
              useCard(4);
@@ -219,12 +225,13 @@ namespace Arcomage.Tests
          [Test]
          public void CheckApplyGetNewCard()
          {
+             gm = GameControllerTestHelper.InitDemoGame();
              GameControllerTestHelper.getCards(gm);
 
              useCard(5);
 
 
-            Assert.AreEqual(gm.status, CurrentAction.GetPlayerCard, "Не правильно применен параметр GetNewCard");
+            Assert.AreEqual(gm.Status, CurrentAction.GetPlayerCard, "Не правильно применен параметр GetNewCard");
          }
 
          /// <summary>
@@ -234,10 +241,18 @@ namespace Arcomage.Tests
          [Test]
          public void PlayerCanPassMove()
          {
+             gm = GameControllerTestHelper.InitDemoGame(5);
              GameControllerTestHelper.getCards(gm);
 
              GameControllerTestHelper.PassStroke(gm);
 
+             var result = gm.logCard.Where(x => x.player.type == TypePlayer.Human && x.gameEvent == GameEvent.Droped).FirstOrDefault();
+
+             //Внимание: при усовершенствование AI данный тест может измениться, .т.к. комп уже осознано будет выбирать какую карту сбросить
+             Assert.AreEqual(result.card.id, 1, "Human должен сбросить карту 1");
+
          }
+
+        
      }
 }

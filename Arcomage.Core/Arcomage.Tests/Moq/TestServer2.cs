@@ -15,9 +15,6 @@ namespace Arcomage.Tests.Moq
         {
             List<Card> returnVal = new List<Card>();
 
-           
-
-
             var paramsM6 = new List<CardParams>();
             paramsM6.Add(new CardParams() { key = Specifications.PlayerDiamonds, value = 11 });
             paramsM6.Add(new CardParams() { key = Specifications.CostAnimals, value = 0 });

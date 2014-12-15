@@ -70,6 +70,9 @@
     <Compile Include="LogTest.cs" />
     <Compile Include="Moq\TestServer.cs" />
     <Compile Include="Moq\TestServer2.cs" />
+    <Compile Include="Moq\TestServer3.cs" />
+    <Compile Include="Moq\TestServer4.cs" />
+    <Compile Include="Moq\TestServer5.cs" />
     <Compile Include="NUnitExample.cs" />
     <Compile Include="GameControllerTest.cs" />
     <Compile Include="ParserDescripTest.cs" />

@@ -18,7 +18,7 @@ namespace Arcomage.Tests
         public static void getCards(GameController gmController)
         {
             //карты можно получить только, при соответствущем ходе
-            Assert.AreEqual(gmController.status, CurrentAction.GetPlayerCard, "Сейчас не ход игрока");
+            Assert.AreEqual(gmController.Status, CurrentAction.GetPlayerCard, "Сейчас не ход игрока");
             gmController.GetCard();
 
             //после получения карты, игра должно уведомить о том, что игрок все получил и ждем его хода
@@ -26,7 +26,7 @@ namespace Arcomage.Tests
             notify1.Add("CurrentAction", CurrentAction.WaitHumanMove);
             gmController.SendGameNotification(notify1);
 
-            Assert.AreEqual(gmController.status, CurrentAction.WaitHumanMove, "Должно быть ожидание хода игрока");
+            Assert.AreEqual(gmController.Status, CurrentAction.WaitHumanMove, "Должно быть ожидание хода игрока");
         }
 
 
@@ -40,17 +40,17 @@ namespace Arcomage.Tests
             notify.Add("CurrentAction", CurrentAction.PassStroke);
             notify.Add("ID", 1);
             gameController.SendGameNotification(notify);
-            Assert.AreEqual(gameController.status, CurrentAction.PassStroke, "Текущий статус должен быть равным сбросу карты");
+            Assert.AreEqual(gameController.Status, CurrentAction.PassStroke, "Текущий статус должен быть равным сбросу карты");
 
             Dictionary<string, object> notify2 = new Dictionary<string, object>();
             notify2.Add("CurrentAction", CurrentAction.AnimateHumanMove);
             gameController.SendGameNotification(notify2);
-            Assert.AreEqual(gameController.status, CurrentAction.UpdateStatHuman, "Текущий статус должен быть равным обновлению статистики игрока");
+            Assert.AreEqual(gameController.Status, CurrentAction.UpdateStatHuman, "Текущий статус должен быть равным обновлению статистики игрока");
 
             Dictionary<string, object> notify3 = new Dictionary<string, object>();
             notify3.Add("CurrentAction", CurrentAction.EndHumanMove);
             gameController.SendGameNotification(notify3);
-            Assert.AreEqual(gameController.status, CurrentAction.AIUseCardAnimation, "Текущий статус должен быть равным прорисовке хода компьютера");
+            Assert.AreEqual(gameController.Status, CurrentAction.AIUseCardAnimation, "Текущий статус должен быть равным прорисовке хода компьютера");
         }
 
         public static GameController InitDemoGame(int server = 0)
@@ -58,18 +58,30 @@ namespace Arcomage.Tests
             LogTest log = new LogTest();
             GameController gm = null;
 
-            if (server == 0)
+            switch (server)
             {
-                gm = new GameController(log, new TestServer());
+                case 2:
+                    gm = new GameController(log, new TestServer2());
+                    break;
+                case 3:
+                    gm = new GameController(log, new TestServer3());
+                    break;
+                case 4:
+                    gm = new GameController(log, new TestServer4());
+                    break;
+                case 5:
+                     gm = new GameController(log, new TestServer5());
+                    break;
+                default:
+                    gm = new GameController(log, new TestServer());
+                    break;
             }
-            else if (server == 2)
-            {
-                gm = new GameController(log, new TestServer2());
-            }
+    
+            
 
            Assert.AreNotEqual(gm, null, "Геймконтроллер не должен быть пустым");
-            gm.AddPlayer(TypePlayer.Human, "Winner");
-            gm.AddPlayer(TypePlayer.AI, "Loser");
+           gm.AddPlayer(TypePlayer.Human, "Human");
+           gm.AddPlayer(TypePlayer.AI, "AI");
 
 
             Dictionary<string, object> notify = new Dictionary<string, object>();
