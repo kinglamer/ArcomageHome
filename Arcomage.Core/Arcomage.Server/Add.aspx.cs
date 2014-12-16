@@ -61,11 +61,11 @@ namespace Arcomage.Server
 
                 result = GetCardParams(item, dicParam);
 
-                if (result.Count > 3 || result.Count == 0)
+               /* if (result.Count == 0)
                 {
                     lbError.Text = "Необходимо заполнить хотя бы один параметр карты. Параметров карт не должо быть больше 3";
                     return;
-                }
+                }*/
 
                 DatabaseHelper.SaveCard(cardParam, result, item);
 
