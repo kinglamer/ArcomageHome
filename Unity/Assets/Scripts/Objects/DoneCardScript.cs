@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Arcomage.Core;
+using Arcomage.Entity;
+
 
 public class DoneCardScript : MonoBehaviour
 {
@@ -39,35 +42,37 @@ public class DoneCardScript : MonoBehaviour
 				//parametrs = new CardParametrs ();
 				gameController = GameObject.FindWithTag ("GameController");
 				startPos = transform.position;
+				
 		
 		}
 	
-		void OnMouseDown ()
-		{
-		
-				screenPoint = Camera.main.WorldToScreenPoint (gameObject.transform.position);
-		
-				offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
-		
-		}
+//		void OnMouseDown ()
+//		{
+//		
+//				screenPoint = Camera.main.WorldToScreenPoint (gameObject.transform.position);
+//		
+//				offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
+//		
+//		}
 	
-		void OnMouseDrag ()
-		{
-				Vector3 curScreenPoint = new Vector3 (Input.mousePosition.x, Input.mousePosition.y, 0);
-		
-				curPosition = Camera.main.ScreenToWorldPoint (curScreenPoint) + offset;
-		
-				transform.position = new Vector3
-			(
-				Mathf.Clamp (curPosition.x, boundary.xMin, boundary.xMax), 
-				Mathf.Clamp (curPosition.y, boundary.yMin, boundary.yMax),
-				transform.position.z
-				);
-		
-		}
+//		void OnMouseDrag ()
+//		{
+//				Vector3 curScreenPoint = new Vector3 (Input.mousePosition.x, Input.mousePosition.y, 0);
+//		
+//				curPosition = Camera.main.ScreenToWorldPoint (curScreenPoint) + offset;
+//		
+//				transform.position = new Vector3
+//			(
+//				Mathf.Clamp (curPosition.x, boundary.xMin, boundary.xMax), 
+//				Mathf.Clamp (curPosition.y, boundary.yMin, boundary.yMax),
+//				transform.position.z
+//				);
+//		
+//		}
 	
 		void OnMouseEnter ()
 		{
+			if()
 				transform.Translate (Vector3.back * 5f);
 				this.renderer.material.SetFloat ("_Light", 1f);
 		
@@ -98,13 +103,13 @@ public class DoneCardScript : MonoBehaviour
 				this.renderer.material.SetFloat ("_Light", 0.7f);
 		}
 
-		void OnMouseUp ()
-		{
-				if (curPosition.y > -5.5f) {
-						gameController.GetComponent<SceneScript> ().CardPlayed (cardId, startPos);
-						Destroy (gameObject);
-				}
-		}
+//		void OnMouseUp ()
+//		{
+//				if (curPosition.y > -5.5f) {
+//						gameController.GetComponent<SceneScript> ().CardPlayed (cardId, startPos);
+//						Destroy (gameObject);
+//				}
+//		}
 
 		void Update ()
 		{
