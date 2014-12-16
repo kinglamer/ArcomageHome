@@ -109,7 +109,7 @@ namespace Arcomage.Core
 
         public GameController(ILog _log, IArcoServer server = null)
         {
-            MaxCard = 5;
+            MaxCard = 6;
             Status = CurrentAction.None;
             log = _log;
             LoseParams = GameControllerHelper.GetLoseParams();
