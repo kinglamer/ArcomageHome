@@ -370,9 +370,9 @@ namespace Arcomage.Core
         #endregion
 
         #endregion
-        
 
 
+        #region private methods
         /// <summary>
         /// Использование карты игроком
         /// </summary>
@@ -559,6 +559,8 @@ namespace Arcomage.Core
 
             log.Info("----===== Ход компьютера закончился =====----");
         }
+
+#endregion
 
 
         #region apply params 
