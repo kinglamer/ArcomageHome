@@ -71,16 +71,10 @@ public class SceneScript : MonoBehaviour, ILog
 				notify.Add ("CurrentAction", CurrentAction.StartGame);
 
 				gm.SendGameNotification (notify);
+				
 
-				PushCardOnDeck (new Vector3 ());
+//				PushCardOnDeck (new Vector3 ());
 			
-		}
-
-		private Vector3 GetSpawn ()
-		{
-				Vector3 spawnPosition = new Vector3 (respawnCard.position.x - 10, respawnCard.position.y, respawnCard.position.z);
-//
-				return spawnPosition;
 		}
 
 		private void CreateCard (Card myCard, ref Vector3 spawnPosition)
@@ -110,6 +104,7 @@ public class SceneScript : MonoBehaviour, ILog
 				card.GetComponent<DoneCardScript> ().cardId = myCard.id;
 				card.GetComponent<DoneCardScript> ().cardParam = Paramscard;
 				card.GetComponent<DoneCardScript> ().cardCost = costCard.value;
+				card.GetComponent<DoneCardScript> ().CardIsActive = gm.IsCanUseCard(myCard.cardParams);
 		
 				int typeCost = 0;
 				switch (costCard.key) {
@@ -165,6 +160,13 @@ public class SceneScript : MonoBehaviour, ILog
 			
 		}
 
+		private Vector3 GetSpawn ()
+		{
+				Vector3 spawnPosition = new Vector3 (respawnCard.position.x - 10, respawnCard.position.y, respawnCard.position.z);
+				//
+				return spawnPosition;
+		}
+
 		public void PassMove (int cardID, Vector3 cardPos)
 		{
 
@@ -201,16 +203,6 @@ public class SceneScript : MonoBehaviour, ILog
 						CreateCard (returnCard, ref cardPos);
 				}
 				//Debug.Log ("Card been destroyed " + cardID + " at position " + cardPos);//тест
-		}
-
-
-
-
-
-		// Update is called once per frame
-		void Update ()
-		{
-		
 		}
 
 		//Метод для вызова экрана конца игры
@@ -256,6 +248,27 @@ public class SceneScript : MonoBehaviour, ILog
 						EndGame (gm.WhoWin () + " WIN!");		
 
 				} 
+
+		}
+
+		// Update is called once per frame
+		void Update ()
+		{
+				CurrentAction curr = gm.Status;
+
+				switch (curr) {
+				case CurrentAction.GetPlayerCard:
+						{
+								PushCardOnDeck (new Vector3 ());
+								Dictionary<string, object> notify = new Dictionary<string, object> ();
+								notify.Add ("CurrentAction", CurrentAction.WaitHumanMove);
+								gm.SendGameNotification (notify);
+						}
+				case CurrentAction.WaitHumanMove:
+			{
+
+			}
+				}
 
 		}
 
