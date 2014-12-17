@@ -25,7 +25,6 @@ public class SceneScript : MonoBehaviour, ILog
 		}
 	#endregion
 
-
 		public Transform respawnCard ;
 		public GameObject cards ;
 		public GUISkin mainSkin;
@@ -60,8 +59,8 @@ public class SceneScript : MonoBehaviour, ILog
 
 		private void StartNewGame ()
 		{
-				ILog log = new ILog ();
-				gm = new GameController (log);
+				//log = new ILog ();
+				gm = new GameController (this);
 
 				gm.AddPlayer (TypePlayer.Human, "Human");
 				gm.AddPlayer (TypePlayer.AI, "Computer");
@@ -104,7 +103,7 @@ public class SceneScript : MonoBehaviour, ILog
 				card.GetComponent<DoneCardScript> ().cardId = myCard.id;
 				card.GetComponent<DoneCardScript> ().cardParam = Paramscard;
 				card.GetComponent<DoneCardScript> ().cardCost = costCard.value;
-				card.GetComponent<DoneCardScript> ().CardIsActive = gm.IsCanUseCard(myCard.cardParams);
+				card.GetComponent<DoneCardScript> ().CardIsActive = gm.IsCanUseCard (myCard.cardParams);
 		
 				int typeCost = 0;
 				switch (costCard.key) {
@@ -167,42 +166,17 @@ public class SceneScript : MonoBehaviour, ILog
 				return spawnPosition;
 		}
 
-		public void PassMove (int cardID, Vector3 cardPos)
+		public void PassMove (int cardID, Vector3 cardPos, int objectID)
 		{
 
-				if (gm.PassMove (cardID)) {
-						PushCardOnDeck (cardPos);
-				}
-
-				gm.EndMove ();
-				EnemuMove ();
-		}
-
-		private void EnemuMove ()
-		{
-				//Todo: анимацию для хода противника
+				PushCardOnDeck (cardPos);
+				
 		}
 
 		//метод для отыгрывания карты
-		public void CardPlayed (int cardID, Vector3 cardPos)
+		public void CardPlayed (int cardID, Vector3 cardPos, int objectID)
 		{
-				if (gm.UseCard (cardID)) {			 	
-
-						var endMov = gm.EndMove ();
-					
-						if (endMov == EndMoveStatus.GetCard) {
-
-								PushCardOnDeck (cardPos);
-						} else {					
-								PushCardOnDeck (cardPos);
-								EnemuMove ();
-						}
 				
-				} else {
-						var returnCard = gm.ReturnCard (cardID);
-						CreateCard (returnCard, ref cardPos);
-				}
-				//Debug.Log ("Card been destroyed " + cardID + " at position " + cardPos);//тест
 		}
 
 		//Метод для вызова экрана конца игры
@@ -244,10 +218,10 @@ public class SceneScript : MonoBehaviour, ILog
 //			Debug.Log ("Pass!");
 //		}
 
-				if (gm.WhoWin ().Length > 0) {
-						EndGame (gm.WhoWin () + " WIN!");		
-
-				} 
+//				if (gm.Winner().Length > 0) {
+//						EndGame (gm.Winner () + " WIN!");		
+//
+//				} 
 
 		}
 
@@ -263,11 +237,12 @@ public class SceneScript : MonoBehaviour, ILog
 								Dictionary<string, object> notify = new Dictionary<string, object> ();
 								notify.Add ("CurrentAction", CurrentAction.WaitHumanMove);
 								gm.SendGameNotification (notify);
+								break;
 						}
 				case CurrentAction.WaitHumanMove:
-			{
-
-			}
+						{
+								break;
+						}
 				}
 
 		}
