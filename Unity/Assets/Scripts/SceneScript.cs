@@ -60,10 +60,17 @@ public class SceneScript : MonoBehaviour, ILog
 
 		private void StartNewGame ()
 		{
-				gm = new GameController (this);
+				ILog log = new ILog ();
+				gm = new GameController (log);
+
 				gm.AddPlayer (TypePlayer.Human, "Human");
-				gm.AddPlayer (TypePlayer.AI, "Comp");
-				gm.StartGame ();
+				gm.AddPlayer (TypePlayer.AI, "Computer");
+				
+				Dictionary<string, object> notify = new Dictionary<string, object> ();
+
+				notify.Add ("CurrentAction", CurrentAction.StartGame);
+
+				gm.SendGameNotification (notify);
 
 				PushCardOnDeck (new Vector3 ());
 			
@@ -82,7 +89,7 @@ public class SceneScript : MonoBehaviour, ILog
 				spawnRotation = Quaternion.identity;
 
 				GameObject card = (GameObject)Instantiate (cards, spawnPosition, spawnRotation);
-				spawnPosition.x += 5f;
+				spawnPosition.x += 4f;
 				spawnPosition.z += 0.5f;
 				card.GetComponent<DoneCardScript> ().cardName = myCard.name;
 				
@@ -147,13 +154,12 @@ public class SceneScript : MonoBehaviour, ILog
 						spawnPosition = GetSpawn ();
 				}
 
+				List <Card> cardList = gm.GetCard ();
 			
+				//while (gm.GetCountCard() < gm.MaxCard) {
+				foreach (Card card in cardList) {
 			
-				while (gm.GetCountCard() < gm.MaxCard) {
-			
-						var myCard = gm.GetCard ();
-			
-						CreateCard (myCard, ref spawnPosition);
+						CreateCard (card, ref spawnPosition);
 				}
 
 			

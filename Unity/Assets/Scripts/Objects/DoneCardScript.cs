@@ -3,31 +3,45 @@ using System.Collections;
 using Arcomage.Core;
 using Arcomage.Entity;
 
-
 public class DoneCardScript : MonoBehaviour
 {
 
-		[System.Serializable]
-		public class Boundary
-		{
-				public float xMin, xMax, yMin, yMax;
-		}
+//		[System.Serializable]
+//		public class Boundary
+//		{
+//				public float xMin, xMax, yMin, yMax;
+//		}
 	
 		private Vector3 screenPoint;
 		private Vector3 offset;
 		private Vector3 startPos;
 		//		private CardParametrs parametrs ;
 	
-		public Boundary boundary;
+//		public Boundary boundary;
+		
+		private bool cardisactiv;
+
+		public bool CardIsActive { 
+				get
+		{ return cardisactiv;}
+				set {
+						if (value)
+								this.renderer.material.SetFloat ("_Light", 0.7f);
+						else
+								this.renderer.material.SetFloat ("_Light", 0.5f);
+						cardisactiv = value;
+				} 
+		}
+
 		public TextMesh CardName;
 		public TextMesh CardParameter;
 		public TextMesh CardCost;
 	
-		public string cardName{ get; set; }
+		public string cardName { get{ return CardName.text; } set{ CardName.text = value; } }
 
-		public string cardParam{ get; set; }
+		public string cardParam { get{ return CardParameter.text; } set{ CardParameter.text = value; } }
 
-		public int cardCost{ get; set; }
+	public int cardCost { get{ return CardCost.text; } set{ CardCost.text = ""+value; } }
 
 		public int cardId { get; set; }
 
@@ -72,9 +86,10 @@ public class DoneCardScript : MonoBehaviour
 	
 		void OnMouseEnter ()
 		{
-			if()
-				transform.Translate (Vector3.back * 5f);
-				this.renderer.material.SetFloat ("_Light", 1f);
+				if (CardIsActive) {
+						transform.Translate (Vector3.back * 5f);
+						this.renderer.material.SetFloat ("_Light", 1f);
+				}
 		
 		}
 	
@@ -99,8 +114,10 @@ public class DoneCardScript : MonoBehaviour
 	
 		void OnMouseExit ()
 		{	
-				transform.Translate (Vector3.forward * 5f);
-				this.renderer.material.SetFloat ("_Light", 0.7f);
+				if (CardIsActive) {
+						transform.Translate (Vector3.forward * 5f);
+						this.renderer.material.SetFloat ("_Light", 0.7f);
+				}
 		}
 
 //		void OnMouseUp ()
@@ -113,16 +130,16 @@ public class DoneCardScript : MonoBehaviour
 
 		void Update ()
 		{
-				CardName.text = cardName;
-				CardParameter.text = cardParam;
-				CardCost.text = "" + cardCost;
+//				CardName.text = cardName;
+//				CardParameter.text = cardParam;
+//				CardCost.text = "" + cardCost;
 				
 		}
 		//Устанавливает рубашку и картинку карты CardBack (RGB 2,1,0 соответственно), Pic - Резерв
 		public void SetCardGraph (int CardBack, Texture2D Pic)
 		{
 				renderer.material.SetFloat ("_CardBackColor", CardBack);
-				renderer.material.SetTexture ("_Picture", (Texture) Pic);
+				renderer.material.SetTexture ("_Picture", (Texture)Pic);
 		}
 
 }
