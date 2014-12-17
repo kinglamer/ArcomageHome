@@ -94,7 +94,9 @@ namespace Arcomage.Tests.Moq
 
 
             var paramsM5 = new List<CardParams>();
-            paramsM5.Add(new CardParams() { key = Specifications.GetCard, value = -50 });
+            paramsM5.Add(new CardParams() { key = Specifications.PlayerColliery, value = 1 });
+            paramsM5.Add(new CardParams() { key = Specifications.PlayerDiamonds, value = 1 });
+            paramsM5.Add(new CardParams() { key = Specifications.PlayAgain, value = -50 });
             paramsM5.Add(new CardParams() { key = Specifications.CostAnimals, value = 0 });
 
             returnVal.Add(new Card()

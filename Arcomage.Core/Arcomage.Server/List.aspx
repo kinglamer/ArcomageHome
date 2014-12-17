@@ -70,13 +70,13 @@
 
 
                     
-             <asp:TemplateField HeaderText="GetCard" >
+             <asp:TemplateField HeaderText="PlayAgain" >
                     <EditItemTemplate>
-                         <asp:CheckBox  ID="cbGetCard" ClientIDMode="AutoID" runat="server"  Checked='<%# Eval("GetCard").ToString() == "1" ? true:false %>'/> 
+                         <asp:CheckBox  ID="cbGetCard" ClientIDMode="AutoID" runat="server"  Checked='<%# Eval("PlayAgain").ToString() == "1" ? true:false %>'/> 
                              
                     </EditItemTemplate>
                     <ItemTemplate>
-                        <asp:Label ID="lbCard" ClientIDMode="AutoID" runat="server" Text='<%# Bind("GetCard") %>'></asp:Label>
+                        <asp:Label ID="lbCard" ClientIDMode="AutoID" runat="server" Text='<%# Bind("PlayAgain") %>'></asp:Label>
                     </ItemTemplate>
             </asp:TemplateField>
 

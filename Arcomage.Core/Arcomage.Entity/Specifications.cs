@@ -25,7 +25,7 @@
         CostAnimals,
         CostRocks,
 
-        GetCard,
+        PlayAgain,
         EnemyDirectDamage,
         PlayerDirectDamage
     }

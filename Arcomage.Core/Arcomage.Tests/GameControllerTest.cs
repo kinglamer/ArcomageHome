@@ -212,15 +212,24 @@ namespace Arcomage.Tests
          /// Результат: статус игры должен быть равным "Игрок должен получить карту" 
          /// </summary>
          [Test]
-         public void CheckApplyGetNewCard()
+         public void CheckPlayAgain()
          {
              gm = GameControllerTestHelper.InitDemoGame();
              GameControllerTestHelper.getCards(gm);
-
              GameControllerTestHelper.useCard(55, gm);
 
+             var result = gm.logCard.Where(x => x.player.type == TypePlayer.Human && x.gameEvent == GameEvent.Used).FirstOrDefault();
+             Assert.AreEqual(result.card.id, 55, "Human должен был использовать карту 55");
 
-            Assert.AreEqual(gm.Status, CurrentAction.GetPlayerCard, "Не правильно применен параметр GetNewCard");
+             var result2 = gm.GetPlayerParams();
+
+
+             Assert.AreEqual(result2[Specifications.PlayerRocks], 7, "Должен быть прирост камней");
+             Assert.AreEqual(result2[Specifications.PlayerDiamonds], 7, "Должен быть прирост брилиантов");
+
+
+
+             Assert.AreEqual(gm.Status, CurrentAction.WaitHumanMove, "Человек может использовать еще одну карту");
          }
 
          /// <summary>

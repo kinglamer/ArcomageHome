@@ -116,10 +116,10 @@ namespace Arcomage.Server
 
             CheckBox chkBx = (CheckBox)row.FindControl("cbGetCard");
             if (chkBx != null && chkBx.Checked)
-                values.Add("GetCard", "1");
+                values.Add("PlayAgain", "1");
             else
             {
-                values.Add("GetCard", null);
+                values.Add("PlayAgain", null);
             }
 
             return values;
