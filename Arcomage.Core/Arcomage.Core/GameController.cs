@@ -39,7 +39,7 @@ namespace Arcomage.Core
         UpdateStatAI, //Обновление статистики компьютера
         EndHumanMove, //Завершение хода игрока
         PlayerMustDropCard, //Статус, что игрок обязан сбросить карту
-        PlayAgain, //Флаг того, что компьютер должен еще раз сыграть карту
+        PlayAgain, //Флаг того, что нужно сыграть еще одну карту
         AIUseCard, //Флаг того, что компьютер завершил использование всех карт (появилось в следствие того, что есть карты, которые заставляют брать еще карту)
         AIMoveIsAnimated, //Анимация стола противника
         AIUseCardAnimation, //Анимация использование хода противника
@@ -370,9 +370,9 @@ namespace Arcomage.Core
         #endregion
 
         #endregion
-        
 
 
+        #region private methods
         /// <summary>
         /// Использование карты игроком
         /// </summary>
@@ -559,6 +559,8 @@ namespace Arcomage.Core
 
             log.Info("----===== Ход компьютера закончился =====----");
         }
+
+#endregion
 
 
         #region apply params 
