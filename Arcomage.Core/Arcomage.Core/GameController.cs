@@ -38,6 +38,7 @@ namespace Arcomage.Core
         UpdateStatHuman, //Обновление статистики игрока
         UpdateStatAI, //Обновление статистики компьютера
         EndHumanMove, //Завершение хода игрока
+        PlayerMustDropCard, //Статус, что игрок обязан сбросить карту
         AIUseCard, //Флаг того, что компьютер завершил использование всех карт (появилось в следствие того, что есть карты, которые заставляют брать еще карту)
         AIMoveIsAnimated, //Анимация стола противника
         AIUseCardAnimation, //Анимация использование хода противника
@@ -88,6 +89,8 @@ namespace Arcomage.Core
         }
 
         protected readonly ILog log;
+        protected readonly IStartParams startParams;
+
         private readonly Dictionary<Specifications, int> WinParams;
         private readonly Dictionary<Specifications, int> LoseParams;
         private const string url = "http://arcomage.somee.com/ArcoServer.svc?wsdl"; //"http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
@@ -96,6 +99,8 @@ namespace Arcomage.Core
         private IArcoServer host;
 
         private Dictionary<CurrentAction, EventMethod> eventHandlers;
+        private Dictionary<int, Action> specialCardHandlers;
+
 
         /// <summary>
         /// Стэк карт с сервера, чтобы реже обращаться к нему
@@ -107,9 +112,13 @@ namespace Arcomage.Core
         #endregion
 
 
-        public GameController(ILog _log, IArcoServer server = null)
+        public GameController(ILog _log, IArcoServer server = null, IStartParams _startParams = null)
         {
-            MaxCard = 6;
+            if (_startParams == null)
+                _startParams = new GameStartParams();
+            startParams = _startParams;
+
+            MaxCard = startParams.MaxPlayerCard;
             Status = CurrentAction.None;
             log = _log;
             LoseParams = GameControllerHelper.GetLoseParams();
@@ -140,7 +149,30 @@ namespace Arcomage.Core
             eventHandlers.Add(CurrentAction.AIUseCardAnimation, AIUseCardAnimation);
             eventHandlers.Add(CurrentAction.EndAIMove, EndAIMove);
             eventHandlers.Add(CurrentAction.EndGame, EndGame);
+            eventHandlers.Add(CurrentAction.PlayerMustDropCard, PlayerMustDropCard);
+
+            specialCardHandlers = new Dictionary<int, Action>();
+            specialCardHandlers.Add(5, Card5);
+            specialCardHandlers.Add(8, Card8);
+            specialCardHandlers.Add(12, Card12);
+            specialCardHandlers.Add(31, Card31);
+            specialCardHandlers.Add(32, Card32);
+            specialCardHandlers.Add(34, Card34);
+            specialCardHandlers.Add(39, CardWithDiscard);
+            specialCardHandlers.Add(48, Card48);
+            specialCardHandlers.Add(64, Card64);
+            specialCardHandlers.Add(67, Card67);
+            specialCardHandlers.Add(73, CardWithDiscard);
+            specialCardHandlers.Add(87, Card87);
+            specialCardHandlers.Add(89, Card89);
+            specialCardHandlers.Add(90, Card90);
+            specialCardHandlers.Add(91, Card91);
+            specialCardHandlers.Add(98, Card98);
+
+          
         }
+
+    
 
         #region public methods
 
@@ -197,7 +229,7 @@ namespace Arcomage.Core
             }
             else
             {
-                return GameControllerHelper.GenerateDefault();
+                return startParams.GenerateDefault();
             }
         }
 
@@ -230,7 +262,7 @@ namespace Arcomage.Core
                     throw new ArgumentOutOfRangeException("tp");
             }
 
-            newPlayer.Statistic = GameControllerHelper.GenerateDefault();
+            newPlayer.Statistic = startParams.GenerateDefault();
             players.Add(newPlayer);
         
         }
@@ -359,8 +391,21 @@ namespace Arcomage.Core
 
             if (IsCanUseCard(costCard))
             {
+                //если карта не имеет специального обработчика, тогда используем как обычно
+                if (!specialCardHandlers.ContainsKey(id))
+                {
+                  
+                    ApplyCardParamsToPlayer(players[currentPlayer].Cards[index].cardParams);
+                }
+                else //иначе вызываем специальный обработчик и потом отнимаем стоимость карты
+                {
+                    specialCardHandlers[id].Invoke();
+                    ApplyCardParamsToPlayer(costCard);
+
+                }
+
                 log.Info("Player: " + players[currentPlayer].playerName + " use card: " + players[currentPlayer].Cards[index].name);
-                ApplyCardParamsToPlayer(players[currentPlayer].Cards[index].cardParams);
+               
 
                 logCard.Add(new GameCardLog() {
                     card = players[currentPlayer].Cards[index],
@@ -378,6 +423,8 @@ namespace Arcomage.Core
 
             return false;
         }
+
+       
 
         private List<CardParams> GetCardById(int id, out int index)
         {
@@ -397,6 +444,12 @@ namespace Arcomage.Core
             if (isGameEnded)
             {
                 log.Info("Игра уже закончилась");
+                return false;
+            }
+
+            if (id == 40 )
+            {
+                log.Info("Эту карту нельзя сбросить!");
                 return false;
             }
 
@@ -432,7 +485,7 @@ namespace Arcomage.Core
         {
             var playerParams = players[currentPlayer].Statistic;
 
-            log.Info("Current state" + Status + ".Update Stat for player " + players[currentPlayer].type);
+            log.Info("UpdateStatistic for " + players[currentPlayer].type);
             GameControllerHelper.PlusValue(Specifications.PlayerDiamonds, playerParams[Specifications.PlayerDiamondMines], players[currentPlayer]);
             GameControllerHelper.PlusValue(Specifications.PlayerAnimals, playerParams[Specifications.PlayerMenagerie], players[currentPlayer]);
             GameControllerHelper.PlusValue(Specifications.PlayerRocks, playerParams[Specifications.PlayerColliery], players[currentPlayer]);
@@ -459,12 +512,25 @@ namespace Arcomage.Core
 
                         if (Status == CurrentAction.EndHumanMove)
                             Status = CurrentAction.AIUseCard;
+                        if (Status == CurrentAction.PlayerMustDropCard)
+                        {
+                            Dictionary<string, object> notify = new Dictionary<string, object>();
+                            notify.Add("CurrentAction", CurrentAction.PassStroke);
+                            notify.Add("ID", players[currentPlayer].Cards.First().id);
+                            SendGameNotification(notify);
+                            if (Status == CurrentAction.GetAICard)
+                            {
+                                GetCard();
+                            }
+
+
+                        }
 
                         break;
                     }
                 }
 
-              
+
                 if (Status == CurrentAction.EndHumanMove)
                     break;
               
@@ -567,7 +633,12 @@ namespace Arcomage.Core
 
         private void ApplyDirectDamage(CardParams item, int player)
         {
-            int tempVal = players[player].Statistic[Specifications.PlayerWall] + item.value;
+            int value = item.value;
+            
+            if (item.value > 0)
+                value = -item.value;
+
+            int tempVal = players[player].Statistic[Specifications.PlayerWall] + value;
 
             if (tempVal < 0)
             {
@@ -577,7 +648,7 @@ namespace Arcomage.Core
             }
             else
             {
-                GameControllerHelper.PlusValue(Specifications.PlayerWall, item.value, players[player]);
+                GameControllerHelper.PlusValue(Specifications.PlayerWall, value, players[player]);
             }
         }
 
@@ -639,6 +710,23 @@ namespace Arcomage.Core
         #endregion
 
         #region Methods switch
+
+        private void PlayerMustDropCard(Dictionary<string, object> info)
+        {
+            if (info["CurrentAction"].ToString() == "PassStroke")
+            {
+                if (PassMove((int)info["ID"]))
+                {
+                    if (players[currentPlayer].type == TypePlayer.Human)
+                        Status = CurrentAction.GetPlayerCard;
+                    else
+                        Status = CurrentAction.GetAICard;
+
+                    UpdateStatistic();
+                    
+                }
+            }
+        }
 
         private void EndGame(Dictionary<string, object> information)
         {
@@ -749,11 +837,15 @@ namespace Arcomage.Core
                 {
                     if (Status != CurrentAction.GetPlayerCard)
                     {
-                        Status = CurrentAction.HumanUseCard;
-                        UpdateStatistic();
-                        Dictionary<string, object> notify = new Dictionary<string, object>();
-                        notify.Add("CurrentAction", CurrentAction.HumanUseCard);
-                        SendGameNotification(notify);
+
+                        if (Status != CurrentAction.PlayerMustDropCard)
+                        {
+                            UpdateStatistic();
+                            Status = CurrentAction.HumanUseCard;
+                            Dictionary<string, object> notify = new Dictionary<string, object>();
+                            notify.Add("CurrentAction", CurrentAction.HumanUseCard);
+                            SendGameNotification(notify);
+                        }
                     }
                 }
             }
@@ -837,6 +929,423 @@ namespace Arcomage.Core
         }
 
         #endregion
+
+
+        #region Special Card Methods
+
+        private void IfElseWithValue(Specifications spec, int value1, int value2)
+        {
+            List<CardParams> result = new List<CardParams>();
+            int index = currentPlayer == 1 ? 0 : 1;
+            if (players[currentPlayer].Statistic[spec] < players[index].Statistic[spec])
+            {
+                result.Add(new CardParams()
+                {
+                    card = null,
+                    id = 0,
+                    key = spec,
+                    value = value1
+                }); 
+               
+            }
+            else
+            {
+                result.Add(new CardParams()
+                {
+                    card = null,
+                    id = 0,
+                    key = spec,
+                    value = value2
+                }); 
+            }
+
+            ApplyCardParamsToPlayer(result);
+        }
+
+        private void IfElseWithValue(Specifications spec, int value1, int value2, int equalVal)
+        {
+            List<CardParams> result = new List<CardParams>();
+
+            if (players[currentPlayer].Statistic[spec] == equalVal)
+            {
+                result.Add(new CardParams()
+                {
+                    card = null,
+                    id = 0,
+                    key = spec,
+                    value = value1
+                });
+
+            }
+            else
+            {
+                result.Add(new CardParams()
+                {
+                    card = null,
+                    id = 0,
+                    key = spec,
+                    value = value2
+                });
+            }
+
+            ApplyCardParamsToPlayer(result);
+        }
+
+        private void Card5( )
+        {
+            IfElseWithValue(Specifications.PlayerColliery,2,1);
+        }
+
+      
+
+        private void Card8()
+        {
+            //If quarry < enemy quarry, quarry = enemy quarry
+
+            Specifications spec = Specifications.PlayerColliery;
+        
+
+            int index = currentPlayer == 1 ? 0 : 1;
+            if (players[currentPlayer].Statistic[spec] < players[index].Statistic[spec])
+                players[currentPlayer].Statistic[spec] = players[index].Statistic[spec];
+          
+        }
+
+        private void Card12()
+        {
+            //If wall = 0,+6 wall,else +3 wall
+            IfElseWithValue(Specifications.PlayerWall, 6, 3,0);
+
+        }
+
+        private void Card31()
+        {
+            Specifications spec = Specifications.PlayerWall;
+
+            //  Player(s) w/lowest Wall are -1 Dungeon -2 Tower
+
+            List<CardParams> result = new List<CardParams>();
+
+            int index = currentPlayer == 1 ? 0 : 1;
+            if (players[currentPlayer].Statistic[spec] < players[index].Statistic[spec])
+            {
+                result.Add(new CardParams()
+                {
+                    card = null,
+                    id = 0,
+                    key = Specifications.PlayerMenagerie,
+                    value = -1
+                });
+
+                result.Add(new CardParams()
+                {
+                    card = null,
+                    id = 0,
+                    key = Specifications.PlayerTower,
+                    value = -2
+                });
+            }
+            else if (players[currentPlayer].Statistic[spec] > players[index].Statistic[spec])
+            {
+                result.Add(new CardParams()
+                {
+                    card = null,
+                    id = 0,
+                    key = Specifications.EnemyMenagerie,
+                    value = -1
+                });
+
+                result.Add(new CardParams()
+                {
+                    card = null,
+                    id = 0,
+                    key = Specifications.EnemyTower,
+                    value = -2
+                });
+
+            }
+
+            ApplyCardParamsToPlayer(result);
+        }
+
+
+        private void Card32()
+        {
+         //   +6 Recruits +6 Wall . if dungeon < enemy dungeon +1 Dungeon
+
+            Specifications spec = Specifications.PlayerMenagerie;
+
+            List<CardParams> result = new List<CardParams>();
+
+            result.Add(new CardParams()
+            {
+                card = null,
+                id = 0,
+                key = Specifications.PlayerAnimals,
+                value = 6
+            });
+
+            result.Add(new CardParams()
+            {
+                card = null,
+                id = 0,
+                key = Specifications.PlayerWall,
+                value = 6
+            });
+
+            int index = currentPlayer == 1 ? 0 : 1;
+            if (players[currentPlayer].Statistic[spec] < players[index].Statistic[spec])
+            {
+
+                result.Add(new CardParams()
+                {
+                    card = null,
+                    id = 0,
+                    key = Specifications.PlayerMenagerie,
+                    value = 1
+                });
+            }
+
+            ApplyCardParamsToPlayer(result);
+        }
+
+        private void Card34()
+        {
+          //  Switch your Wall with enemy Wall
+            Specifications spec = Specifications.PlayerWall;
+            int index = currentPlayer == 1 ? 0 : 1;
+            players[currentPlayer].Statistic[spec] = players[index].Statistic[spec];
+        }
+
+
+        private void Card48()
+        {
+           // All players magic equals the highest player's magic 
+            Specifications spec = Specifications.PlayerDiamondMines;
+            int index = currentPlayer == 1 ? 0 : 1;
+
+            if (players[currentPlayer].Statistic[spec] < players[index].Statistic[spec])
+            {
+                players[currentPlayer].Statistic[spec] = players[index].Statistic[spec];
+            }
+            else 
+            {
+                players[index].Statistic[spec] = players[currentPlayer].Statistic[spec];
+            }
+           
+        }
+
+        private void Card64()
+        {
+           // if Tower < Enemy Tower +2 Tower else +1 Tower
+            IfElseWithValue(Specifications.PlayerTower, 2, 1);
+        }
+
+        private void Card67()
+        {
+          //  if Tower > Enemy Wall 8 Damage to Enemy Tower else 8 Damage
+
+            int index = currentPlayer == 1 ? 0 : 1;
+            List<CardParams> result = new List<CardParams>();
+            if (players[currentPlayer].Statistic[Specifications.PlayerTower] > players[index].Statistic[Specifications.PlayerWall])
+            {
+            
+               result.Add(new CardParams()
+               {
+                   card = null,
+                   id =0,
+                   key = Specifications.EnemyTower,
+                   value = -8
+               }); 
+              
+            }
+            else
+            {
+                result.Add(new CardParams()
+                {
+                    card = null,
+                    id = 0,
+                    key = Specifications.EnemyDirectDamage,
+                    value = -8
+                }); 
+            }
+
+             ApplyCardParamsToPlayer(result);
+
+        }
+
+        private void Card87()
+        {
+           // if Enemy Wall = 0 10 Damage else 6 Damage
+            Specifications spec = Specifications.PlayerWall;
+            List<CardParams> result = new List<CardParams>();
+
+            int index = currentPlayer == 1 ? 0 : 1;
+            if (players[index].Statistic[spec] == 0)
+            {
+                 result.Add(new CardParams()
+               {
+                   card = null,
+                   id =0,
+                   key = Specifications.EnemyDirectDamage,
+                   value = 10
+               }); 
+            }
+            else
+            {
+                result.Add(new CardParams()
+                {
+                    card = null,
+                    id = 0,
+                    key = Specifications.EnemyDirectDamage,
+                    value = 6
+                }); 
+            }
+
+            ApplyCardParamsToPlayer(result);
+
+        }
+
+        private void Card89()
+        {
+            //if Enemy Wall > 0 10 Damage else 7 Damage
+
+            Specifications spec = Specifications.PlayerWall;
+            List<CardParams> result = new List<CardParams>();
+
+            int index = currentPlayer == 1 ? 0 : 1;
+            if (players[index].Statistic[spec] > 0)
+            {
+                result.Add(new CardParams()
+                {
+                    card = null,
+                    id = 0,
+                    key = Specifications.EnemyDirectDamage,
+                    value = 10
+                });
+            }
+            else
+            {
+                result.Add(new CardParams()
+                {
+                    card = null,
+                    id = 0,
+                    key = Specifications.EnemyDirectDamage,
+                    value = 7
+                });
+            }
+
+            ApplyCardParamsToPlayer(result);
+        }
+
+        private void Card90()
+        {
+            //if Magic > Enemy Magic 12 Damage else 8 Damage
+
+            Specifications spec = Specifications.PlayerDiamondMines;
+            List<CardParams> result = new List<CardParams>();
+         
+            int index = currentPlayer == 1 ? 0 : 1;
+            if (players[currentPlayer].Statistic[spec] > players[index].Statistic[spec])
+            {
+                result.Add(new CardParams()
+                {
+                    card = null,
+                    id = 0,
+                    key = Specifications.EnemyDirectDamage,
+                    value = 12
+                });
+            }
+            else 
+            {
+                result.Add(new CardParams()
+                {
+                    card = null,
+                    id = 0,
+                    key = Specifications.EnemyDirectDamage,
+                    value = 8
+                });
+            }
+
+            ApplyCardParamsToPlayer(result);
+        }
+
+        private void Card91()
+        {
+           // if Wall > Enemy Wall 6 Damage to Enemy Tower else 6 Damage 
+
+            Specifications spec = Specifications.PlayerWall;
+            List<CardParams> result = new List<CardParams>();
+
+            int index = currentPlayer == 1 ? 0 : 1;
+            if (players[currentPlayer].Statistic[spec] > players[index].Statistic[spec])
+            {
+                result.Add(new CardParams()
+                {
+                    card = null,
+                    id = 0,
+                    key = Specifications.EnemyTower,
+                    value = -6
+                });
+            }
+            else
+            {
+                result.Add(new CardParams()
+                {
+                    card = null,
+                    id = 0,
+                    key = Specifications.EnemyDirectDamage,
+                    value = 6
+                });
+            }
+
+            ApplyCardParamsToPlayer(result);
+
+        }
+
+
+        private void Card98()
+        {
+            //if Wall > Enemy Wall 3 Damage else 2 Damage
+
+            Specifications spec = Specifications.PlayerWall;
+            List<CardParams> result = new List<CardParams>();
+
+            int index = currentPlayer == 1 ? 0 : 1;
+            if (players[currentPlayer].Statistic[spec] > players[index].Statistic[spec])
+            {
+                result.Add(new CardParams()
+                {
+                    card = null,
+                    id = 0,
+                    key = Specifications.EnemyDirectDamage,
+                    value = 3
+                });
+            }
+            else
+            {
+                result.Add(new CardParams()
+                {
+                    card = null,
+                    id = 0,
+                    key = Specifications.EnemyDirectDamage,
+                    value = 2
+                });
+            }
+
+            ApplyCardParamsToPlayer(result);
+        }
+
+
+        private void CardWithDiscard()
+        {
+            //Draw 1 card Discard 1 card Play again
+            Status = CurrentAction.PlayerMustDropCard;
+        }
+
+        #endregion
+
+
 
     }
 }

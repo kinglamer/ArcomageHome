@@ -47,7 +47,7 @@ namespace Arcomage.Tests
              GameControllerTestHelper.getCards(gm);
 
 
-             useCard(1);
+             GameControllerTestHelper.useCard(1, gm);
 
              Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.Second)[Specifications.PlayerTower], 0, "Башня врага должна быть уничтожена");
 
@@ -120,7 +120,7 @@ namespace Arcomage.Tests
              gm = GameControllerTestHelper.InitDemoGame();
              GameControllerTestHelper.getCards(gm);
 
-             useCard(2);
+             GameControllerTestHelper.useCard(2, gm);
 
              var playerParams = gm.GetPlayerParams(SelectPlayer.First);
 
@@ -158,7 +158,7 @@ namespace Arcomage.Tests
 
              GameControllerTestHelper.getCards(gm);
 
-             useCard(6);
+             GameControllerTestHelper.useCard(6, gm);
              Console.WriteLine("Status " + gm.Status);
              var playerParams = gm.GetPlayerParams(SelectPlayer.First);
 
@@ -176,7 +176,7 @@ namespace Arcomage.Tests
              GameControllerTestHelper.getCards(gm);
 
 
-             useCard(3);
+             GameControllerTestHelper.useCard(3, gm);
 
 
              Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.Second)[Specifications.PlayerWall], 0, "Не правильно применен параметр EnemyDirectDamage");
@@ -184,17 +184,6 @@ namespace Arcomage.Tests
 
 
      
-         }
-
-         private void useCard(int id)
-         {
-             Assert.AreEqual(gm.IsCanUseCard(id), true, "Не возможно использовать карту");
-
-             //перед информацию о том, какую карту использовал игрок
-             Dictionary<string, object> notify = new Dictionary<string, object>();
-             notify.Add("CurrentAction", CurrentAction.HumanUseCard);
-             notify.Add("ID", id);
-             gm.SendGameNotification(notify);
          }
 
          /// <summary>
@@ -207,7 +196,7 @@ namespace Arcomage.Tests
              gm = GameControllerTestHelper.InitDemoGame();
              GameControllerTestHelper.getCards(gm);
 
-             useCard(4);
+             GameControllerTestHelper.useCard(4, gm);
 
 
              Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.First)[Specifications.PlayerWall], 0,
@@ -228,7 +217,7 @@ namespace Arcomage.Tests
              gm = GameControllerTestHelper.InitDemoGame();
              GameControllerTestHelper.getCards(gm);
 
-             useCard(5);
+             GameControllerTestHelper.useCard(55, gm);
 
 
             Assert.AreEqual(gm.Status, CurrentAction.GetPlayerCard, "Не правильно применен параметр GetNewCard");

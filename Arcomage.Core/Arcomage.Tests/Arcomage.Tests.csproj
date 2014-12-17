@@ -68,15 +68,20 @@
     <Compile Include="GameControllerAITest.cs" />
     <Compile Include="GameControllerTestHelper.cs" />
     <Compile Include="LogTest.cs" />
+    <Compile Include="MoqStartParams\TestStartParams.cs" />
+    <Compile Include="MoqStartParams\TestStartParams2.cs" />
+    <Compile Include="MoqStartParams\TestStartParams3.cs" />
     <Compile Include="Moq\TestServer.cs" />
     <Compile Include="Moq\TestServer2.cs" />
     <Compile Include="Moq\TestServer3.cs" />
     <Compile Include="Moq\TestServer4.cs" />
     <Compile Include="Moq\TestServer5.cs" />
+    <Compile Include="Moq\TestServer6.cs" />
     <Compile Include="NUnitExample.cs" />
     <Compile Include="GameControllerTest.cs" />
     <Compile Include="ParserDescripTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpecialCardTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

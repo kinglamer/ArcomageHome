@@ -71,7 +71,7 @@ namespace Arcomage.Tests.Moq
 
 
             var paramsM3 = new List<CardParams>();
-            paramsM3.Add(new CardParams() { key = Specifications.EnemyDirectDamage, value = -50 });
+            paramsM3.Add(new CardParams() { key = Specifications.EnemyDirectDamage, value = 50 });
             paramsM3.Add(new CardParams() { key = Specifications.CostAnimals, value = 0 });
 
             returnVal.Add(new Card()
@@ -82,7 +82,7 @@ namespace Arcomage.Tests.Moq
             });
 
             var paramsM4 = new List<CardParams>();
-            paramsM4.Add(new CardParams() { key = Specifications.PlayerDirectDamage, value = -50 });
+            paramsM4.Add(new CardParams() { key = Specifications.PlayerDirectDamage, value = 50 });
             paramsM4.Add(new CardParams() { key = Specifications.CostAnimals, value = 0 });
 
             returnVal.Add(new Card()
@@ -99,7 +99,7 @@ namespace Arcomage.Tests.Moq
 
             returnVal.Add(new Card()
             {
-                id = 5,
+                id = 55,
                 name = "Check new card params3",
                 cardParams = paramsM5
             });
