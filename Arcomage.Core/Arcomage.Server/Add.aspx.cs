@@ -115,7 +115,7 @@ namespace Arcomage.Server
 
 
             if (cbGetNewCard.Checked)
-                dicParam.Add(Specifications.GetCard, Convert.ToInt16(cbGetNewCard.Checked).ToString());
+                dicParam.Add(Specifications.PlayAgain, Convert.ToInt16(cbGetNewCard.Checked).ToString());
 
             return dicParam;
         }

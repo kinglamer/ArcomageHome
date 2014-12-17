@@ -39,6 +39,7 @@ namespace Arcomage.Core
         UpdateStatAI, //Обновление статистики компьютера
         EndHumanMove, //Завершение хода игрока
         PlayerMustDropCard, //Статус, что игрок обязан сбросить карту
+        PlayAgain, //Флаг того, что компьютер должен еще раз сыграть карту
         AIUseCard, //Флаг того, что компьютер завершил использование всех карт (появилось в следствие того, что есть карты, которые заставляют брать еще карту)
         AIMoveIsAnimated, //Анимация стола противника
         AIUseCardAnimation, //Анимация использование хода противника
@@ -391,6 +392,8 @@ namespace Arcomage.Core
 
             if (IsCanUseCard(costCard))
             {
+                log.Info("Player: " + players[currentPlayer].playerName + " use card: " + players[currentPlayer].Cards[index].name);
+
                 //если карта не имеет специального обработчика, тогда используем как обычно
                 if (!specialCardHandlers.ContainsKey(id))
                 {
@@ -404,7 +407,7 @@ namespace Arcomage.Core
 
                 }
 
-                log.Info("Player: " + players[currentPlayer].playerName + " use card: " + players[currentPlayer].Cards[index].name);
+            
                
 
                 logCard.Add(new GameCardLog() {
@@ -501,17 +504,26 @@ namespace Arcomage.Core
 
             while (Status != CurrentAction.AIUseCard)
             {
-                  if (Status == CurrentAction.GetAICard)
+                if (Status == CurrentAction.GetAICard)
+                {
+                    GetCard();
                     Status = CurrentAction.AIUseCard;
+                }
+
+                if (Status == CurrentAction.PlayAgain)
+                {
+                    UpdateStatistic();
+                    Status = CurrentAction.AIUseCard;
+                }
 
                 foreach (var item in players[currentPlayer].Cards)
                 {
                     if (UseCard(item.id))
                     {
-                        GetCard();
 
                         if (Status == CurrentAction.EndHumanMove)
                             Status = CurrentAction.AIUseCard;
+
                         if (Status == CurrentAction.PlayerMustDropCard)
                         {
                             Dictionary<string, object> notify = new Dictionary<string, object>();
@@ -522,8 +534,6 @@ namespace Arcomage.Core
                             {
                                 GetCard();
                             }
-
-
                         }
 
                         break;
@@ -533,8 +543,12 @@ namespace Arcomage.Core
 
                 if (Status == CurrentAction.EndHumanMove)
                     break;
-              
              
+            }
+
+            if (Status == CurrentAction.AIUseCard)
+            {
+                 GetCard();
             }
 
                //если компьютер не использовал карту и ему не нужно брать еще одну, тогда пропускаем ход
@@ -609,13 +623,9 @@ namespace Arcomage.Core
                         case Specifications.PlayerDirectDamage:
                             ApplyDirectDamage(item, currentPlayer);
                             break;
-                        case Specifications.GetCard:
-                            if (Status != CurrentAction.EndHumanMove)
-                                Status = CurrentAction.GetPlayerCard;
-                            else
-                            {
-                                Status = CurrentAction.GetAICard;
-                            }
+                        case Specifications.PlayAgain:
+                            if (Status != CurrentAction.EndHumanMove || Status != CurrentAction.EndAIMove || Status != CurrentAction.EndGame)
+                                Status = CurrentAction.PlayAgain;
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -835,7 +845,7 @@ namespace Arcomage.Core
             {
                 if (UseCard((int)information["ID"]))
                 {
-                    if (Status != CurrentAction.GetPlayerCard)
+                    if (Status != CurrentAction.PlayAgain)
                     {
 
                         if (Status != CurrentAction.PlayerMustDropCard)
@@ -846,6 +856,11 @@ namespace Arcomage.Core
                             notify.Add("CurrentAction", CurrentAction.HumanUseCard);
                             SendGameNotification(notify);
                         }
+                    }
+                    else
+                    {
+                        Status = CurrentAction.WaitHumanMove;
+                        UpdateStatistic();
                     }
                 }
             }
