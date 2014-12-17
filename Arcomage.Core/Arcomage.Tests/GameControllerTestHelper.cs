@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Arcomage.Core;
 using Arcomage.Tests.Moq;
+using Arcomage.Tests.MoqStartParams;
 using NUnit.Framework;
 
 namespace Arcomage.Tests
@@ -18,7 +19,7 @@ namespace Arcomage.Tests
         public static void getCards(GameController gmController)
         {
             //карты можно получить только, при соответствущем ходе
-            Assert.AreEqual(gmController.Status, CurrentAction.GetPlayerCard, "Сейчас не ход игрока");
+            Assert.AreEqual(gmController.Status, CurrentAction.GetPlayerCard , "Сейчас не ход игрока");
             gmController.GetCard();
 
             //после получения карты, игра должно уведомить о том, что игрок все получил и ждем его хода
@@ -90,6 +91,17 @@ namespace Arcomage.Tests
             gm.SendGameNotification(notify);
 
             return gm;
+        }
+
+        public static void useCard(int id, GameController gameController)
+        {
+            Assert.AreEqual(gameController.IsCanUseCard(id), true, "Не возможно использовать карту");
+
+            //перед информацию о том, какую карту использовал игрок
+            Dictionary<string, object> notify = new Dictionary<string, object>();
+            notify.Add("CurrentAction", CurrentAction.HumanUseCard);
+            notify.Add("ID", id);
+            gameController.SendGameNotification(notify);
         }
     }
 }

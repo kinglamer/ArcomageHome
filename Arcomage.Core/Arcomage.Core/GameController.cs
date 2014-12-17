@@ -38,6 +38,7 @@ namespace Arcomage.Core
         UpdateStatHuman, //Обновление статистики игрока
         UpdateStatAI, //Обновление статистики компьютера
         EndHumanMove, //Завершение хода игрока
+        PlayerMustDropCard, //Статус, что игрок обязан сбросить карту
         AIUseCard, //Флаг того, что компьютер завершил использование всех карт (появилось в следствие того, что есть карты, которые заставляют брать еще карту)
         AIMoveIsAnimated, //Анимация стола противника
         AIUseCardAnimation, //Анимация использование хода противника
@@ -88,6 +89,8 @@ namespace Arcomage.Core
         }
 
         protected readonly ILog log;
+        protected readonly IStartParams startParams;
+
         private readonly Dictionary<Specifications, int> WinParams;
         private readonly Dictionary<Specifications, int> LoseParams;
         private const string url = "http://arcomage.somee.com/ArcoServer.svc?wsdl"; //"http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
@@ -109,9 +112,13 @@ namespace Arcomage.Core
         #endregion
 
 
-        public GameController(ILog _log, IArcoServer server = null)
+        public GameController(ILog _log, IArcoServer server = null, IStartParams _startParams = null)
         {
-            MaxCard = 6;
+            if (_startParams == null)
+                _startParams = new GameStartParams();
+            startParams = _startParams;
+
+            MaxCard = startParams.MaxPlayerCard;
             Status = CurrentAction.None;
             log = _log;
             LoseParams = GameControllerHelper.GetLoseParams();
@@ -142,27 +149,30 @@ namespace Arcomage.Core
             eventHandlers.Add(CurrentAction.AIUseCardAnimation, AIUseCardAnimation);
             eventHandlers.Add(CurrentAction.EndAIMove, EndAIMove);
             eventHandlers.Add(CurrentAction.EndGame, EndGame);
-
-       
+            eventHandlers.Add(CurrentAction.PlayerMustDropCard, PlayerMustDropCard);
 
             specialCardHandlers = new Dictionary<int, Action>();
             specialCardHandlers.Add(5, Card5);
             specialCardHandlers.Add(8, Card8);
             specialCardHandlers.Add(12, Card12);
             specialCardHandlers.Add(31, Card31);
-
+            specialCardHandlers.Add(32, Card32);
             specialCardHandlers.Add(34, Card34);
+            specialCardHandlers.Add(39, CardWithDiscard);
             specialCardHandlers.Add(48, Card48);
             specialCardHandlers.Add(64, Card64);
             specialCardHandlers.Add(67, Card67);
+            specialCardHandlers.Add(73, CardWithDiscard);
             specialCardHandlers.Add(87, Card87);
             specialCardHandlers.Add(89, Card89);
             specialCardHandlers.Add(90, Card90);
             specialCardHandlers.Add(91, Card91);
             specialCardHandlers.Add(98, Card98);
-            
 
+          
         }
+
+    
 
         #region public methods
 
@@ -219,7 +229,7 @@ namespace Arcomage.Core
             }
             else
             {
-                return GameControllerHelper.GenerateDefault();
+                return startParams.GenerateDefault();
             }
         }
 
@@ -252,7 +262,7 @@ namespace Arcomage.Core
                     throw new ArgumentOutOfRangeException("tp");
             }
 
-            newPlayer.Statistic = GameControllerHelper.GenerateDefault();
+            newPlayer.Statistic = startParams.GenerateDefault();
             players.Add(newPlayer);
         
         }
@@ -475,7 +485,7 @@ namespace Arcomage.Core
         {
             var playerParams = players[currentPlayer].Statistic;
 
-            log.Info("Current state" + Status + ".Update Stat for player " + players[currentPlayer].type);
+            log.Info("UpdateStatistic for " + players[currentPlayer].type);
             GameControllerHelper.PlusValue(Specifications.PlayerDiamonds, playerParams[Specifications.PlayerDiamondMines], players[currentPlayer]);
             GameControllerHelper.PlusValue(Specifications.PlayerAnimals, playerParams[Specifications.PlayerMenagerie], players[currentPlayer]);
             GameControllerHelper.PlusValue(Specifications.PlayerRocks, playerParams[Specifications.PlayerColliery], players[currentPlayer]);
@@ -502,12 +512,25 @@ namespace Arcomage.Core
 
                         if (Status == CurrentAction.EndHumanMove)
                             Status = CurrentAction.AIUseCard;
+                        if (Status == CurrentAction.PlayerMustDropCard)
+                        {
+                            Dictionary<string, object> notify = new Dictionary<string, object>();
+                            notify.Add("CurrentAction", CurrentAction.PassStroke);
+                            notify.Add("ID", players[currentPlayer].Cards.First().id);
+                            SendGameNotification(notify);
+                            if (Status == CurrentAction.GetAICard)
+                            {
+                                GetCard();
+                            }
+
+
+                        }
 
                         break;
                     }
                 }
 
-              
+
                 if (Status == CurrentAction.EndHumanMove)
                     break;
               
@@ -610,7 +633,12 @@ namespace Arcomage.Core
 
         private void ApplyDirectDamage(CardParams item, int player)
         {
-            int tempVal = players[player].Statistic[Specifications.PlayerWall] + item.value;
+            int value = item.value;
+            
+            if (item.value > 0)
+                value = -item.value;
+
+            int tempVal = players[player].Statistic[Specifications.PlayerWall] + value;
 
             if (tempVal < 0)
             {
@@ -620,7 +648,7 @@ namespace Arcomage.Core
             }
             else
             {
-                GameControllerHelper.PlusValue(Specifications.PlayerWall, item.value, players[player]);
+                GameControllerHelper.PlusValue(Specifications.PlayerWall, value, players[player]);
             }
         }
 
@@ -682,6 +710,23 @@ namespace Arcomage.Core
         #endregion
 
         #region Methods switch
+
+        private void PlayerMustDropCard(Dictionary<string, object> info)
+        {
+            if (info["CurrentAction"].ToString() == "PassStroke")
+            {
+                if (PassMove((int)info["ID"]))
+                {
+                    if (players[currentPlayer].type == TypePlayer.Human)
+                        Status = CurrentAction.GetPlayerCard;
+                    else
+                        Status = CurrentAction.GetAICard;
+
+                    UpdateStatistic();
+                    
+                }
+            }
+        }
 
         private void EndGame(Dictionary<string, object> information)
         {
@@ -792,11 +837,15 @@ namespace Arcomage.Core
                 {
                     if (Status != CurrentAction.GetPlayerCard)
                     {
-                        Status = CurrentAction.HumanUseCard;
-                        UpdateStatistic();
-                        Dictionary<string, object> notify = new Dictionary<string, object>();
-                        notify.Add("CurrentAction", CurrentAction.HumanUseCard);
-                        SendGameNotification(notify);
+
+                        if (Status != CurrentAction.PlayerMustDropCard)
+                        {
+                            UpdateStatistic();
+                            Status = CurrentAction.HumanUseCard;
+                            Dictionary<string, object> notify = new Dictionary<string, object>();
+                            notify.Add("CurrentAction", CurrentAction.HumanUseCard);
+                            SendGameNotification(notify);
+                        }
                     }
                 }
             }
@@ -1024,7 +1073,40 @@ namespace Arcomage.Core
         {
          //   +6 Recruits +6 Wall . if dungeon < enemy dungeon +1 Dungeon
 
+            Specifications spec = Specifications.PlayerMenagerie;
 
+            List<CardParams> result = new List<CardParams>();
+
+            result.Add(new CardParams()
+            {
+                card = null,
+                id = 0,
+                key = Specifications.PlayerAnimals,
+                value = 6
+            });
+
+            result.Add(new CardParams()
+            {
+                card = null,
+                id = 0,
+                key = Specifications.PlayerWall,
+                value = 6
+            });
+
+            int index = currentPlayer == 1 ? 0 : 1;
+            if (players[currentPlayer].Statistic[spec] < players[index].Statistic[spec])
+            {
+
+                result.Add(new CardParams()
+                {
+                    card = null,
+                    id = 0,
+                    key = Specifications.PlayerMenagerie,
+                    value = 1
+                });
+            }
+
+            ApplyCardParamsToPlayer(result);
         }
 
         private void Card34()
@@ -1084,7 +1166,7 @@ namespace Arcomage.Core
                     card = null,
                     id = 0,
                     key = Specifications.EnemyDirectDamage,
-                    value = 8
+                    value = -8
                 }); 
             }
 
@@ -1203,7 +1285,7 @@ namespace Arcomage.Core
                     card = null,
                     id = 0,
                     key = Specifications.EnemyTower,
-                    value = 6
+                    value = -6
                 });
             }
             else
@@ -1253,6 +1335,14 @@ namespace Arcomage.Core
 
             ApplyCardParamsToPlayer(result);
         }
+
+
+        private void CardWithDiscard()
+        {
+            //Draw 1 card Discard 1 card Play again
+            Status = CurrentAction.PlayerMustDropCard;
+        }
+
         #endregion
 
 

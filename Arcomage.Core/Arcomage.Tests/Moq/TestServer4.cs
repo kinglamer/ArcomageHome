@@ -95,6 +95,16 @@ namespace Arcomage.Tests.Moq
 
 
 
+            var paramsM5 = new List<CardParams>();
+            paramsM5.Add(new CardParams() { key = Specifications.GetCard, value = -50 });
+            paramsM5.Add(new CardParams() { key = Specifications.CostAnimals, value = 0 });
+
+            returnVal.Add(new Card()
+            {
+                id = 55,
+                name = "CardGetCard",
+                cardParams = paramsM5
+            });
 
 
             var paramsM6 = new List<CardParams>();
@@ -108,17 +118,7 @@ namespace Arcomage.Tests.Moq
                 cardParams = paramsM6
             });
 
-            var paramsM5 = new List<CardParams>();
-            paramsM5.Add(new CardParams() { key = Specifications.GetCard, value = -50 });
-            paramsM5.Add(new CardParams() { key = Specifications.CostAnimals, value = 0 });
-
-            returnVal.Add(new Card()
-            {
-                id = 5,
-                name = "CardGetCard",
-                cardParams = paramsM5
-            });
-
+    
             Console.WriteLine("Количество карт на сервер " + returnVal.Count);
             return JsonConvert.SerializeObject(returnVal);
         }

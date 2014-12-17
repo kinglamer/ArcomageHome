@@ -33,26 +33,8 @@ namespace Arcomage.Core
             return enumVal;
         }
 
-        /// <summary>
-        /// Генерация стандартных значений для игрока:
-        /// стена, башня, шахты, ресурсы
-        /// </summary>
-        /// <returns></returns>
-        public static Dictionary<Specifications, int> GenerateDefault()
-        {
-            Dictionary<Specifications, int> returnVal = new Dictionary<Specifications, int>();
-            returnVal.Add(Specifications.PlayerWall, 5);
-            returnVal.Add(Specifications.PlayerTower, 10);
 
-            returnVal.Add(Specifications.PlayerMenagerie, 1);
-            returnVal.Add(Specifications.PlayerColliery, 1);
-            returnVal.Add(Specifications.PlayerDiamondMines, 1);
-
-            returnVal.Add(Specifications.PlayerRocks, 5);
-            returnVal.Add(Specifications.PlayerDiamonds, 5);
-            returnVal.Add(Specifications.PlayerAnimals, 5);
-            return returnVal;
-        }
+      
 
         public static void MinusValue(Specifications spec, int value, IPlayer playerParam)
         {
