@@ -31,6 +31,7 @@ public class SceneScript : MonoBehaviour, ILog
 		public static GameController gm;
 		public Texture2D PicAtlas;
 		List<TextAtlasCoordinate> coordinates ;
+		private CurrentAction curr;
 
 
 		// Use this for initialization
@@ -82,8 +83,7 @@ public class SceneScript : MonoBehaviour, ILog
 				spawnRotation = Quaternion.identity;
 
 				GameObject card = (GameObject)Instantiate (cards, spawnPosition, spawnRotation);
-				spawnPosition.x += 4f;
-				spawnPosition.z += 0.5f;
+				spawnPosition.x += 4.8f;
 				card.GetComponent<DoneCardScript> ().cardName = myCard.name;
 				
 
@@ -161,22 +161,34 @@ public class SceneScript : MonoBehaviour, ILog
 
 		private Vector3 GetSpawn ()
 		{
-				Vector3 spawnPosition = new Vector3 (respawnCard.position.x - 10, respawnCard.position.y, respawnCard.position.z);
+				Vector3 spawnPosition = new Vector3 (respawnCard.position.x - 12, respawnCard.position.y, respawnCard.position.z);
 				//
 				return spawnPosition;
 		}
 
-		public void PassMove (int cardID, Vector3 cardPos, int objectID)
+		public void PassMove (int cardID, Vector3 cardPos, GameObject cardObject)
 		{
-
-				PushCardOnDeck (cardPos);
+				if (curr == CurrentAction.WaitHumanMove) {
+						Dictionary<string, object> notify = new Dictionary<string, object> ();
+						notify.Add ("CurrentAction", CurrentAction.PassStroke);
+						notify.Add ("ID", cardID);
+						gm.SendGameNotification (notify);
+						Destroy (cardObject);
+				}
+//				PushCardOnDeck (cardPos);
 				
 		}
 
 		//метод для отыгрывания карты
-		public void CardPlayed (int cardID, Vector3 cardPos, int objectID)
+		public void CardPlayed (int cardID, Vector3 cardPos, GameObject cardObject)
 		{
-				
+				if (curr == CurrentAction.WaitHumanMove) {
+						Dictionary<string, object> notify = new Dictionary<string, object> ();
+						notify.Add ("CurrentAction", CurrentAction.HumanUseCard);
+						notify.Add ("ID", cardID);
+						gm.SendGameNotification (notify);
+						Destroy (cardObject);
+				}
 		}
 
 		//Метод для вызова экрана конца игры
@@ -228,7 +240,7 @@ public class SceneScript : MonoBehaviour, ILog
 		// Update is called once per frame
 		void Update ()
 		{
-				CurrentAction curr = gm.Status;
+				curr = gm.Status;
 
 				switch (curr) {
 				case CurrentAction.GetPlayerCard:
