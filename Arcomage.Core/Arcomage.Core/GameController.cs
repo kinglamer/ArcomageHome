@@ -887,6 +887,8 @@ namespace Arcomage.Core
         {
             if (information["CurrentAction"].ToString() == "AIUseCardAnimation")
             {
+                Status = CurrentAction.EndHumanMove;
+                MakeMoveAI();
                 Status = CurrentAction.AIUseCardAnimation;
             }
             else if (information["CurrentAction"].ToString() == "GetPlayerCard")
@@ -934,7 +936,7 @@ namespace Arcomage.Core
                 Dictionary<string, object> notify = new Dictionary<string, object>();
                 if (players[currentPlayer].type == TypePlayer.AI)
                 {
-                    notify.Add("CurrentAction", CurrentAction.AIMoveIsAnimated);
+                    notify.Add("CurrentAction", CurrentAction.AIUseCardAnimation);
                 }
                 else
                 {
