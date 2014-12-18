@@ -819,8 +819,9 @@ namespace Arcomage.Core
 
         private void HumanUseCard(Dictionary<string, object> information)
         {
-            if (information["CurrentAction"].ToString() == "HumanUseCard")
+            if (information["CurrentAction"].ToString() == "AnimateHumanMove")
             {
+                UpdateStatistic();
                 Status = CurrentAction.UpdateStatHuman;
             }
         }
@@ -852,11 +853,9 @@ namespace Arcomage.Core
 
                         if (Status != CurrentAction.PlayerMustDropCard)
                         {
-                            UpdateStatistic();
+                          
                             Status = CurrentAction.HumanUseCard;
-                            Dictionary<string, object> notify = new Dictionary<string, object>();
-                            notify.Add("CurrentAction", CurrentAction.HumanUseCard);
-                            SendGameNotification(notify);
+                         
                         }
                     }
                     else
