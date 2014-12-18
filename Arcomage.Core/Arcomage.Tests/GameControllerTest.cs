@@ -122,6 +122,8 @@ namespace Arcomage.Tests
 
              GameControllerTestHelper.useCard(2, gm);
 
+
+
              var playerParams = gm.GetPlayerParams(SelectPlayer.First);
 
             
@@ -159,7 +161,7 @@ namespace Arcomage.Tests
              GameControllerTestHelper.getCards(gm);
 
              GameControllerTestHelper.useCard(6, gm);
-             Console.WriteLine("Status " + gm.Status);
+
              var playerParams = gm.GetPlayerParams(SelectPlayer.First);
 
              Assert.AreEqual(playerParams[Specifications.PlayerDiamonds], 5 + 11 + 1, "Не правильно применен параметр PlayerDiamonds");
@@ -216,7 +218,15 @@ namespace Arcomage.Tests
          {
              gm = GameControllerTestHelper.InitDemoGame();
              GameControllerTestHelper.getCards(gm);
-             GameControllerTestHelper.useCard(55, gm);
+
+             Assert.AreEqual(gm.IsCanUseCard(55), true, "Не возможно использовать карту");
+
+             //перед информацию о том, какую карту использовал игрок
+             Dictionary<string, object> notify = new Dictionary<string, object>();
+             notify.Add("CurrentAction", CurrentAction.HumanUseCard);
+             notify.Add("ID", 55);
+             gm.SendGameNotification(notify);
+
 
              var result = gm.logCard.Where(x => x.player.type == TypePlayer.Human && x.gameEvent == GameEvent.Used).FirstOrDefault();
              Assert.AreEqual(result.card.id, 55, "Human должен был использовать карту 55");

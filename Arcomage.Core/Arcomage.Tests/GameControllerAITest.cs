@@ -26,6 +26,34 @@ namespace Arcomage.Tests
            
         }
 
+
+        /// <summary>
+        /// Цель: проверить, что компьютер может начать игру 
+        /// Результат: компьютер должен использовать карту и передать ход человеку
+        /// </summary>
+        [Test]
+        public void AICanStartTheGame()
+        {
+            LogTest log = new LogTest();
+            GameController gm = new GameController(log, new TestServer2());
+   
+
+
+            Assert.AreNotEqual(gm, null, "Геймконтроллер не должен быть пустым");
+            gm.AddPlayer(TypePlayer.Human, "Human");
+            gm.AddPlayer(TypePlayer.AI, "AI");
+
+
+            Dictionary<string, object> notify = new Dictionary<string, object>();
+            notify.Add("CurrentAction", CurrentAction.StartGame);
+            notify.Add("currentPlayer", TypePlayer.AI); //делаем подтасовку небольшую, чтобы начал свой ход компьютер
+            gm.SendGameNotification(notify);
+
+
+            Assert.AreEqual(gm.Status, CurrentAction.AIUseCardAnimation, "Текущий статус должен быть равным прорисовке карты компьютера");
+        }
+
+
         /// <summary>
         /// Цель: проверить, что компьютер использовал карту
         /// Результат: компьютер должен использовать карту с id == 1, т.к. на данный момент она подходит под все условия
