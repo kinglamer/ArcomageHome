@@ -819,8 +819,13 @@ namespace Arcomage.Core
 
         private void HumanUseCard(Dictionary<string, object> information)
         {
+<<<<<<< HEAD
             if (information["CurrentAction"].ToString() == "UpdateStatHuman")
+=======
+            if (information["CurrentAction"].ToString() == "AnimateHumanMove")
+>>>>>>> 754fdd4dae8b8c3e550ca618bac5c040c432002b
             {
+                UpdateStatistic();
                 Status = CurrentAction.UpdateStatHuman;
             }
         }
@@ -852,11 +857,9 @@ namespace Arcomage.Core
 
                         if (Status != CurrentAction.PlayerMustDropCard)
                         {
-                            UpdateStatistic();
+                          
                             Status = CurrentAction.HumanUseCard;
-                            Dictionary<string, object> notify = new Dictionary<string, object>();
-                            notify.Add("CurrentAction", CurrentAction.HumanUseCard);
-                            SendGameNotification(notify);
+                         
                         }
                     }
                     else
@@ -887,6 +890,8 @@ namespace Arcomage.Core
         {
             if (information["CurrentAction"].ToString() == "AIUseCardAnimation")
             {
+                Status = CurrentAction.EndHumanMove;
+                MakeMoveAI();
                 Status = CurrentAction.AIUseCardAnimation;
             }
             else if (information["CurrentAction"].ToString() == "GetPlayerCard")
@@ -934,7 +939,7 @@ namespace Arcomage.Core
                 Dictionary<string, object> notify = new Dictionary<string, object>();
                 if (players[currentPlayer].type == TypePlayer.AI)
                 {
-                    notify.Add("CurrentAction", CurrentAction.AIMoveIsAnimated);
+                    notify.Add("CurrentAction", CurrentAction.AIUseCardAnimation);
                 }
                 else
                 {

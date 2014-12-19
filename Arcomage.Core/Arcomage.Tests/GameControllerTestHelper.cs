@@ -102,6 +102,15 @@ namespace Arcomage.Tests
             notify.Add("CurrentAction", CurrentAction.HumanUseCard);
             notify.Add("ID", id);
             gameController.SendGameNotification(notify);
+
+            Assert.AreEqual(gameController.Status, CurrentAction.HumanUseCard, "Должен быть статус, что игрок использовал карту");
+
+
+            Dictionary<string, object> notify2 = new Dictionary<string, object>();
+            notify2.Add("CurrentAction", CurrentAction.AnimateHumanMove);
+            gameController.SendGameNotification(notify2);
+
+            Assert.AreEqual(gameController.Status, CurrentAction.UpdateStatHuman, "Должен быть статус, что анимация карты прошла и теперь нужно обновить статистику");
         }
     }
 }

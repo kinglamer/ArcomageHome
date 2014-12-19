@@ -9,8 +9,6 @@ public class DoneCardScript : MonoBehaviour
 		private Vector3 screenPoint;
 		private Vector3 offset;
 		private Vector3 startPos;
-
-		
 		private bool cardisactiv;
 
 		public bool CardIsActive { 
@@ -20,7 +18,7 @@ public class DoneCardScript : MonoBehaviour
 						if (value)
 								this.renderer.material.SetFloat ("_Light", 0.7f);
 						else
-								this.renderer.material.SetFloat ("_Light", 0.5f);
+								this.renderer.material.SetFloat ("_Light", 0.2f);
 						cardisactiv = value;
 				} 
 		}
@@ -29,11 +27,11 @@ public class DoneCardScript : MonoBehaviour
 		public TextMesh CardParameter;
 		public TextMesh CardCost;
 	
-		public string cardName { get{ return CardName.text; } set{ CardName.text = value; } }
+		public string cardName { get { return CardName.text; } set { CardName.text = value; } }
 
-		public string cardParam { get{ return CardParameter.text; } set{ CardParameter.text = value; } }
+		public string cardParam { get { return CardParameter.text; } set { CardParameter.text = value; } }
 
-		public int cardCost { get{ return int.Parse(CardCost.text); } set{ CardCost.text = ""+value; } }
+		public int cardCost { get { return int.Parse (CardCost.text); } set { CardCost.text = "" + value; } }
 
 		public int cardId { get; set; }
 
@@ -48,7 +46,6 @@ public class DoneCardScript : MonoBehaviour
 				gameController = GameObject.FindWithTag ("GameController");
 				startPos = transform.position;
 		}
-	
 
 		void OnMouseEnter ()
 		{
@@ -61,17 +58,18 @@ public class DoneCardScript : MonoBehaviour
 	
 		void OnMouseOver ()
 		{
-				if (Input.GetMouseButtonDown (0)) {
-						currentTime = Time.time;
-						if ((currentTime - lastClickTime) < clickTime) {
-								gameController.GetComponent<SceneScript> ().CardPlayed (cardId, startPos, gameObject.GetInstanceID());
+				if (CardIsActive) {
+						if (Input.GetMouseButtonDown (0)) {
+								currentTime = Time.time;
+								if ((currentTime - lastClickTime) < clickTime) {
+										gameController.GetComponent<SceneScript> ().CardPlayed (cardId, startPos, gameObject);
+								}
+								lastClickTime = currentTime;
 						}
-						lastClickTime = currentTime;
-				}
 
-				if (Input.GetMouseButtonDown (1)) {
-						Debug.Log ("Pass!");
-						gameController.GetComponent<SceneScript> ().PassMove (cardId, startPos, gameObject.GetInstanceID());
+						if (Input.GetMouseButtonDown (1)) {
+								gameController.GetComponent<SceneScript> ().PassMove (cardId, startPos, gameObject);
+						}
 				}
 		}
 	
@@ -82,7 +80,6 @@ public class DoneCardScript : MonoBehaviour
 						this.renderer.material.SetFloat ("_Light", 0.7f);
 				}
 		}
-
 
 		void Update ()
 		{
