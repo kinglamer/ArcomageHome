@@ -378,7 +378,13 @@ namespace Arcomage.Tests
             gm = new GameController(log, new TestServer6(), new TestStartParams2());
             AddPlayers();
             GameControllerTestHelper.getCards(gm);
-            GameControllerTestHelper.useCard(39, gm);
+            Assert.AreEqual(gm.IsCanUseCard(39), true, "Не возможно использовать карту");
+
+            //перед информацию о том, какую карту использовал игрок
+            Dictionary<string, object> notify2 = new Dictionary<string, object>();
+            notify2.Add("CurrentAction", CurrentAction.HumanUseCard);
+            notify2.Add("ID", 39);
+            gm.SendGameNotification(notify2);
 
             Assert.AreEqual(gm.Status, CurrentAction.PlayerMustDropCard, "Игрок должен сбросить карту");
 
