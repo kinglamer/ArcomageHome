@@ -819,11 +819,7 @@ namespace Arcomage.Core
 
         private void HumanUseCard(Dictionary<string, object> information)
         {
-<<<<<<< HEAD
-            if (information["CurrentAction"].ToString() == "UpdateStatHuman")
-=======
             if (information["CurrentAction"].ToString() == "AnimateHumanMove")
->>>>>>> 754fdd4dae8b8c3e550ca618bac5c040c432002b
             {
                 UpdateStatistic();
                 Status = CurrentAction.UpdateStatHuman;
