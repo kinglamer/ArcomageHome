@@ -32,7 +32,7 @@ public class SceneScript : MonoBehaviour, ILog
 		public Texture2D PicAtlas;
 		List<TextAtlasCoordinate> coordinates ;
 		private CurrentAction curr;
-
+		public GameObject gameScreenText;
 
 		// Use this for initialization
 		void Start ()
@@ -169,7 +169,7 @@ public class SceneScript : MonoBehaviour, ILog
 
 		public void PassMove (int cardID, Vector3 cardPos, GameObject cardObject)
 		{
-				if (curr == CurrentAction.WaitHumanMove) {
+				if (curr == CurrentAction.WaitHumanMove || curr == CurrentAction.PlayerMustDropCard) {
 						Dictionary<string, object> notify = new Dictionary<string, object> ();
 						notify.Add ("CurrentAction", CurrentAction.PassStroke);
 						notify.Add ("ID", cardID);
@@ -194,21 +194,23 @@ public class SceneScript : MonoBehaviour, ILog
 				}
 		}
 
-		public void HumanCardPlayEnd (GameObject cardObject)
+		public void HumanCardPlayEnd (GameObject cardObject, Vector3 position)
 		{
 				cardObject.GetComponent<CardMoover> ().enabled = false;
-				Destroy (cardObject, 5);
+				Destroy (cardObject, 2);
+				PushCardOnDeck (position);
 				Dictionary<string, object> notify = new Dictionary<string, object> ();
-				notify.Add ("CurrentAction", CurrentAction.UpdateStatHuman);
+				notify.Add ("CurrentAction", CurrentAction.AnimateHumanMove);
 				gm.SendGameNotification (notify);
 		}
 
-		public void HumanCardPassEnd (GameObject cardObject)
+		public void HumanCardPassEnd (GameObject cardObject, Vector3 position)
 		{
 				cardObject.GetComponent<CardPassMoover> ().enabled = false;
 				Destroy (cardObject);
+				PushCardOnDeck (position);
 				Dictionary<string, object> notify = new Dictionary<string, object> ();
-				notify.Add ("CurrentAction", CurrentAction.UpdateStatHuman);
+				notify.Add ("CurrentAction", CurrentAction.AnimateHumanMove);
 				gm.SendGameNotification (notify);
 		}
 
@@ -258,6 +260,31 @@ public class SceneScript : MonoBehaviour, ILog
 
 		}
 
+		void UpdateGameParameters ()
+		{
+				Dictionary<Specifications,int> humanparam = gm.GetPlayerParams (SelectPlayer.First);
+				Dictionary<Specifications,int> enemyparam = gm.GetPlayerParams (SelectPlayer.Second);
+		
+				gameObject.GetComponent<GUIScript> ().PlayerTower.text = humanparam [Specifications.PlayerTower].ToString ();
+				gameObject.GetComponent<GUIScript> ().PlayerWall.text = humanparam [Specifications.PlayerWall].ToString ();
+				gameObject.GetComponent<GUIScript> ().PlayerDiamonds.text = humanparam [Specifications.PlayerDiamonds].ToString ();
+				gameObject.GetComponent<GUIScript> ().PlayerAnimal.text = humanparam [Specifications.PlayerAnimals].ToString ();
+				gameObject.GetComponent<GUIScript> ().PlayerRock.text = humanparam [Specifications.PlayerRocks].ToString ();
+				gameObject.GetComponent<GUIScript> ().PlayerMine.text = humanparam [Specifications.PlayerColliery].ToString ();
+				gameObject.GetComponent<GUIScript> ().PlayerMagic.text = humanparam [Specifications.PlayerDiamondMines].ToString ();
+				gameObject.GetComponent<GUIScript> ().PlayerMenagerie.text = humanparam [Specifications.PlayerMenagerie].ToString ();
+				
+				gameObject.GetComponent<GUIScript> ().EnemyTower.text = enemyparam [Specifications.PlayerTower].ToString ();
+				gameObject.GetComponent<GUIScript> ().EnemyWall.text = enemyparam [Specifications.PlayerWall].ToString ();
+				gameObject.GetComponent<GUIScript> ().EnemyDiamonds.text = enemyparam [Specifications.PlayerDiamonds].ToString ();
+				gameObject.GetComponent<GUIScript> ().EnemyAnimal.text = enemyparam [Specifications.PlayerAnimals].ToString ();
+				gameObject.GetComponent<GUIScript> ().EnemyRock.text = enemyparam [Specifications.PlayerRocks].ToString ();
+				gameObject.GetComponent<GUIScript> ().EnemyMine.text = enemyparam [Specifications.PlayerColliery].ToString ();
+				gameObject.GetComponent<GUIScript> ().EnemyMagic.text = enemyparam [Specifications.PlayerDiamondMines].ToString ();
+				gameObject.GetComponent<GUIScript> ().EnemyMenagerie.text = enemyparam [Specifications.PlayerMenagerie].ToString ();
+
+		}
+
 		// Update is called once per frame
 		void Update ()
 		{
@@ -270,6 +297,7 @@ public class SceneScript : MonoBehaviour, ILog
 								Dictionary<string, object> notify = new Dictionary<string, object> ();
 								notify.Add ("CurrentAction", CurrentAction.WaitHumanMove);
 								gm.SendGameNotification (notify);
+								UpdateGameParameters ();
 								break;
 						}
 				case CurrentAction.WaitHumanMove:
@@ -282,16 +310,21 @@ public class SceneScript : MonoBehaviour, ILog
 						}
 				case CurrentAction.PassStroke:
 						{
+								gameScreenText.guiText.enabled = false;
+								break;
+						}
+				case CurrentAction.PlayerMustDropCard:
+						{
+								gameScreenText.guiText.text = "You need to drop a card";
+								gameScreenText.guiText.enabled = true;
 								break;
 						}
 				case CurrentAction.UpdateStatHuman:
 						{
-								Dictionary<Specifications,int> humanparam = gm.GetPlayerParams(SelectPlayer.First);
-								Dictionary<Specifications,int> enemyparam = gm.GetPlayerParams(SelectPlayer.Second);
-
-								GUIScript.playertower = humanparam[Specifications.PlayerTower].ToString;
-								GUIScript.playerwall = humanparam[Specifications.PlayerWall].ToString;
-								GUIScript.playerdiamonds = humanparam[Specifications.PlayerDiamonds].ToString;
+								UpdateGameParameters ();
+								Dictionary<string, object> notify = new Dictionary<string, object> ();
+								notify.Add ("CurrentAction", CurrentAction.EndHumanMove);
+								gm.SendGameNotification (notify);
 								break;
 						}
 				}

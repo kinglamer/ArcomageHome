@@ -27,24 +27,24 @@ public class GUIScript : MonoBehaviour
 		public GUIText EnemyMagic;
 		public GUIText EnemyMenagerie;
 
-	public static string playername { set{ PlayerName.text = value; }}
-	public static string enemyname { set{ EnemyName.text = value; }}
-	public static string playertower { set{ PlayerTower.text = value; }}
-	public static string playerwall { set{ PlayerWall.text = value; }}
-	public static string enemytower { set{ EnemyTower.text = value; }}
-	public static string enemywall { set{ EnemyWall.text = value; }}
-	public static string playerdiamonds { set{ PlayerDiamonds.text = value; }}
-	public static string playeranimal { set{ PlayerAnimal.text = value; }}
-	public static string playerrock { set{ PlayerRock.text = value; }}
-	public static string enemydiamonds { set{ EnemyDiamonds.text = value; }}
-	public static string enemyanimal { set{ EnemyAnimal.text = value; }}
-	public static string enemyrock { set{ EnemyRock.text = value; }}
-	public static string playermine { set{ PlayerMine.text = value; }}
-	public static string playermagic { set{ PlayerMagic.text = value; }}
-	public static string playermenagerie { set{ PlayerMenagerie.text = value; }}
-	public static string enemymine { set{ EnemyMine.text = value; }}
-	public static string enemymagic { set{ EnemyMagic.text = value; }}
-	public static string enemymenagerie { set{ EnemyMenagerie.text = value; }}
+//	public string playername { set{ PlayerName.text = value; }}
+//	public string enemyname { set{ EnemyName.text = value; }}
+//	public string playertower { set{ PlayerTower.text = value; }}
+//	public string playerwall { set{ PlayerWall.text = value; }}
+//	public string enemytower { set{ EnemyTower.text = value; }}
+//	public string enemywall { set{ EnemyWall.text = value; }}
+//	public string playerdiamonds { set{ PlayerDiamonds.text = value; }}
+//	public string playeranimal { set{ PlayerAnimal.text = value; }}
+//	public string playerrock { set{ PlayerRock.text = value; }}
+//	public string enemydiamonds { set{ EnemyDiamonds.text = value; }}
+//	public string enemyanimal { set{ EnemyAnimal.text = value; }}
+//	public string enemyrock { set{ EnemyRock.text = value; }}
+//	public string playermine { set{ PlayerMine.text = value; }}
+//	public string playermagic { set{ PlayerMagic.text = value; }}
+//	public string playermenagerie { set{ PlayerMenagerie.text = value; }}
+//	public string enemymine { set{ EnemyMine.text = value; }}
+//	public string enemymagic { set{ EnemyMagic.text = value; }}
+//	public string enemymenagerie { set{ EnemyMenagerie.text = value; }}
 
 //		public GUISkin mainSkin;
 

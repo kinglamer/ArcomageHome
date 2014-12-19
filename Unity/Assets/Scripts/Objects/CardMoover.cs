@@ -7,10 +7,12 @@ public class CardMoover : MonoBehaviour
 		public float step;
 		Vector3 target;
 		GameObject gameController;
+		Vector3 StartPosition;
 
 		// Use this for initialization
 		void Start ()
 		{
+				StartPosition = transform.position;
 				gameController = GameObject.FindWithTag ("GameController");
 				transform.Translate (Vector3.back * 2f);
 				target = new Vector3 (-12f, 0f, transform.position.z);
@@ -21,7 +23,7 @@ public class CardMoover : MonoBehaviour
 		{
 				transform.position = Vector3.MoveTowards (transform.position, target, step*Time.deltaTime);
 				if (Vector3.Distance (transform.position, target)==0f) {
-						gameController.GetComponent<SceneScript> ().HumanCardPlayEnd (gameObject);
+						gameController.GetComponent<SceneScript> ().HumanCardPlayEnd (gameObject, StartPosition);
 				}
 		}
 }
