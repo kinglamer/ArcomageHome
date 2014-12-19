@@ -69,6 +69,7 @@ public class SceneScript : MonoBehaviour, ILog
 				Dictionary<string, object> notify = new Dictionary<string, object> ();
 
 				notify.Add ("CurrentAction", CurrentAction.StartGame);
+				notify.Add ("currentPlayer", TypePlayer.Human);
 
 				gm.SendGameNotification (notify);
 				
@@ -173,7 +174,8 @@ public class SceneScript : MonoBehaviour, ILog
 						notify.Add ("CurrentAction", CurrentAction.PassStroke);
 						notify.Add ("ID", cardID);
 						gm.SendGameNotification (notify);
-						Destroy (cardObject);
+						cardObject.GetComponent<CardPassMoover> ().enabled = true;
+//						Destroy (cardObject);
 				}
 //				PushCardOnDeck (cardPos);
 				
@@ -187,8 +189,27 @@ public class SceneScript : MonoBehaviour, ILog
 						notify.Add ("CurrentAction", CurrentAction.HumanUseCard);
 						notify.Add ("ID", cardID);
 						gm.SendGameNotification (notify);
-						Destroy (cardObject);
+						cardObject.GetComponent<CardMoover> ().enabled = true;
+//						Destroy (cardObject);
 				}
+		}
+
+		public void HumanCardPlayEnd (GameObject cardObject)
+		{
+				cardObject.GetComponent<CardMoover> ().enabled = false;
+				Destroy (cardObject, 5);
+				Dictionary<string, object> notify = new Dictionary<string, object> ();
+				notify.Add ("CurrentAction", CurrentAction.UpdateStatHuman);
+				gm.SendGameNotification (notify);
+		}
+
+		public void HumanCardPassEnd (GameObject cardObject)
+		{
+				cardObject.GetComponent<CardPassMoover> ().enabled = false;
+				Destroy (cardObject);
+				Dictionary<string, object> notify = new Dictionary<string, object> ();
+				notify.Add ("CurrentAction", CurrentAction.UpdateStatHuman);
+				gm.SendGameNotification (notify);
 		}
 
 		//Метод для вызова экрана конца игры
@@ -253,6 +274,24 @@ public class SceneScript : MonoBehaviour, ILog
 						}
 				case CurrentAction.WaitHumanMove:
 						{
+								break;
+						}
+				case CurrentAction.HumanUseCard:
+						{
+								break;
+						}
+				case CurrentAction.PassStroke:
+						{
+								break;
+						}
+				case CurrentAction.UpdateStatHuman:
+						{
+								Dictionary<Specifications,int> humanparam = gm.GetPlayerParams(SelectPlayer.First);
+								Dictionary<Specifications,int> enemyparam = gm.GetPlayerParams(SelectPlayer.Second);
+
+								GUIScript.playertower = humanparam[Specifications.PlayerTower].ToString;
+								GUIScript.playerwall = humanparam[Specifications.PlayerWall].ToString;
+								GUIScript.playerdiamonds = humanparam[Specifications.PlayerDiamonds].ToString;
 								break;
 						}
 				}

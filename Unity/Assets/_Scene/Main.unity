@@ -424,6 +424,7 @@ Transform:
   - {fileID: 727518666}
   - {fileID: 1635370311}
   - {fileID: 1358961979}
+  - {fileID: 1775670923}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!1 &580368230
@@ -1605,6 +1606,57 @@ Transform:
   m_Children: []
   m_Father: {fileID: 121558837}
   m_RootOrder: 2
+--- !u!1 &1775670922
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1775670923}
+  - 132: {fileID: 1775670924}
+  m_Layer: 0
+  m_Name: PassText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1775670923
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1775670922}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: .5, y: .600000024, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 517719795}
+  m_RootOrder: 6
+--- !u!132 &1775670924
+GUIText:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1775670922}
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Text: Pass
+  m_Anchor: 4
+  m_Alignment: 1
+  m_PixelOffset: {x: 0, y: 0}
+  m_LineSpacing: 1
+  m_TabSize: 4
+  m_Font: {fileID: 12800000, guid: 0fe71af3ab68a9145818cac639ddd38d, type: 3}
+  m_Material: {fileID: 0}
+  m_FontSize: 60
+  m_FontStyle: 0
+  m_Color:
+    serializedVersion: 2
+    rgba: 4278250750
+  m_PixelCorrect: 1
+  m_RichText: 1
 --- !u!1 &1785013560
 GameObject:
   m_ObjectHideFlags: 0
