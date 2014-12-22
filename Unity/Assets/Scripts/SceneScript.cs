@@ -33,6 +33,7 @@ public class SceneScript : MonoBehaviour, ILog
 		List<TextAtlasCoordinate> coordinates ;
 		private CurrentAction curr;
 		public GameObject gameScreenText;
+		private bool GameIsOver = false;
 
 		// Use this for initialization
 		void Start ()
@@ -61,6 +62,7 @@ public class SceneScript : MonoBehaviour, ILog
 		private void StartNewGame ()
 		{
 				//log = new ILog ();
+				GameIsOver = false;
 				gm = new GameController (this);
 
 				gm.AddPlayer (TypePlayer.Human, "Human");
@@ -105,6 +107,7 @@ public class SceneScript : MonoBehaviour, ILog
 				card.GetComponent<DoneCardScript> ().cardParam = Paramscard;
 				card.GetComponent<DoneCardScript> ().cardCost = costCard.value;
 				card.GetComponent<DoneCardScript> ().CardIsActive = gm.IsCanUseCard (myCard.cardParams);
+				card.GetComponent<DoneCardScript> ().thisCard = myCard;
 		
 				int typeCost = 0;
 				switch (costCard.key) {
@@ -215,38 +218,57 @@ public class SceneScript : MonoBehaviour, ILog
 		}
 
 		//Метод для вызова экрана конца игры
-		public void EndGame (string endgametext)
+		public void EndGame ()
 		{
 
-				var hinges = GameObject.Find ("Card(Clone)");
+				GameObject[] hinges = GameObject.FindGameObjectsWithTag ("Card");
 				if (hinges != null) {
-						Destroy (hinges.gameObject);
+						foreach (GameObject card in hinges)
+								Destroy (card);
 				}
 					
 			
-			
-				GUILayout.BeginArea (new Rect (Screen.width / 2 - 150, Screen.height / 2 - 50, 300, 100));
-				GUILayout.Box (endgametext);
-				GUILayout.BeginHorizontal ();
-		
-				if (GUILayout.Button ("Replay")) {
-						StartNewGame ();
-						Debug.Log ("Replay");
-				}
-				
-				if (GUILayout.Button ("Exit")) {
-						Application.Quit ();
-				}
-
-
-				GUILayout.EndHorizontal ();
-				GUILayout.EndArea ();
+				GameIsOver = true;
+//				GUILayout.BeginArea (new Rect (Screen.width / 2 - 150, Screen.height / 2 - 50, 300, 100));
+//				GUILayout.Box (endgametext);
+//				GUILayout.BeginHorizontal ();
+//		
+//				if (GUILayout.Button ("Replay")) {
+//						StartNewGame ();
+//						Debug.Log ("Replay");
+//				}
+//				
+//				if (GUILayout.Button ("Exit")) {
+//						Application.Quit ();
+//				}
+//
+//
+//				GUILayout.EndHorizontal ();
+//				GUILayout.EndArea ();
 		
 		}
 
 		void OnGUI ()
 		{
 				GUI.skin = mainSkin;
+				if (GameIsOver) {
+						GUILayout.BeginArea (new Rect (Screen.width / 2 - 150, Screen.height / 2 - 50, 300, 100));
+						GUILayout.Box (gm.Winner + " is WIN");
+						GUILayout.BeginHorizontal ();
+		
+						if (GUILayout.Button ("Replay")) {
+								StartNewGame ();
+								Debug.Log ("Replay");
+						}
+		
+						if (GUILayout.Button ("Exit")) {
+								Application.Quit ();
+						}
+		
+		
+						GUILayout.EndHorizontal ();
+						GUILayout.EndArea ();
+				}
 //		if (GUI.Button (new Rect (120, 200, 60, 25), "Pass")) {
 //			//Тут действия на пас
 //			EnemyMove();
@@ -282,12 +304,73 @@ public class SceneScript : MonoBehaviour, ILog
 				gameObject.GetComponent<GUIScript> ().EnemyMine.text = enemyparam [Specifications.PlayerColliery].ToString ();
 				gameObject.GetComponent<GUIScript> ().EnemyMagic.text = enemyparam [Specifications.PlayerDiamondMines].ToString ();
 				gameObject.GetComponent<GUIScript> ().EnemyMenagerie.text = enemyparam [Specifications.PlayerMenagerie].ToString ();
+				
+				GameObject[] PlayerCards = GameObject.FindGameObjectsWithTag ("Card");
+				foreach (GameObject card in PlayerCards) {
+						card.GetComponent<DoneCardScript> ().CardIsActive = gm.IsCanUseCard (card.GetComponent<DoneCardScript> ().thisCard.cardParams);
+				}
 
+		}
+
+		void CreateAICards (Card AIcard, Vector3 pos)
+		{
+				Quaternion spawnRotation = new Quaternion ();
+				spawnRotation = Quaternion.identity;
+		
+				GameObject card = (GameObject)Instantiate (cards, pos, spawnRotation);
+				pos.x += 4.8f;
+				card.GetComponent<DoneCardScript> ().cardName = AIcard.name;
+		
+		
+				string Paramscard = AIcard.description;
+		
+				if (Paramscard == null) {
+						foreach (var item in AIcard.cardParams) {
+								if (item.key != Specifications.CostAnimals && item.key != Specifications.CostDiamonds && item.key != Specifications.CostRocks) {
+										Paramscard += item.key.ToString () + " " + item.value.ToString () + "\n";
+								}
+						}
+				}
+		
+				var costCard = AIcard.cardParams.FirstOrDefault (x => x.key == Specifications.CostAnimals ||
+						x.key == Specifications.CostDiamonds || x.key == Specifications.CostRocks);
+		
+				card.GetComponent<DoneCardScript> ().cardId = AIcard.id;
+				card.GetComponent<DoneCardScript> ().cardParam = Paramscard;
+				card.GetComponent<DoneCardScript> ().cardCost = costCard.value;
+				card.GetComponent<DoneCardScript> ().CardIsActive = false;
+				card.GetComponent<DoneCardScript> ().thisCard = AIcard;
+		
+				int typeCost = 0;
+				switch (costCard.key) {
+				case Specifications.CostRocks:
+						typeCost = 2;
+						break;
+				case Specifications.CostAnimals:
+						typeCost = 1;
+						break;
+				}
+		
+				Texture2D CardPic = GetCardPic (AIcard.id);
+		
+				card.GetComponent<DoneCardScript> ().SetCardGraph (typeCost, CardPic);
+				card.tag = "AICard";
+				card.GetComponent<AICardMoover> ().enabled = true;
+		}
+
+		public void AICardEndPlay (GameObject cardObject)
+		{
+				cardObject.GetComponent<AICardMoover> ().enabled = false;
+				Destroy (cardObject, 2);
+				Dictionary<string, object> notify = new Dictionary<string, object> ();
+				notify.Add ("CurrentAction", CurrentAction.AIMoveIsAnimated);
+				gm.SendGameNotification (notify);
 		}
 
 		// Update is called once per frame
 		void Update ()
-		{
+		{		
+				CurrentAction prev_action = curr;
 				curr = gm.Status;
 
 				switch (curr) {
@@ -302,6 +385,9 @@ public class SceneScript : MonoBehaviour, ILog
 						}
 				case CurrentAction.WaitHumanMove:
 						{
+								if (prev_action != curr) {
+										UpdateGameParameters ();
+								}
 								break;
 						}
 				case CurrentAction.HumanUseCard:
@@ -325,6 +411,34 @@ public class SceneScript : MonoBehaviour, ILog
 								Dictionary<string, object> notify = new Dictionary<string, object> ();
 								notify.Add ("CurrentAction", CurrentAction.EndHumanMove);
 								gm.SendGameNotification (notify);
+								break;
+						}
+				case CurrentAction.AIUseCardAnimation:
+						{
+								if (prev_action != curr) {
+										UpdateGameParameters ();
+										List <Card> AICardsPlayed = gm.GetAIUsedCard ();
+										int x = 0;
+										foreach (Card card in AICardsPlayed) {
+												CreateAICards (card, new Vector3 (x, 2f, 0f));
+												x += 5;
+										}
+								}
+								break;
+						}
+				case CurrentAction.UpdateStatAI:
+						{
+								UpdateGameParameters ();
+								Dictionary<string, object> notify = new Dictionary<string, object> ();
+								notify.Add ("CurrentAction", CurrentAction.EndAIMove);
+								gm.SendGameNotification (notify);
+								break;
+						}
+				case CurrentAction.EndGame:
+						{
+								if (prev_action != curr) {
+										EndGame ();
+								}
 								break;
 						}
 				}

@@ -23,6 +23,8 @@ public class DoneCardScript : MonoBehaviour
 				} 
 		}
 
+		public Card thisCard{ get; set; }
+
 		public TextMesh CardName;
 		public TextMesh CardParameter;
 		public TextMesh CardCost;
@@ -50,7 +52,6 @@ public class DoneCardScript : MonoBehaviour
 		void OnMouseEnter ()
 		{
 				if (CardIsActive) {
-						transform.Translate (Vector3.back * 5f);
 						this.renderer.material.SetFloat ("_Light", 1f);
 				}
 		
@@ -66,17 +67,15 @@ public class DoneCardScript : MonoBehaviour
 								}
 								lastClickTime = currentTime;
 						}
-
-						if (Input.GetMouseButtonDown (1)) {
-								gameController.GetComponent<SceneScript> ().PassMove (cardId, startPos, gameObject);
-						}
+				}
+				if (Input.GetMouseButtonDown (1)) {
+						gameController.GetComponent<SceneScript> ().PassMove (cardId, startPos, gameObject);
 				}
 		}
 	
 		void OnMouseExit ()
 		{	
 				if (CardIsActive) {
-						transform.Translate (Vector3.forward * 5f);
 						this.renderer.material.SetFloat ("_Light", 0.7f);
 				}
 		}

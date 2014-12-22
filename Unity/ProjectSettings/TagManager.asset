@@ -5,6 +5,7 @@ TagManager:
   tags:
   - Table
   - Card
+  - AICard
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
