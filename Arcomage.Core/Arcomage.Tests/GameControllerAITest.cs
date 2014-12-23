@@ -67,7 +67,7 @@ namespace Arcomage.Tests
             GameControllerTestHelper.PassStroke(gm);
 
            
-            Assert.AreEqual(gm.GetAIUsedCard().First().id, 1, "Компьютер должен использовать карту id 1");
+            Assert.AreEqual(gm.GetAIUsedCard().LastOrDefault().id, 2, "Компьютер должен использовать карту id 2");
         }
 
 
@@ -116,10 +116,10 @@ namespace Arcomage.Tests
 
             GameControllerTestHelper.PassStroke(gm);
 
-            var result = gm.logCard.Where(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Droped).FirstOrDefault();
+            var result = gm.logCard.Where(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Droped).LastOrDefault();
 
             //Внимание: при усовершенствование AI данный тест может измениться, .т.к. комп уже осознано будет выбирать какую карту сбросить
-            Assert.AreEqual(result.card.id, 1, "AI должен сбросить карту 1");
+            Assert.AreEqual(result.card.id, 2, "AI должен сбросить карту 2");
         }
 
 

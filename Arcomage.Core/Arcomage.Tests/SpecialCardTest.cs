@@ -431,10 +431,10 @@ namespace Arcomage.Tests
 
             //Внимание: при усовершенствование AI данный тест может измениться, .т.к. комп уже осознано будет выбирать какую карту сбросить
             Assert.AreEqual(result.Where(x=>x.card.id == 73).Count(), 1, "AI должен был использовать карту 73");
-            Assert.AreEqual(result.Where(x => x.card.id == 8).Count(), 1, "AI должен был использовать карту 73");
+            Assert.AreEqual(result.Where(x => x.card.id == 31).Count(), 1, "AI должен был использовать карту 31");
 
             var result2 = gm.logCard.Where(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Droped).FirstOrDefault();
-            Assert.AreEqual(result2.card.id, 5, "AI должен был сбросить карту 5");
+            Assert.AreEqual(result2.card.id, 1, "AI должен был сбросить карту 1");
 
        
         }

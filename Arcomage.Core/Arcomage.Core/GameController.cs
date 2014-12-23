@@ -290,61 +290,7 @@ namespace Arcomage.Core
         }
 
 
-        /// <summary>
-        /// Получает карту из стека карт
-        /// </summary>
-        /// <returns></returns>
-        private List<Card> GetCard()
-        {
-
-            if (Status != CurrentAction.GetPlayerCard && Status != CurrentAction.GetAICard)
-            {
-                log.Error("Нельзя получить карты при текущем статусе");
-                return null;
-            }
-
-            if (QCard.Count < MaxCard)
-            {
-
-
-                string cardFromServer = host.GetRandomCard();
-
-                List<Card> newParametrs = JsonConvert.DeserializeObject<List<Card>>(cardFromServer);
-
-                if (newParametrs.Count == 0)
-                    return null;
-
-                foreach (var item in newParametrs)
-                {
-                    QCard.Enqueue(item);
-                }
-            }
-
-            log.Info("Стэк карт равен " + QCard.Count);
-
-            List<Card> returnVal = new List<Card>();
-
-            int playerCountCard = 0;
-
-            if (players[currentPlayer].Cards != null)
-                playerCountCard = players[currentPlayer].Cards.Count;
-
-            while (playerCountCard < MaxCard)
-            {
-                if (QCard.Count == 0)
-                    break;
-
-                var newCard = QCard.Dequeue();
-                newCard.description = ParseDescription.Parse(newCard.description);
-                returnVal.Add(newCard);
-                playerCountCard++;
-            }
-
-            log.Info("Player: " + players[currentPlayer].playerName + " GET " + returnVal.Count + " cards");
-            players[currentPlayer].Cards.AddRange(returnVal);
-
-            return returnVal;
-        }
+       
 
 
         #region Can Use Card 
@@ -401,6 +347,63 @@ namespace Arcomage.Core
 
 
         #region private methods
+
+        /// <summary>
+        /// Получает карту из стека карт
+        /// </summary>
+        /// <returns></returns>
+        private List<Card> GetCard()
+        {
+
+            if (Status != CurrentAction.GetPlayerCard && Status != CurrentAction.GetAICard)
+            {
+                log.Error("Нельзя получить карты при текущем статусе");
+                return null;
+            }
+
+            if (QCard.Count < MaxCard)
+            {
+
+
+                string cardFromServer = host.GetRandomCard();
+
+                List<Card> newParametrs = JsonConvert.DeserializeObject<List<Card>>(cardFromServer);
+
+                if (newParametrs.Count == 0)
+                    return null;
+
+                foreach (var item in newParametrs)
+                {
+                    QCard.Enqueue(item);
+                }
+            }
+
+            log.Info("Стэк карт равен " + QCard.Count);
+
+            List<Card> returnVal = new List<Card>();
+
+            int playerCountCard = 0;
+
+            if (players[currentPlayer].Cards != null)
+                playerCountCard = players[currentPlayer].Cards.Count;
+
+            while (playerCountCard < MaxCard)
+            {
+                if (QCard.Count == 0)
+                    break;
+
+                var newCard = QCard.Dequeue();
+                newCard.description = ParseDescription.Parse(newCard.description);
+                returnVal.Add(newCard);
+                playerCountCard++;
+            }
+
+            log.Info("Player: " + players[currentPlayer].playerName + " GET " + returnVal.Count + " cards");
+            players[currentPlayer].Cards.AddRange(returnVal);
+
+            return returnVal;
+        }
+
         /// <summary>
         /// Использование карты игроком
         /// </summary>
@@ -526,7 +529,7 @@ namespace Arcomage.Core
         {
             log.Info("----===== Ход компьютера =====----");
 
-            //вставка гавнокода, будет исправлено при доработке AI
+            //TODO: вставка гавнокода, будет исправлено при доработке AI
             if (Status == CurrentAction.EndHumanMove)
             {
                 Status = CurrentAction.GetAICard;
@@ -583,9 +586,12 @@ namespace Arcomage.Core
              
             }
 
+            //TODO: еще один костыль
             if (Status == CurrentAction.AIUseCard)
             {
+                Status = CurrentAction.GetAICard;
                  GetCard();
+                 Status = CurrentAction.AIUseCard;
             }
 
                //если компьютер не использовал карту и ему не нужно брать еще одну, тогда пропускаем ход
@@ -770,7 +776,6 @@ namespace Arcomage.Core
                     {
                         Status = CurrentAction.GetPlayerCard;
                         info["CurrentAction"] = CurrentAction.WaitHumanMove.ToString();
-
                         SendGameNotification(info);
                     }
                     else
@@ -818,6 +823,11 @@ namespace Arcomage.Core
 
         private void EndHumanMove(Dictionary<string, object> information = null)
         {
+            Status = CurrentAction.GetPlayerCard;
+            Dictionary<string, object> notify = new Dictionary<string, object>();
+            notify.Add("CurrentAction", CurrentAction.EndHumanMove);
+            SendGameNotification(notify);
+
             currentPlayer = currentPlayer == 1 ? 0 : 1;
             if (players[currentPlayer].type == TypePlayer.AI)
             {
@@ -919,11 +929,10 @@ namespace Arcomage.Core
 
         private void GetPlayerCard(Dictionary<string, object> information)
         {
-            if (information["CurrentAction"].ToString() == ("WaitHumanMove"))
-            {
-                GetCard();
-                Status = CurrentAction.WaitHumanMove;
-            }
+            var type = GameControllerHelper.ConvertObjToEnum<CurrentAction>(information["CurrentAction"]);
+            GetCard();
+            Status = type;
+            
         }
 
         private void StartGame(Dictionary<string, object> information)

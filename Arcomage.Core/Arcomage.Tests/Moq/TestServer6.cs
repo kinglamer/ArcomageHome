@@ -17,12 +17,7 @@ namespace Arcomage.Tests.Moq
 
             var cardParams = new CardParams() {key = Specifications.CostAnimals, value = 0};
 
-            returnVal.Add(new Card()
-            {
-                id = 73,
-                name = "Elven Scout",
-                cardParams = new List<CardParams>() { cardParams }
-            });
+        
           
 
             returnVal.Add(new Card()
@@ -45,6 +40,13 @@ namespace Arcomage.Tests.Moq
             {
                 id = 12,
                 name = "Foundations",
+                cardParams = new List<CardParams>() { cardParams }
+            });
+
+            returnVal.Add(new Card()
+            {
+                id = 73,
+                name = "Elven Scout",
                 cardParams = new List<CardParams>() { cardParams }
             });
 
