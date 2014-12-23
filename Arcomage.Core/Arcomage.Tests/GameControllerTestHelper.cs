@@ -19,13 +19,13 @@ namespace Arcomage.Tests
         public static void getCards(GameController gmController)
         {
             //карты можно получить только, при соответствущем ходе
-            Assert.AreEqual(gmController.Status, CurrentAction.GetPlayerCard , "Сейчас не ход игрока");
-            gmController.GetCard();
+          //  Assert.AreEqual(gmController.Status, CurrentAction.GetPlayerCard , "Сейчас не ход игрока");
+           // gmController.GetCard();
 
             //после получения карты, игра должно уведомить о том, что игрок все получил и ждем его хода
-            Dictionary<string, object> notify1 = new Dictionary<string, object>();
-            notify1.Add("CurrentAction", CurrentAction.WaitHumanMove);
-            gmController.SendGameNotification(notify1);
+           // Dictionary<string, object> notify1 = new Dictionary<string, object>();
+          //  notify1.Add("CurrentAction", CurrentAction.WaitHumanMove);
+           // gmController.SendGameNotification(notify1);
 
             Assert.AreEqual(gmController.Status, CurrentAction.WaitHumanMove, "Должно быть ожидание хода игрока");
         }

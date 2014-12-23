@@ -33,7 +33,7 @@ namespace Arcomage.Tests
          public void GameIsStarted()
          {
              gm = GameControllerTestHelper.InitDemoGame();
-             Assert.AreEqual(gm.Status, CurrentAction.GetPlayerCard, "Игра не стартовала");
+             Assert.AreEqual(gm.Status, CurrentAction.WaitHumanMove, "Игра не стартовала");
          }
 
          /// <summary>
@@ -70,7 +70,7 @@ namespace Arcomage.Tests
          public void PlayerCanUserCard()
          {
              gm = GameControllerTestHelper.InitDemoGame();
-             gm.GetCard();
+            // gm.GetCard();
              Assert.AreEqual(gm.IsCanUseCard(1), true, "Не возможно использовать карту");
 
          }
@@ -90,7 +90,7 @@ namespace Arcomage.Tests
 
 
 
-             Assert.IsTrue(gm.GetCard().Count > 1, " Должно быть хотя бы одна карта");
+             Assert.IsTrue(gm.GetPlayersCard().Count > 1, " Должно быть хотя бы одна карта");
          }
 
 

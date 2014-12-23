@@ -378,6 +378,7 @@ namespace Arcomage.Tests
             gm = new GameController(log, new TestServer6(), new TestStartParams2());
             AddPlayers();
             GameControllerTestHelper.getCards(gm);
+            Assert.AreEqual(gm.GetPlayersCard().Count, 18, "Количество карт должно быть равно 5");
             Assert.AreEqual(gm.IsCanUseCard(39), true, "Не возможно использовать карту");
 
             //перед информацию о том, какую карту использовал игрок
@@ -388,14 +389,13 @@ namespace Arcomage.Tests
 
             Assert.AreEqual(gm.Status, CurrentAction.PlayerMustDropCard, "Игрок должен сбросить карту");
 
-            gm.GetCard();
+          //  gm.GetCard();
 
             var result = gm.GetPlayerParams();
 
-
             Assert.AreEqual(result[Specifications.PlayerRocks], 5, "Не должно быть прироста ресурсов до сброса");
-               Assert.AreEqual(result[Specifications.PlayerDiamonds], 5, "Не должно быть прироста ресурсов до сброса");
-               Assert.AreEqual(result[Specifications.PlayerAnimals], 5, "Не должно быть прироста ресурсов до сброса");
+            Assert.AreEqual(result[Specifications.PlayerDiamonds], 5, "Не должно быть прироста ресурсов до сброса");
+            Assert.AreEqual(result[Specifications.PlayerAnimals], 5, "Не должно быть прироста ресурсов до сброса");
 
             Dictionary<string, object> notify = new Dictionary<string, object>();
             notify.Add("CurrentAction", CurrentAction.PassStroke);
@@ -407,7 +407,8 @@ namespace Arcomage.Tests
             Assert.AreEqual(result[Specifications.PlayerDiamonds], 6, "должен быть прирост ресурсов");
             Assert.AreEqual(result[Specifications.PlayerAnimals], 6, "должен быть прирост ресурсов");
 
-            Assert.AreEqual(gm.Status, CurrentAction.GetPlayerCard, "Игрок должен взять еще одну карту");
+            Assert.AreEqual(gm.GetPlayersCard().Count, 20, "Количество карт должно быть равно 17");
+
 
             GameControllerTestHelper.getCards(gm);
         }

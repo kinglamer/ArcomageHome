@@ -268,11 +268,33 @@ namespace Arcomage.Core
         
         }
 
+
+        public List<Card> GetPlayersCard(SelectPlayer selectPlayer = SelectPlayer.None)
+        {
+            if (selectPlayer == SelectPlayer.None)
+            {
+                selectPlayer = (SelectPlayer)currentPlayer;
+            }
+
+            int i = (int)selectPlayer;
+
+            if (players[i] != null)
+            {
+                log.Info("GetPlayerParams type: " + players[i].type);
+                return players[i].Cards;
+            }
+            else
+            {
+                return new List<Card>();
+            }
+        }
+
+
         /// <summary>
         /// Получает карту из стека карт
         /// </summary>
         /// <returns></returns>
-        public List<Card> GetCard()
+        private List<Card> GetCard()
         {
 
             if (Status != CurrentAction.GetPlayerCard && Status != CurrentAction.GetAICard)
@@ -745,7 +767,12 @@ namespace Arcomage.Core
                 if (PassMove((int)info["ID"]))
                 {
                     if (players[currentPlayer].type == TypePlayer.Human)
+                    {
                         Status = CurrentAction.GetPlayerCard;
+                        info["CurrentAction"] = CurrentAction.WaitHumanMove.ToString();
+
+                        SendGameNotification(info);
+                    }
                     else
                         Status = CurrentAction.GetAICard;
 
@@ -894,6 +921,7 @@ namespace Arcomage.Core
         {
             if (information["CurrentAction"].ToString() == ("WaitHumanMove"))
             {
+                GetCard();
                 Status = CurrentAction.WaitHumanMove;
             }
         }
@@ -908,7 +936,11 @@ namespace Arcomage.Core
             }
             else if (information["CurrentAction"].ToString() == "GetPlayerCard")
             {
+
                 Status = CurrentAction.GetPlayerCard;
+                information["CurrentAction"] = CurrentAction.WaitHumanMove.ToString();
+
+                SendGameNotification(information);
             }
         }
 
