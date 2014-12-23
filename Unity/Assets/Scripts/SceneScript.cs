@@ -151,8 +151,12 @@ public class SceneScript : MonoBehaviour, ILog
 				} else {
 						spawnPosition = GetSpawn ();
 				}
-
-				List <Card> cardList = gm.GetCard ();
+				GameObject[] hinges = GameObject.FindGameObjectsWithTag ("Card");
+				if (hinges != null) {
+						foreach (GameObject card in hinges)
+								Destroy (card);
+				}
+				List <Card> cardList = gm.GetPlayersCard (SelectPlayer.First);
 			
 				//while (gm.GetCountCard() < gm.MaxCard) {
 				foreach (Card card in cardList) {
@@ -201,7 +205,7 @@ public class SceneScript : MonoBehaviour, ILog
 		{
 				cardObject.GetComponent<CardMoover> ().enabled = false;
 				Destroy (cardObject, 2);
-				PushCardOnDeck (position);
+				PushCardOnDeck (new Vector3());
 				Dictionary<string, object> notify = new Dictionary<string, object> ();
 				notify.Add ("CurrentAction", CurrentAction.AnimateHumanMove);
 				gm.SendGameNotification (notify);
@@ -211,7 +215,7 @@ public class SceneScript : MonoBehaviour, ILog
 		{
 				cardObject.GetComponent<CardPassMoover> ().enabled = false;
 				Destroy (cardObject);
-				PushCardOnDeck (position);
+		PushCardOnDeck (new Vector3());
 				Dictionary<string, object> notify = new Dictionary<string, object> ();
 				notify.Add ("CurrentAction", CurrentAction.AnimateHumanMove);
 				gm.SendGameNotification (notify);
@@ -374,18 +378,19 @@ public class SceneScript : MonoBehaviour, ILog
 				curr = gm.Status;
 
 				switch (curr) {
-				case CurrentAction.GetPlayerCard:
-						{
-								PushCardOnDeck (new Vector3 ());
-								Dictionary<string, object> notify = new Dictionary<string, object> ();
-								notify.Add ("CurrentAction", CurrentAction.WaitHumanMove);
-								gm.SendGameNotification (notify);
-								UpdateGameParameters ();
-								break;
-						}
+//				case CurrentAction.GetPlayerCard:
+//						{
+//								
+//								Dictionary<string, object> notify = new Dictionary<string, object> ();
+//								notify.Add ("CurrentAction", CurrentAction.WaitHumanMove);
+//								gm.SendGameNotification (notify);
+//								UpdateGameParameters ();
+//								break;
+//						}
 				case CurrentAction.WaitHumanMove:
 						{
 								if (prev_action != curr) {
+										PushCardOnDeck (new Vector3 ());
 										UpdateGameParameters ();
 								}
 								break;

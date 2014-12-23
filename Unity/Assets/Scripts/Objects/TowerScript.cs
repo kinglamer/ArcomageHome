@@ -10,6 +10,6 @@ public class TowerScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		transform.position.y = -11 + 0.08f*
+//		transform.position.y = -11 + 0.08f;
 	}
 }
