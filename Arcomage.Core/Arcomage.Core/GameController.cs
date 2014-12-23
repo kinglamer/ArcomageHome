@@ -275,6 +275,12 @@ namespace Arcomage.Core
         public List<Card> GetCard()
         {
 
+            if (Status != CurrentAction.GetPlayerCard && Status != CurrentAction.GetAICard)
+            {
+                log.Error("Нельзя получить карты при текущем статусе");
+                return null;
+            }
+
             if (QCard.Count < MaxCard)
             {
 
@@ -498,7 +504,16 @@ namespace Arcomage.Core
         {
             log.Info("----===== Ход компьютера =====----");
 
-            GetCard();
+            //вставка гавнокода, будет исправлено при доработке AI
+            if (Status == CurrentAction.EndHumanMove)
+            {
+                Status = CurrentAction.GetAICard;
+                GetCard();
+
+                Status = CurrentAction.EndHumanMove;
+            }
+            
+           
 
           
 
@@ -760,13 +775,14 @@ namespace Arcomage.Core
             if (information["CurrentAction"].ToString() == "AIMoveIsAnimated")
             {
                 Status = CurrentAction.AIMoveIsAnimated;
+                information["CurrentAction"] = CurrentAction.UpdateStatAI.ToString();
                 SendGameNotification(information);
             }
         }
 
         private void AIMoveIsAnimated(Dictionary<string, object> information)
         {
-            if (information["CurrentAction"].ToString() == "AIMoveIsAnimated")
+            if (information["CurrentAction"].ToString() == "UpdateStatAI")
             {
                 UpdateStatistic();
                 Status = CurrentAction.UpdateStatAI;
