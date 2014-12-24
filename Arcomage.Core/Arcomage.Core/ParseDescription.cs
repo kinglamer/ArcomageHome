@@ -28,14 +28,13 @@ namespace Arcomage.Core
             {
                 text = AddTag(match.Value, text);
             }
-            //   Console.WriteLine(Regex.Replace(value, pattern2, String.Empty));
-            Console.WriteLine(text);
+          
             return text;
         }
 
         private static string AddTag(string paramOut, string text)
         {
-            string returnVal = "";
+            string returnVal = text;
             string param = paramOut.Replace(": ", "").Replace(";", "").Trim();
 
             switch (param)
