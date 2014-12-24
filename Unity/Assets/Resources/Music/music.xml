@@ -1,0 +1,33 @@
+<!-- Music List -->
+<Musiclist>
+	<Track id="1">
+		<Name value="Title" />
+		<File value="maintheme.ogg" />
+	</Track>
+
+	<Track id="2">
+		<Name value="Credits" />
+		<File value="credits.ogg" />
+	</Track>
+
+	<Track id="3">
+		<Name value="Game 1" />
+		<File value="Battle2.ogg" />
+	</Track>
+
+	<Track id="3">
+		<Name value="Game 2" />
+		<File value="Battle1.ogg" />
+	</Track>
+	
+	<Track id="4">
+		<Name value="Loss" />
+		<File value="loss.ogg" />
+	</Track>
+
+	<Track id="5">
+		<Name value="Victory" />
+		<File value="victory.ogg" />
+	</Track>
+	
+	</Musiclist>
