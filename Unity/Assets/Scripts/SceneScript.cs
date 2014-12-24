@@ -398,6 +398,7 @@ public class SceneScript : MonoBehaviour, ILog
 //						}
 				case CurrentAction.WaitHumanMove:
 						{
+                                
 								if (prev_action != curr) {
 										PushCardOnDeck (new Vector3 ());
 										UpdateGameParameters ();
@@ -406,11 +407,12 @@ public class SceneScript : MonoBehaviour, ILog
 						}
 				case CurrentAction.HumanUseCard:
 						{
+                                gameScreenText.guiText.enabled = false;
 								break;
 						}
 				case CurrentAction.PassStroke:
 						{
-								gameScreenText.guiText.enabled = false;
+								
 								break;
 						}
 				case CurrentAction.PlayerMustDropCard:
