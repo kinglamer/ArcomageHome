@@ -24,7 +24,7 @@ Material:
         first:
           name: _CardBack
         second:
-          m_Texture: {fileID: 2800000, guid: 99f0e47aee059d64182d1fc0a293dc06, type: 3}
+          m_Texture: {fileID: 2800000, guid: 45adcf62b69810445972d5dfc29c06d1, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:

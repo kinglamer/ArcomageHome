@@ -28,8 +28,10 @@
 			CardUV.x = (IN.uv_CardBack.x+_CardBackColor)*0.25;
 			half4 cardback = tex2D (_CardBack, CardUV);
 			float2 picUV = IN.uv_Picture;
-			picUV.x=clamp(clamp(picUV.x-(20.0/300.0),0,1)*(300.0/260.0),0,1);
-			picUV.y=clamp(clamp(picUV.y-(260.0/500.0),0,1)*(500.0/180.0),0,1);
+			picUV.x=clamp(clamp(picUV.x-(11.0/174.0),0,1)*(174.0/150.0),0,1);
+			picUV.y=clamp(clamp(picUV.y-(109.0/253.0),0,1)*(253.0/100.0),0,1);
+//			picUV.x=clamp(clamp(picUV.x-(20.0/300.0),0,1)*(300.0/260.0),0,1);
+//			picUV.y=clamp(clamp(picUV.y-(260.0/500.0),0,1)*(500.0/180.0),0,1);
 			half4 picture = tex2D (_Picture, picUV);
 			float2 BlendUV=IN.uv_CardBack;
 			BlendUV.x = (IN.uv_CardBack.x+3)*0.25;
