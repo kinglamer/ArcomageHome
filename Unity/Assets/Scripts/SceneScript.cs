@@ -9,6 +9,26 @@ using AssemblyCSharp;
 using System;
 using Random = UnityEngine.Random;
 
+
+public enum SoundTypes
+{
+    card,
+    bricksdown,
+    bricksup,
+    damage,
+    damage2,
+    harp,
+    loss,
+    resourceloss,
+    towerup,
+    towerwallgain,
+    victory,
+    wallup,
+    None
+}
+
+
+
 public class SceneScript : MonoBehaviour, ILog
 {
 
@@ -41,11 +61,30 @@ public class SceneScript : MonoBehaviour, ILog
 		public GameObject EnemyWall;
 
         private object[] myMusic; // declare this as Object array
+
+        public static Dictionary<SoundTypes, AudioClip> AudioClips;
         
         void Awake()
         {
             myMusic = Resources.LoadAll("Music", typeof(AudioClip));
             playRandomMusic();
+
+            AudioClips = new Dictionary<SoundTypes, AudioClip>();
+
+            AudioClips.Add(SoundTypes.card, Resources.Load("sounds/card") as AudioClip);
+            AudioClips.Add(SoundTypes.bricksdown, Resources.Load("sounds/bricks down") as AudioClip);
+            AudioClips.Add(SoundTypes.bricksup, Resources.Load("sounds/bricks up") as AudioClip);
+            AudioClips.Add(SoundTypes.damage, Resources.Load("sounds/damage") as AudioClip);
+            AudioClips.Add(SoundTypes.damage2, Resources.Load("sounds/damage_ (2)") as AudioClip);
+            AudioClips.Add(SoundTypes.harp, Resources.Load("sounds/harp") as AudioClip);
+            AudioClips.Add(SoundTypes.loss, Resources.Load("sounds/loss") as AudioClip);
+            AudioClips.Add(SoundTypes.resourceloss, Resources.Load("sounds/resourceloss") as AudioClip);
+            AudioClips.Add(SoundTypes.towerup, Resources.Load("sounds/tower up") as AudioClip);
+            AudioClips.Add(SoundTypes.towerwallgain, Resources.Load("sounds/towerwallgain") as AudioClip);
+            AudioClips.Add(SoundTypes.victory, Resources.Load("sounds/victory") as AudioClip);
+            AudioClips.Add(SoundTypes.wallup, Resources.Load("sounds/wall up") as AudioClip);
+
+            audio.volume = 30;
         }
 
         private void playRandomMusic()
@@ -127,6 +166,8 @@ public class SceneScript : MonoBehaviour, ILog
 		
 				card.GetComponent<DoneCardScript> ().cardId = myCard.id;
 				card.GetComponent<DoneCardScript> ().cardParam = Paramscard;
+		            card.GetComponent<DoneCardScript>().ListOfParamses = myCard.cardParams.Where(x => x.key != Specifications.CostAnimals &&
+		                                            x.key != Specifications.CostDiamonds && x.key != Specifications.CostRocks).ToList();
 				card.GetComponent<DoneCardScript> ().cardCost = costCard.value;
 				card.GetComponent<DoneCardScript> ().CardIsActive = gm.IsCanUseCard (myCard.cardParams);
 				card.GetComponent<DoneCardScript> ().thisCard = myCard;
