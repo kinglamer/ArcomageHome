@@ -7,6 +7,7 @@ using System.Linq;
 using Arcomage.Common;
 using AssemblyCSharp;
 using System;
+using Random = UnityEngine.Random;
 
 public class SceneScript : MonoBehaviour, ILog
 {
@@ -39,11 +40,28 @@ public class SceneScript : MonoBehaviour, ILog
 		public GameObject PlayerWall;
 		public GameObject EnemyWall;
 
-		// Use this for initialization
+        private object[] myMusic; // declare this as Object array
+        
+        void Awake()
+        {
+            myMusic = Resources.LoadAll("Music", typeof(AudioClip));
+            playRandomMusic();
+        }
+
+        private void playRandomMusic()
+        {
+            audio.clip = myMusic[Random.Range(0, myMusic.Length)] as AudioClip;
+            audio.Play();
+        }
+
+    // Use this for initialization
 		void Start ()
 		{
 				LoadTextures ();
 				StartNewGame ();
+
+                audio.Play(); 
+   
 		}
 
 		private void LoadTextures ()
@@ -382,7 +400,10 @@ public class SceneScript : MonoBehaviour, ILog
 
 		// Update is called once per frame
 		void Update ()
-		{		
+		{
+            if (!audio.isPlaying)
+                playRandomMusic();
+
 				CurrentAction prev_action = curr;
 				curr = gm.Status;
 
