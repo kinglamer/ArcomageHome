@@ -34,6 +34,10 @@ public class SceneScript : MonoBehaviour, ILog
 		private CurrentAction curr;
 		public GameObject gameScreenText;
 		private bool GameIsOver = false;
+		public GameObject PlayerTower;
+		public GameObject EnemyTower;
+		public GameObject PlayerWall;
+		public GameObject EnemyWall;
 
 		// Use this for initialization
 		void Start ()
@@ -205,7 +209,7 @@ public class SceneScript : MonoBehaviour, ILog
 		{
 				cardObject.GetComponent<CardMoover> ().enabled = false;
 				Destroy (cardObject, 2);
-				PushCardOnDeck (new Vector3());
+				PushCardOnDeck (new Vector3 ());
 				Dictionary<string, object> notify = new Dictionary<string, object> ();
 				notify.Add ("CurrentAction", CurrentAction.AnimateHumanMove);
 				gm.SendGameNotification (notify);
@@ -215,7 +219,7 @@ public class SceneScript : MonoBehaviour, ILog
 		{
 				cardObject.GetComponent<CardPassMoover> ().enabled = false;
 				Destroy (cardObject);
-		PushCardOnDeck (new Vector3());
+				PushCardOnDeck (new Vector3 ());
 				Dictionary<string, object> notify = new Dictionary<string, object> ();
 				notify.Add ("CurrentAction", CurrentAction.AnimateHumanMove);
 				gm.SendGameNotification (notify);
@@ -313,6 +317,11 @@ public class SceneScript : MonoBehaviour, ILog
 				foreach (GameObject card in PlayerCards) {
 						card.GetComponent<DoneCardScript> ().CardIsActive = gm.IsCanUseCard (card.GetComponent<DoneCardScript> ().thisCard.cardParams);
 				}
+
+				PlayerTower.GetComponent<BuildingsScript> ().Height = humanparam [Specifications.PlayerTower];
+				EnemyTower.GetComponent<BuildingsScript> ().Height = enemyparam [Specifications.PlayerTower];
+				PlayerWall.GetComponent<BuildingsScript> ().Height = humanparam [Specifications.PlayerWall];
+				EnemyWall.GetComponent<BuildingsScript> ().Height = enemyparam [Specifications.PlayerWall];
 
 		}
 

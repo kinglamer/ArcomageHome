@@ -615,6 +615,7 @@ GameObject:
   - 33: {fileID: 728132483}
   - 136: {fileID: 728132482}
   - 23: {fileID: 728132481}
+  - 114: {fileID: 728132485}
   m_Layer: 2
   m_Name: PlayerTowerObj
   m_TagString: Untagged
@@ -669,11 +670,25 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 728132480}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8, y: -11, z: 0}
+  m_LocalPosition: {x: -8, y: -12, z: 0}
   m_LocalScale: {x: 2, y: 5, z: 1}
   m_Children: []
   m_Father: {fileID: 1358961979}
   m_RootOrder: 0
+--- !u!114 &728132485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 728132480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d19e15655d265f84e8cc48233fdf0e27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxHeight: 100
+  MaxYCoord: 8
+  Height: 0
 --- !u!1 &762090005
 GameObject:
   m_ObjectHideFlags: 0
@@ -838,6 +853,7 @@ GameObject:
   - 33: {fileID: 1075348322}
   - 136: {fileID: 1075348321}
   - 23: {fileID: 1075348320}
+  - 114: {fileID: 1075348324}
   m_Layer: 2
   m_Name: EnemyTowerObj
   m_TagString: Untagged
@@ -892,11 +908,25 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1075348319}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8, y: -11, z: 0}
+  m_LocalPosition: {x: 8, y: -12, z: 0}
   m_LocalScale: {x: 2, y: 5, z: 1}
   m_Children: []
   m_Father: {fileID: 1358961979}
   m_RootOrder: 1
+--- !u!114 &1075348324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1075348319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d19e15655d265f84e8cc48233fdf0e27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxHeight: 100
+  MaxYCoord: 8
+  Height: 0
 --- !u!1 &1276917588
 GameObject:
   m_ObjectHideFlags: 0
@@ -961,6 +991,7 @@ GameObject:
   - 33: {fileID: 1292592211}
   - 65: {fileID: 1292592210}
   - 23: {fileID: 1292592209}
+  - 114: {fileID: 1292592212}
   m_Layer: 2
   m_Name: EnemyWallObj
   m_TagString: Untagged
@@ -975,7 +1006,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1292592207}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4, y: -11, z: 0}
+  m_LocalPosition: {x: 4, y: -12, z: 0}
   m_LocalScale: {x: 1, y: 10, z: 1}
   m_Children: []
   m_Father: {fileID: 1358961979}
@@ -1019,6 +1050,20 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1292592207}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1292592212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1292592207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d19e15655d265f84e8cc48233fdf0e27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxHeight: 50
+  MaxYCoord: 5
+  Height: 0
 --- !u!1 &1331713597
 GameObject:
   m_ObjectHideFlags: 0
@@ -1464,6 +1509,10 @@ MonoBehaviour:
   mainSkin: {fileID: 11400000, guid: aff24adb0e0b7c54cbc8e12073990214, type: 2}
   PicAtlas: {fileID: 2800000, guid: 091d69172721d62409110e075dcc7f8f, type: 3}
   gameScreenText: {fileID: 1775670922}
+  PlayerTower: {fileID: 728132480}
+  EnemyTower: {fileID: 1075348319}
+  PlayerWall: {fileID: 1914044781}
+  EnemyWall: {fileID: 1292592207}
 --- !u!4 &1653442297
 Transform:
   m_ObjectHideFlags: 0
@@ -2076,6 +2125,7 @@ GameObject:
   - 33: {fileID: 1914044785}
   - 65: {fileID: 1914044784}
   - 23: {fileID: 1914044783}
+  - 114: {fileID: 1914044786}
   m_Layer: 2
   m_Name: PlayerWallObj
   m_TagString: Untagged
@@ -2090,7 +2140,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1914044781}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4, y: -11, z: 0}
+  m_LocalPosition: {x: -4, y: -12, z: 0}
   m_LocalScale: {x: 1, y: 10, z: 1}
   m_Children: []
   m_Father: {fileID: 1358961979}
@@ -2134,6 +2184,20 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1914044781}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1914044786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1914044781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d19e15655d265f84e8cc48233fdf0e27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxHeight: 50
+  MaxYCoord: 5
+  Height: 0
 --- !u!1 &1937923465
 GameObject:
   m_ObjectHideFlags: 0
