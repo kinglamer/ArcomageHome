@@ -61,6 +61,47 @@ namespace Arcomage.Tests
             Assert.AreEqual(countDesc, 0, "Не должно быть карт с отсутствующим описанием");
         }
 
+        [Test]
+        public void SpecialSymbolsInCardTest()
+        {
+            string url = "http://arcomage.somee.com/ArcoServer.svc?wsdl";
+            IArcoServer host = new ArcoServerClient(new BasicHttpBinding(), new EndpointAddress(url));
+
+            string cardFromServer = host.GetRandomCard();
+
+            List<Card> result = JsonConvert.DeserializeObject<List<Card>>(cardFromServer);
+
+            string description = "";
+
+            foreach (var item in result.Where(x=>x.id == 90))
+            {
+                 description = ParseDescription.Parse(item.description);
+
+            }
+
+            Assert.AreEqual(description.IndexOf("&"), -1, "Не должно быть знаков амперсант");
+        }
+
+        [Test]
+        public void SpecialSymbolsInCard2Test()
+        {
+            string url = "http://arcomage.somee.com/ArcoServer.svc?wsdl";
+            IArcoServer host = new ArcoServerClient(new BasicHttpBinding(), new EndpointAddress(url));
+
+            string cardFromServer = host.GetRandomCard();
+
+            List<Card> result = JsonConvert.DeserializeObject<List<Card>>(cardFromServer);
+
+            string description = "";
+
+            foreach (var item in result.Where(x => x.id == 8))
+            {
+                description = ParseDescription.Parse(item.description);
+
+            }
+
+            Assert.AreEqual(description.IndexOf("&"), -1, "Не должно быть знаков амперсант");
+        }
        
 
     }

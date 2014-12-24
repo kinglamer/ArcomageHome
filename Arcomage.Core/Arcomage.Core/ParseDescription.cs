@@ -19,7 +19,8 @@ namespace Arcomage.Core
                
 
             string text = Regex.Replace(value, pattern, String.Empty);
-         
+
+            text = text.Replace("&gt;", ">").Replace("&lt;", "<");
 
             string pattern2 = @"(\W+\w+;)";
 
