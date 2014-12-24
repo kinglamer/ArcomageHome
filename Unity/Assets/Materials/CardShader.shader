@@ -3,6 +3,7 @@
 		_CardBack ("Card Back", 2D) = "white" {}
 		_Picture("Card Picture",2D) = "white" {}
 		_CardBackColor("2=R,1=G,0=B",Float)=0.0
+		_Normal("Normal Map",2D) = "bump" {}
 		_Light("Lighter",Float)=0.7
 	}
 	SubShader {
@@ -15,6 +16,7 @@
 
 		sampler2D _CardBack;
 		sampler2D _Picture;
+		sampler2D _Normal;
 		float _CardBackColor;
 		float _Light;
 
@@ -36,6 +38,8 @@
 			half4 blendtex = tex2D (_CardBack, BlendUV);
 //			o.Albedo = picture.rgb;
 			o.Albedo = lerp(picture,cardback,blendtex.r)*_Light;
+			float3 normalMap = UnpackNormal(tex2D(_Normal, IN.uv_CardBack));
+			o.Normal = normalMap.rgb;
 			o.Alpha = cardback.a;
 		}
 		ENDCG
