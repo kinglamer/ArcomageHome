@@ -97,6 +97,7 @@ public class SceneScript : MonoBehaviour, ILog
 		{
 				LoadTextures ();
 				StartNewGame ();
+               
 		}
 
     private void LoadTextures()
@@ -172,7 +173,11 @@ public class SceneScript : MonoBehaviour, ILog
                                          x.key != Specifications.CostDiamonds && x.key != Specifications.CostRocks)
                 .ToList();
         card.GetComponent<DoneCardScript>().cardCost = costCard.value;
-        card.GetComponent<DoneCardScript>().CardIsActive = gm.IsCanUseCard(myCard.cardParams);
+
+        if (!isAICard)
+        {
+            card.GetComponent<DoneCardScript>().CardIsActive = gm.IsCanUseCard(myCard.cardParams);
+        }
         card.GetComponent<DoneCardScript>().thisCard = myCard;
 
         int typeCost = 0;
@@ -270,7 +275,7 @@ public class SceneScript : MonoBehaviour, ILog
 						notify.Add ("ID", cardID);
 						gm.SendGameNotification (notify);
 						cardObject.GetComponent<CardMoover> ().enabled = true;
-                    
+                        UpdateGameParameters();
                       
 				}
 		}
@@ -386,7 +391,7 @@ public class SceneScript : MonoBehaviour, ILog
 		// Update is called once per frame
     private void Update()
     {
-        UpdateGameParameters();
+        
 
         if (!audio.isPlaying)
             playRandomMusic();
@@ -398,9 +403,10 @@ public class SceneScript : MonoBehaviour, ILog
         {
             case CurrentAction.WaitHumanMove:
             {
-
+                gameScreenText.guiText.enabled = false;
                 if (prev_action != curr)
                 {
+                    UpdateGameParameters();
                     PushCardOnDeck(new Vector3());
                 }
                 break;
@@ -417,6 +423,7 @@ public class SceneScript : MonoBehaviour, ILog
             }
             case CurrentAction.PlayerMustDropCard:
             {
+                PushCardOnDeck(new Vector3());
                 gameScreenText.guiText.text = "You need to drop a card";
                 gameScreenText.guiText.enabled = true;
                 break;

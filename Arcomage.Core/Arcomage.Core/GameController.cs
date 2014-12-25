@@ -552,6 +552,7 @@ namespace Arcomage.Core
 
                 if (Status == CurrentAction.PlayAgain)
                 {
+                    GetCard();
                     UpdateStatistic();
                     Status = CurrentAction.AIUseCard;
                 }
@@ -903,19 +904,24 @@ namespace Arcomage.Core
                 {
                     if (Status != CurrentAction.PlayAgain)
                     {
-
                         if (Status != CurrentAction.PlayerMustDropCard)
                         {
-                          
+                            UpdateStatistic();
                             Status = CurrentAction.HumanUseCard;
                          
+                        }
+                        else
+                        {
+                            Status = CurrentAction.GetPlayerCard;
+                            information["CurrentAction"] = CurrentAction.PlayerMustDropCard.ToString();
+                            SendGameNotification(information);
                         }
                     }
                     else
                     {
 
                         Status = CurrentAction.WaitHumanMove;
-                        UpdateStatistic();
+                   
 
                         Status = CurrentAction.GetPlayerCard;
                         information["CurrentAction"] = CurrentAction.WaitHumanMove.ToString();
