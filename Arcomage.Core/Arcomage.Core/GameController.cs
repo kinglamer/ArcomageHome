@@ -1194,7 +1194,10 @@ namespace Arcomage.Core
           //  Switch your Wall with enemy Wall
             Specifications spec = Specifications.PlayerWall;
             int index = currentPlayer == 1 ? 0 : 1;
+            int tempVal = players[currentPlayer].Statistic[spec];
+
             players[currentPlayer].Statistic[spec] = players[index].Statistic[spec];
+            players[index].Statistic[spec] = tempVal;
         }
 
 
