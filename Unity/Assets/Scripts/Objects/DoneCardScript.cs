@@ -75,8 +75,7 @@ public class DoneCardScript : MonoBehaviour
                 if ((currentTime - lastClickTime) < clickTime)
                 {
                     gameController.GetComponent<SceneScript>().CardPlayed(cardId, startPos, gameObject);
-                    audio.PlayOneShot(SceneScript.AudioClips[SoundTypes.card]);
-                    PlaySecondSound();
+  
                 }
                 lastClickTime = currentTime;
             }
@@ -88,78 +87,7 @@ public class DoneCardScript : MonoBehaviour
         }
     }
 
-    private void PlaySecondSound()
-    {
-        var item = ListOfParamses.LastOrDefault();
-
-        SoundTypes typeS = SoundTypes.None;
-
-        switch (item.key)
-        {
-            case Specifications.PlayerTower:
-            case Specifications.EnemyTower:
-                if(item.value > 0)
-                    typeS = SoundTypes.towerup;
-                else
-                {
-                    typeS = SoundTypes.damage2;
-                }
-                break;
-            case Specifications.PlayerWall:
-            case Specifications.EnemyWall:
-                if (item.value > 0)
-                    typeS = SoundTypes.wallup;
-                else
-                {
-                    typeS = SoundTypes.damage;
-                }
-                break;
- 
-            case Specifications.PlayerColliery:
-            case Specifications.EnemyColliery:
-                if (item.value < 0)
-                    typeS = SoundTypes.bricksdown;
-                else
-                {
-                    typeS = SoundTypes.bricksup;
-                }
-                break;
-            case Specifications.PlayerDiamonds:
-            case Specifications.PlayerAnimals:
-            case Specifications.PlayerRocks:
-            case Specifications.EnemyDiamonds:
-            case Specifications.EnemyAnimals:
-            case Specifications.EnemyRocks:
-                if (item.value < 0)
-                    typeS = SoundTypes.resourceloss;
-                else
-                {
-                    typeS = SoundTypes.harp;
-                }
-                break;
-            case Specifications.EnemyDiamondMines:
-            case Specifications.PlayerDiamondMines:
-            case Specifications.PlayerMenagerie:
-            case Specifications.EnemyMenagerie:
-                if (item.value < 0)
-                    typeS = SoundTypes.resourceloss;
-                else
-                {
-                    typeS = SoundTypes.towerwallgain;
-                }
-                break;
-            case Specifications.EnemyDirectDamage:
-            case Specifications.PlayerDirectDamage:
-                typeS = SoundTypes.damage;
-                break;
-
-        }
-
-        if (typeS != SoundTypes.None)
-        {
-            audio.PlayOneShot(SceneScript.AudioClips[typeS], 0.7f);
-        }
-    }
+  
 
     void OnMouseExit ()
 		{	

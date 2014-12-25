@@ -268,15 +268,25 @@ public class SceneScript : MonoBehaviour, ILog
 		//метод для отыгрывания карты
 		public void CardPlayed (int cardID, Vector3 cardPos, GameObject cardObject)
 		{
-				if (curr == CurrentAction.WaitHumanMove) {
-                  
+				if (curr == CurrentAction.WaitHumanMove)
+				{
+
+				        var soundParam = gm.GetPlayersCard().First(x => x.id == cardID).cardParams.LastOrDefault();
+               
+
 						Dictionary<string, object> notify = new Dictionary<string, object> ();
 						notify.Add ("CurrentAction", CurrentAction.HumanUseCard);
 						notify.Add ("ID", cardID);
 						gm.SendGameNotification (notify);
+
+                        audio.PlayOneShot(AudioClips[SoundTypes.card]);
+                        PlaySecondSound(soundParam);
+
 						cardObject.GetComponent<CardMoover> ().enabled = true;
                         UpdateGameParameters();
-                      
+
+
+                    
 				}
 		}
 
@@ -342,6 +352,8 @@ public class SceneScript : MonoBehaviour, ILog
 
 		void UpdateGameParameters ()
 		{
+                
+
 				Dictionary<Specifications,int> humanparam = gm.GetPlayerParams (SelectPlayer.First);
 				Dictionary<Specifications,int> enemyparam = gm.GetPlayerParams (SelectPlayer.Second);
 		
@@ -445,6 +457,11 @@ public class SceneScript : MonoBehaviour, ILog
                     {
                         var vect = new Vector3(x, 2f, 0f);
                         CreateCard(card, ref vect, true);
+                        var soundParam = card.cardParams.LastOrDefault();
+
+                        audio.PlayOneShot(AudioClips[SoundTypes.card]);
+                        PlaySecondSound(soundParam);
+
                         x += 5;
                     }
                 }
@@ -467,6 +484,79 @@ public class SceneScript : MonoBehaviour, ILog
             }
         }
 
+    }
+
+
+    private void PlaySecondSound(CardParams item)
+    {
+
+        SoundTypes typeS = SoundTypes.None;
+
+        switch (item.key)
+        {
+            case Specifications.PlayerTower:
+            case Specifications.EnemyTower:
+                if (item.value > 0)
+                    typeS = SoundTypes.towerup;
+                else
+                {
+                    typeS = SoundTypes.damage2;
+                }
+                break;
+            case Specifications.PlayerWall:
+            case Specifications.EnemyWall:
+                if (item.value > 0)
+                    typeS = SoundTypes.wallup;
+                else
+                {
+                    typeS = SoundTypes.damage;
+                }
+                break;
+
+            case Specifications.PlayerColliery:
+            case Specifications.EnemyColliery:
+                if (item.value < 0)
+                    typeS = SoundTypes.bricksdown;
+                else
+                {
+                    typeS = SoundTypes.bricksup;
+                }
+                break;
+            case Specifications.PlayerDiamonds:
+            case Specifications.PlayerAnimals:
+            case Specifications.PlayerRocks:
+            case Specifications.EnemyDiamonds:
+            case Specifications.EnemyAnimals:
+            case Specifications.EnemyRocks:
+                if (item.value < 0)
+                    typeS = SoundTypes.resourceloss;
+                else
+                {
+                    typeS = SoundTypes.harp;
+                }
+                break;
+            case Specifications.EnemyDiamondMines:
+            case Specifications.PlayerDiamondMines:
+            case Specifications.PlayerMenagerie:
+            case Specifications.EnemyMenagerie:
+                if (item.value < 0)
+                    typeS = SoundTypes.resourceloss;
+                else
+                {
+                    typeS = SoundTypes.towerwallgain;
+                }
+                break;
+            case Specifications.EnemyDirectDamage:
+            case Specifications.PlayerDirectDamage:
+                typeS = SoundTypes.damage;
+                break;
+
+        }
+
+        if (typeS != SoundTypes.None)
+        {
+            audio.PlayOneShot(SceneScript.AudioClips[typeS], 0.7f);
+        }
     }
 
 }
