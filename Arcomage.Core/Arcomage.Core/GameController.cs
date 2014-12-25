@@ -184,7 +184,7 @@ namespace Arcomage.Core
            
              
 
-                var result = logCard.Where(x => x.gameEvent == GameEvent.Used && x.player.type == TypePlayer.AI).FirstOrDefault();
+                var result = logCard.Where(x => x.gameEvent == GameEvent.Used && x.player.type == TypePlayer.AI).LastOrDefault();
 
                 if (result != null)
                     returnVal.Add(result.card);
@@ -913,8 +913,13 @@ namespace Arcomage.Core
                     }
                     else
                     {
+
                         Status = CurrentAction.WaitHumanMove;
                         UpdateStatistic();
+
+                        Status = CurrentAction.GetPlayerCard;
+                        information["CurrentAction"] = CurrentAction.WaitHumanMove.ToString();
+                        SendGameNotification(information);
                     }
                 }
             }
