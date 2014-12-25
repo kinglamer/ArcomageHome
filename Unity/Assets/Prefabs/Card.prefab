@@ -94,7 +94,7 @@ Transform:
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -.0799999982, z: -.100000001}
-  m_LocalScale: {x: .00999999978, y: .00800000038, z: 1}
+  m_LocalScale: {x: .00700000022, y: .00700000022, z: 1}
   m_Children: []
   m_Father: {fileID: 400006}
   m_RootOrder: 1
@@ -106,7 +106,7 @@ Transform:
   m_GameObject: {fileID: 100004}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: .400000006, z: -.100000001}
-  m_LocalScale: {x: .0149999997, y: .00999999978, z: 1}
+  m_LocalScale: {x: .0120000001, y: .00800000038, z: 1}
   m_Children: []
   m_Father: {fileID: 400006}
   m_RootOrder: 0
@@ -177,7 +177,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: e1c24dd541f2cae4b9831f63e6bbb004, type: 2}
+  - {fileID: 2100000, guid: 9343be327269e6e46aa7b41a4e9b7e15, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -303,7 +303,7 @@ TextMesh:
   m_Font: {fileID: 12800000, guid: 0fe71af3ab68a9145818cac639ddd38d, type: 3}
   m_Color:
     serializedVersion: 2
-    rgba: 4281588175
+    rgba: 4294967295
 --- !u!102 &10200002
 TextMesh:
   serializedVersion: 3
@@ -324,7 +324,7 @@ TextMesh:
   m_Font: {fileID: 12800000, guid: 0fe71af3ab68a9145818cac639ddd38d, type: 3}
   m_Color:
     serializedVersion: 2
-    rgba: 4281588175
+    rgba: 4294967295
 --- !u!102 &10200004
 TextMesh:
   serializedVersion: 3
@@ -340,12 +340,12 @@ TextMesh:
   m_Alignment: 1
   m_TabSize: 4
   m_FontSize: 100
-  m_FontStyle: 1
+  m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 1f5edcc9dbbc3c947b8b8a2e43a11730, type: 3}
+  m_Font: {fileID: 12800000, guid: 0fe71af3ab68a9145818cac639ddd38d, type: 3}
   m_Color:
     serializedVersion: 2
-    rgba: 4281191619
+    rgba: 4294967295
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
