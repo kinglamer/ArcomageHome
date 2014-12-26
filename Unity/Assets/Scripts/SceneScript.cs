@@ -330,7 +330,7 @@ public class SceneScript : MonoBehaviour, ILog
 				GUI.skin = mainSkin;
 				if (GameIsOver) {
 						GUILayout.BeginArea (new Rect (Screen.width / 2 - 150, Screen.height / 2 - 50, 300, 100));
-						GUILayout.Box (gm.Winner + " is WIN");
+						GUILayout.Box (gm.Winner + " WINS");
 						GUILayout.BeginHorizontal ();
 		
 						if (GUILayout.Button ("Replay")) {
