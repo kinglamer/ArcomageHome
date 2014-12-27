@@ -200,12 +200,12 @@ namespace Arcomage.Core
 
 
 
-            var result = logCard.Where(x=>x.player.type == TypePlayer.AI && x.move == currentMove).LastOrDefault();
+            var result = logCard.Where(x=>x.player.type == TypePlayer.AI && x.move == currentMove);
 
-                if (result != null)
-                    returnVal.Add(result.card);
-
-            
+            foreach (var item in result)
+            {
+                returnVal.Add(item.card);
+            }
 
             return returnVal;
         }

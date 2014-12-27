@@ -142,12 +142,11 @@ namespace Arcomage.Tests
 
             result = gm.logCard.Where(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Used).FirstOrDefault();
             Assert.AreEqual(result.card.id, 55, "AI должен был использовать карту 55");
+
+
+            var info = gm.GetAIUsedCard();
+            Assert.AreEqual(info.Count, 2, "AI должен был использовать 2 карты");
         }
 
-        [Test]
-        public void AICanPlayAgain()
-        {
-            
-        }
     }
 }
