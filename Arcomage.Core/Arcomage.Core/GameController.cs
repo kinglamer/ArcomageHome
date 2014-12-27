@@ -74,6 +74,8 @@ namespace Arcomage.Core
             }
         }
 
+        private int currentMove { get; set; }
+
         private bool isGameEnded
         {
             get
@@ -181,10 +183,10 @@ namespace Arcomage.Core
         public List<Card> GetAIUsedCard()
         {
             List<Card> returnVal = new List<Card>();
-           
-             
 
-                var result = logCard.Where(x => x.gameEvent == GameEvent.Used && x.player.type == TypePlayer.AI).LastOrDefault();
+
+
+            var result = logCard.Where(x=>x.player.type == TypePlayer.AI && x.move == currentMove).LastOrDefault();
 
                 if (result != null)
                     returnVal.Add(result.card);
@@ -441,10 +443,7 @@ namespace Arcomage.Core
             
                
 
-                logCard.Add(new GameCardLog() {
-                    card = players[currentPlayer].Cards[index],
-                    gameEvent = GameEvent.Used,
-                    player = players[currentPlayer]});
+                logCard.Add(new GameCardLog(players[currentPlayer], GameEvent.Used,players[currentPlayer].Cards[index],currentMove));
 
                 players[currentPlayer].Cards.RemoveAt(index);
                 return true;
@@ -493,12 +492,7 @@ namespace Arcomage.Core
 
             try
             {
-                logCard.Add(new GameCardLog()
-                {
-                    card = players[currentPlayer].Cards[index],
-                    gameEvent = GameEvent.Droped,
-                    player = players[currentPlayer]
-                });
+                logCard.Add(new GameCardLog(players[currentPlayer], GameEvent.Droped, players[currentPlayer].Cards[index], currentMove));
 
                 log.Info("Player: " + players[currentPlayer].playerName + " DROP CARD " + players[currentPlayer].Cards[index].name);
                 players[currentPlayer].Cards.RemoveAt(index);               
@@ -552,6 +546,7 @@ namespace Arcomage.Core
 
                 if (Status == CurrentAction.PlayAgain)
                 {
+                    Status = CurrentAction.GetAICard;
                     GetCard();
                     UpdateStatistic();
                     Status = CurrentAction.AIUseCard;
@@ -800,6 +795,7 @@ namespace Arcomage.Core
         private void EndAIMove(Dictionary<string, object> information = null)
         {
             currentPlayer = currentPlayer == 1 ? 0 : 1;
+            currentMove ++;
             Status = CurrentAction.WaitHumanMove;
         }
 
@@ -830,6 +826,7 @@ namespace Arcomage.Core
             SendGameNotification(notify);
 
             currentPlayer = currentPlayer == 1 ? 0 : 1;
+            currentMove++;
             if (players[currentPlayer].type == TypePlayer.AI)
             {
                 MakeMoveAI();
@@ -875,7 +872,7 @@ namespace Arcomage.Core
         {
             if (information["CurrentAction"].ToString() == "AnimateHumanMove")
             {
-                UpdateStatistic();
+               // UpdateStatistic();
                 Status = CurrentAction.UpdateStatHuman;
             }
         }
@@ -912,6 +909,7 @@ namespace Arcomage.Core
                         }
                         else
                         {
+                  
                             Status = CurrentAction.GetPlayerCard;
                             information["CurrentAction"] = CurrentAction.PlayerMustDropCard.ToString();
                             SendGameNotification(information);
@@ -919,9 +917,7 @@ namespace Arcomage.Core
                     }
                     else
                     {
-
-                        Status = CurrentAction.WaitHumanMove;
-                   
+                        UpdateStatistic();
 
                         Status = CurrentAction.GetPlayerCard;
                         information["CurrentAction"] = CurrentAction.WaitHumanMove.ToString();
@@ -998,7 +994,7 @@ namespace Arcomage.Core
                     currentPlayer = rnd.Next(0, 2);
                 }
                 log.Info("Game is started. CurrentPlayer: " + currentPlayer);
-
+                currentMove = 0;
 
                 Dictionary<string, object> notify = new Dictionary<string, object>();
                 if (players[currentPlayer].type == TypePlayer.AI)
