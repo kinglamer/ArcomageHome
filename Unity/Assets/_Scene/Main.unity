@@ -1769,6 +1769,7 @@ MonoBehaviour:
   EnemyTower: {fileID: 1075348319}
   PlayerWall: {fileID: 1914044781}
   EnemyWall: {fileID: 1292592207}
+  Mute: 1
 --- !u!4 &1653442297
 Transform:
   m_ObjectHideFlags: 0
