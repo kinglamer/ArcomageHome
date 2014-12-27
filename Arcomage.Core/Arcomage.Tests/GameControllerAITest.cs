@@ -62,7 +62,7 @@ namespace Arcomage.Tests
         public void WhichCardUseAI()
         {
             gm = GameControllerTestHelper.InitDemoGame();
-            GameControllerTestHelper.getCards(gm);
+            //GameControllerTestHelper.getCards(gm);
 
             GameControllerTestHelper.PassStroke(gm);
 
@@ -83,7 +83,7 @@ namespace Arcomage.Tests
         public void ComputerMustWin()
         {
             gm = GameControllerTestHelper.InitDemoGame(3);
-            GameControllerTestHelper.getCards(gm);
+           // GameControllerTestHelper.getCards(gm);
 
             GameControllerTestHelper.PassStroke(gm);
             
@@ -112,7 +112,7 @@ namespace Arcomage.Tests
         public void AICanPassMove()
         {
             gm = GameControllerTestHelper.InitDemoGame(5);
-            GameControllerTestHelper.getCards(gm);
+           // GameControllerTestHelper.getCards(gm);
 
             GameControllerTestHelper.PassStroke(gm);
 
@@ -131,7 +131,7 @@ namespace Arcomage.Tests
         public void AICanGetAnotherCard()
         {
             gm = GameControllerTestHelper.InitDemoGame(4);
-            GameControllerTestHelper.getCards(gm);
+          //  GameControllerTestHelper.getCards(gm);
 
             GameControllerTestHelper.PassStroke(gm);
 

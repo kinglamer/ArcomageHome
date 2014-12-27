@@ -44,7 +44,7 @@ namespace Arcomage.Tests
          public void PlayerMustWin()
          {
              gm = GameControllerTestHelper.InitDemoGame();
-             GameControllerTestHelper.getCards(gm);
+             //GameControllerTestHelper.getCards(gm);
 
 
              GameControllerTestHelper.useCard(1, gm);
@@ -118,7 +118,7 @@ namespace Arcomage.Tests
              returnVal.Add(Specifications.PlayerAnimals, 5);*/
 
              gm = GameControllerTestHelper.InitDemoGame();
-             GameControllerTestHelper.getCards(gm);
+             //GameControllerTestHelper.getCards(gm);
 
              GameControllerTestHelper.useCard(2, gm);
 
@@ -158,7 +158,7 @@ namespace Arcomage.Tests
 
              gm = GameControllerTestHelper.InitDemoGame(2);
 
-             GameControllerTestHelper.getCards(gm);
+             //GameControllerTestHelper.getCards(gm);
 
              GameControllerTestHelper.useCard(6, gm);
 
@@ -175,7 +175,7 @@ namespace Arcomage.Tests
          public void CheckApplyEnemyDirectDamage()
          {
              gm = GameControllerTestHelper.InitDemoGame();
-             GameControllerTestHelper.getCards(gm);
+             //GameControllerTestHelper.getCards(gm);
 
 
              GameControllerTestHelper.useCard(3, gm);
@@ -196,7 +196,7 @@ namespace Arcomage.Tests
          public void CheckApplyPlayerDirectDamage()
          {
              gm = GameControllerTestHelper.InitDemoGame();
-             GameControllerTestHelper.getCards(gm);
+             //GameControllerTestHelper.getCards(gm);
 
              GameControllerTestHelper.useCard(4, gm);
 
@@ -217,7 +217,7 @@ namespace Arcomage.Tests
          public void CheckPlayAgain()
          {
              gm = GameControllerTestHelper.InitDemoGame();
-             GameControllerTestHelper.getCards(gm);
+             //GameControllerTestHelper.getCards(gm);
 
              Assert.AreEqual(gm.IsCanUseCard(55), true, "Не возможно использовать карту");
 
@@ -250,7 +250,7 @@ namespace Arcomage.Tests
          public void PlayerCanPassMove()
          {
              gm = GameControllerTestHelper.InitDemoGame(5);
-             GameControllerTestHelper.getCards(gm);
+             //GameControllerTestHelper.getCards(gm);
 
              GameControllerTestHelper.PassStroke(gm);
 
@@ -259,6 +259,31 @@ namespace Arcomage.Tests
              //Внимание: при усовершенствование AI данный тест может измениться, .т.к. комп уже осознано будет выбирать какую карту сбросить
              Assert.AreEqual(result.card.id, 1, "Human должен сбросить карту 1");
 
+         }
+
+         /// <summary>
+         /// Цель: проверить, что возможно сделать подтасовку карт
+         /// Результат: в руке должна быть определенная карта
+         /// </summary>
+         [Test]
+         public void TestCardTricker()
+         {
+             LogTest log = new LogTest();
+             GameController gm = new GameController(log);
+             
+
+             gm.AddPlayer(TypePlayer.Human, "Human");
+             gm.AddPlayer(TypePlayer.AI, "AI");
+
+
+             Dictionary<string, object> notify = new Dictionary<string, object>();
+             notify.Add("CurrentAction", CurrentAction.StartGame);
+             notify.Add("currentPlayer", TypePlayer.Human); //делаем подтасовку небольшую, чтобы начал свой ход компьютер
+             notify.Add("CardTricksters", new List<int> { 39, 11, 12, 13, 14, 15 });
+             gm.SendGameNotification(notify);
+
+
+             Assert.AreEqual(gm.GetPlayersCard().FirstOrDefault(x=>x.id == 39).id, 39, "У игрока должна быть карта с №39");
          }
 
         

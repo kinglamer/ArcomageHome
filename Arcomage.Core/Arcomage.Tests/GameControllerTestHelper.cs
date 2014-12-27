@@ -16,7 +16,7 @@ namespace Arcomage.Tests
         /// Последовательность действий, позволяющая игроку получить карты
         /// </summary>
         /// <param name="gmController"></param>
-        public static void getCards(GameController gmController)
+      /*  public static void getCards(GameController gmController)
         {
             //карты можно получить только, при соответствущем ходе
           //  Assert.AreEqual(gmController.Status, CurrentAction.GetPlayerCard , "Сейчас не ход игрока");
@@ -27,8 +27,8 @@ namespace Arcomage.Tests
           //  notify1.Add("CurrentAction", CurrentAction.WaitHumanMove);
            // gmController.SendGameNotification(notify1);
 
-            Assert.AreEqual(gmController.Status, CurrentAction.WaitHumanMove, "Должно быть ожидание хода игрока");
-        }
+          //  Assert.AreEqual(gmController.Status, CurrentAction.WaitHumanMove, "Должно быть ожидание хода игрока");
+        }*/
 
 
         /// <summary>

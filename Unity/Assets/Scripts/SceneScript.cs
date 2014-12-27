@@ -61,12 +61,18 @@ public class SceneScript : MonoBehaviour, ILog
 		public GameObject EnemyWall;
 
         private object[] myMusic; // declare this as Object array
-
+        public bool Mute;
         public static Dictionary<SoundTypes, AudioClip> AudioClips;
         
         void Awake()
         {
-            audio.volume = 30;
+            if (Mute)
+                audio.volume = 0;
+            else
+            {
+                audio.volume = 30;
+            }
+          
             myMusic = Resources.LoadAll("Music", typeof(AudioClip));
             playRandomMusic();
 
@@ -133,6 +139,9 @@ public class SceneScript : MonoBehaviour, ILog
 
         notify.Add("CurrentAction", CurrentAction.StartGame);
         notify.Add("currentPlayer", TypePlayer.Human);
+
+        notify.Add("CardTricksters", new List<int> { 39, 11, 12, 13, 14, 15 });
+
 
         gm.SendGameNotification(notify);
 
@@ -410,6 +419,7 @@ public class SceneScript : MonoBehaviour, ILog
 
         CurrentAction prev_action = curr;
         curr = gm.Status;
+
 
         switch (curr)
         {
