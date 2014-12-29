@@ -137,7 +137,7 @@ public class SceneScript : MonoBehaviour, ILog
 				notify.Add ("CurrentAction", CurrentAction.StartGame);
 				notify.Add ("currentPlayer", TypePlayer.Human);
 
-				notify.Add ("CardTricksters", new List<int> { 39, 11, 12, 13, 14, 15 });
+//				notify.Add ("CardTricksters", new List<int> { 39, 11, 12, 13, 14, 15 });
 
 
 				gm.SendGameNotification (notify);
