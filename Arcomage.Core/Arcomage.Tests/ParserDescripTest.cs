@@ -115,6 +115,7 @@ namespace Arcomage.Tests
             List<Card> result = JsonConvert.DeserializeObject<List<Card>>(cardFromServer);
 
             Assert.AreEqual(result.Count, 102, "Должно быть 102 карты");
+            Assert.AreNotEqual(result.First().id, 2, "Первой картой не должна быть карта 2");
         }
     }
 }

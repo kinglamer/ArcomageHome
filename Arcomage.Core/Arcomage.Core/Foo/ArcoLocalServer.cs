@@ -7,6 +7,7 @@ using Arcomage.Core.ArcomageService;
 using Arcomage.Entity;
 using Newtonsoft.Json;
 using SQLite;
+using Arcomage.Common;
 
 namespace Arcomage.Core.Foo
 {
@@ -21,7 +22,7 @@ namespace Arcomage.Core.Foo
 
         public string GetRandomCard()
         {
-            List<Card> returnVal = new List<Card>();
+            var returnVal = new List<Card>();
             using (var connect = new SQLiteConnection(connectionPath,  SQLiteOpenFlags.ReadWrite, false))
             {
             
@@ -67,7 +68,7 @@ namespace Arcomage.Core.Foo
             }
 
 
-
+           returnVal.Randomize();
 
 
 
