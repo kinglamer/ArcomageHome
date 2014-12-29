@@ -124,7 +124,7 @@ public class SceneScript : MonoBehaviour, ILog
 		{
 				GameIsOver = false;
 
-                string filePath = Path.Combine(Application.dataPath.Replace(@"/", @"\"), "Resources\\arcomageDB.db");
+                string filePath = Path.Combine(Application.streamingAssetsPath.Replace(@"/", @"\"), "arcomageDB.db");
                 var newServe = new ArcoLocalServer(filePath);
             Debug.LogWarning("newServe.Path: " + newServe.connectionPath);
             gm = new GameController(this, newServe);
