@@ -57,16 +57,16 @@ public class SceneScript : MonoBehaviour, ILog
 		public GameObject PlayerWall;
 		public GameObject EnemyWall;
 		private object[] myMusic; // declare this as Object array
-		public bool Mute;
+		public bool Mute = false;
 		public static Dictionary<SoundTypes, AudioClip> AudioClips;
         
 		void Awake ()
 		{
-				if (Mute)
-						audio.volume = 0;
-				else {
-						audio.volume = 30;
-				}
+//				if (Mute)
+//						audio.volume = 0;
+//				else {
+//						audio.volume = 30;
+//				}
           
 				myMusic = Resources.LoadAll ("Music", typeof(AudioClip));
 				playRandomMusic ();
@@ -342,6 +342,11 @@ public class SceneScript : MonoBehaviour, ILog
 						GUILayout.EndArea ();
 				}
 
+
+				GUILayout.BeginArea (new Rect (Screen.width / 2 - 100, Screen.height / 20, 200, 50));
+				Mute = GUILayout.Toggle (Mute, "Mute Sound");
+				AudioListener.pause = Mute;
+				GUILayout.EndArea ();
 
 		}
 
