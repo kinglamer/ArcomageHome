@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Arcomage.Core;
 using Arcomage.Core.ArcomageService;
+using Arcomage.Core.Foo;
 using Arcomage.Entity;
 using Arcomage.Tests.Moq;
 using Arcomage.Tests.MoqStartParams;
@@ -102,7 +103,18 @@ namespace Arcomage.Tests
 
             Assert.AreEqual(description.IndexOf("&"), -1, "Не должно быть знаков амперсант");
         }
-       
 
+
+        [Test]
+        public void SqliteDBTest()
+        {
+            IArcoServer host = new ArcoLocalServer(@".\arcomageDB.db");
+
+            string cardFromServer = host.GetRandomCard();
+
+            List<Card> result = JsonConvert.DeserializeObject<List<Card>>(cardFromServer);
+
+            Assert.AreEqual(result.Count, 102, "Должно быть 102 карты");
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using Arcomage.Core.Foo;
+using UnityEngine;
 using System.Collections;
 using Arcomage.Core;
 using Arcomage.Entity;
@@ -121,7 +123,11 @@ public class SceneScript : MonoBehaviour, ILog
 		private void StartNewGame ()
 		{
 				GameIsOver = false;
-				gm = new GameController (this);
+
+                string filePath = Path.Combine(Application.dataPath.Replace(@"/", @"\"), "Resources\\arcomageDB.db");
+                var newServe = new ArcoLocalServer(filePath);
+            Debug.LogWarning("newServe.Path: " + newServe.connectionPath);
+            gm = new GameController(this, newServe);
 
 				gm.AddPlayer (TypePlayer.Human, "Human");
 				gm.AddPlayer (TypePlayer.AI, "Computer");
