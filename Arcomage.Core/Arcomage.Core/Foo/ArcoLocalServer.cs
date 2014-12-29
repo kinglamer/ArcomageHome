@@ -21,7 +21,6 @@ namespace Arcomage.Core.Foo
 
         public string GetRandomCard()
         {
-
             List<Card> returnVal = new List<Card>();
             using (SQLiteConnection connect = new SQLiteConnection(@"Data Source=" + connectionPath))
             {
