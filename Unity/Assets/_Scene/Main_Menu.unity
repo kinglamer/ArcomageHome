@@ -186,6 +186,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GUISkin: {fileID: 11400000, guid: aff24adb0e0b7c54cbc8e12073990214, type: 2}
+  HelpText: {fileID: 4900000, guid: fad115a10d47347458b8f1699e451b5f, type: 3}
+  AboutText: {fileID: 4900000, guid: 01c6ba914424c83488c2f3d61102551d, type: 3}
 --- !u!4 &2031257884
 Transform:
   m_ObjectHideFlags: 0

@@ -5,8 +5,14 @@ public class MainMenuController : MonoBehaviour
 {
 
 		public GUISkin GUISkin;
+	public TextAsset HelpText;
+	public TextAsset AboutText;
+
 		private bool isHelp;
 		private bool isAbout;
+		
+
+	Vector2 scrollPosition;
 
 		// Use this for initialization
 		void Start ()
@@ -52,13 +58,15 @@ public class MainMenuController : MonoBehaviour
 		{
 				if (windowID == 0) {
 						GUILayout.Space (20);
-						GUILayout.Label ("Help text", GUILayout.MaxWidth (400));
+			scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(400), GUILayout.Height(400));
+			GUILayout.Label (HelpText.text, "SimpleLable", GUILayout.MaxWidth (400));
+			GUILayout.EndScrollView();
 						if (GUILayout.Button ("Close"))
 								isHelp = false;
 				}
 				if (windowID == 1) {
 						GUILayout.Space (20);
-						GUILayout.Label ("About text", GUILayout.MaxWidth (400));
+						GUILayout.Label (AboutText.text, GUILayout.MaxWidth (400));
 						if (GUILayout.Button ("Close"))
 								isAbout = false;
 				}
