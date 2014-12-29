@@ -124,10 +124,10 @@ public class SceneScript : MonoBehaviour, ILog
 		{
 				GameIsOver = false;
 
-                string filePath = Path.Combine(Application.streamingAssetsPath.Replace(@"/", @"\"), "arcomageDB.db");
+                string filePath = GetStreamingAssetsPath("arcomageDB.db");
                 var newServe = new ArcoLocalServer(filePath);
-            Debug.LogWarning("newServe.Path: " + newServe.connectionPath);
-            gm = new GameController(this, newServe);
+                Debug.LogWarning("newServe.Path: " + newServe.connectionPath);
+                gm = new GameController(this, newServe);
 
 				gm.AddPlayer (TypePlayer.Human, "Human");
 				gm.AddPlayer (TypePlayer.AI, "Computer");
@@ -144,7 +144,27 @@ public class SceneScript : MonoBehaviour, ILog
 
 		}
 
-		private void CreateCard (Card myCard, ref Vector3 spawnPosition, bool isAICard = false)
+    private string GetStreamingAssetsPath(string fileName)
+    {
+
+        string path;
+#if UNITY_EDITOR
+    path = Path.Combine(Application.streamingAssetsPath, fileName);
+#elif UNITY_ANDROID
+     path = "//"+ Application.dataPath + "!/assets/";
+#elif UNITY_IOS
+     path = Application.dataPath + "/Raw";
+#elif UNITY_STANDALONE_OSX
+     path = Application.streamingAssetsPath + @"/" + fileName;
+#else
+    path = Path.Combine(Application.streamingAssetsPath, fileName);
+    
+#endif
+
+        return path;
+    }
+
+        private void CreateCard (Card myCard, ref Vector3 spawnPosition, bool isAICard = false)
 		{
 				Quaternion spawnRotation = new Quaternion ();
 				spawnRotation = Quaternion.identity;
