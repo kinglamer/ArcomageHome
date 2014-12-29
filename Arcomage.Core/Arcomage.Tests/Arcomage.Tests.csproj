@@ -90,6 +90,9 @@
     <Compile Include="SpecialCardTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="arcomageDB.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -108,6 +111,11 @@
       <Project>{69DC8E57-C976-4B60-B7CF-B16F20732F0F}</Project>
       <Name>Arcomage.Entity</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="sqlite3.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -108,7 +108,7 @@ namespace Arcomage.Tests
         [Test]
         public void SqliteDBTest()
         {
-            IArcoServer host = new ArcoLocalServer(@".\arcomageDB.db");
+            IArcoServer host = new ArcoLocalServer(@"arcomageDB.db");
 
             string cardFromServer = host.GetRandomCard();
 

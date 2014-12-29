@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using Arcomage.Core.ArcomageService;
 using Arcomage.Entity;
 using Newtonsoft.Json;
+using SQLite;
 
 namespace Arcomage.Core.Foo
 {
@@ -22,53 +22,48 @@ namespace Arcomage.Core.Foo
         public string GetRandomCard()
         {
             List<Card> returnVal = new List<Card>();
-            using (SQLiteConnection connect = new SQLiteConnection(@"Data Source=" + connectionPath))
+            using (var connect = new SQLiteConnection(connectionPath,  SQLiteOpenFlags.ReadWrite, false))
             {
-              
-                connect.Open();
+            
 
-
-                using (SQLiteCommand fmd = connect.CreateCommand())
-                {
-                    fmd.CommandText = @"select * from cards";
-                    fmd.CommandType = CommandType.Text;
-                    SQLiteDataReader r = fmd.ExecuteReader();
-                    while (r.Read())
+              //  using (var fmd = connect.CreateCommand())
+           //     {
+                  //  fmd.CommandText = @"";
+                 //   fmd.CommandType = CommandType.Text;
+                    var r = connect.Query<Card>("select * from cards;");
+                    foreach (var item in r)
                     {
                         var card = new Card();
 
-                        card.id = Convert.ToInt32(r["id"]);
-                        card.name = Convert.ToString(r["name"]);
-                        card.description = Convert.ToString(r["description"]);
+                        card.id = item.id;
+                        card.name = item.name;
+                        card.description =item.description;
 
                         returnVal.Add(card);
-
                     }
-                    r.Close();
+                
 
                     foreach (var item in returnVal)
                     {
-                        var cardParam = new List<CardParams>();
 
-                        fmd.CommandText = @"select * from cardParams where card_id = " + item.id;
-                        fmd.CommandType = CommandType.Text;
-                        r = fmd.ExecuteReader();
-                        while (r.Read())
+                        var cardParam = new List<CardParams>();
+                        var r2 = connect.Query<CardParams>(@"select * from cardParams where card_id = " + item.id + ";");
+                        foreach (var item2 in r2)
+
                         {
                             cardParam.Add(new CardParams()
                             {
                                 card = item,
-                                id = Convert.ToInt32(r["id"]),
-                                value = Convert.ToInt32(r["value"]),
-                                key = GameControllerHelper.ConvertObjToEnum<Specifications>(r["key"])
+                                id = item2.id,
+                                value = item2.value,
+                                key = item2.key
                             });
                         }
-                        r.Close();
 
                         item.cardParams = cardParam;
                     }
 
-                }
+              //  }
             }
 
 
