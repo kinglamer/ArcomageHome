@@ -49,7 +49,7 @@ namespace Arcomage.Tests
 
              GameControllerTestHelper.useCard(1, gm);
 
-             Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.Second)[Specifications.PlayerTower], 0, "Башня врага должна быть уничтожена");
+             Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.Second)[Attributes.Tower], 0, "Башня врага должна быть уничтожена");
 
              Assert.AreEqual(gm.Status, CurrentAction.UpdateStatHuman, "Текущий статус должен быть равным обновлению статистики игрока");
 
@@ -126,25 +126,25 @@ namespace Arcomage.Tests
 
              var playerParams = gm.GetPlayerParams(SelectPlayer.First);
 
-            
-             Assert.AreEqual(playerParams[Specifications.PlayerWall], 5 - 4, "Не правильно применен параметр PlayerWall");
-             Assert.AreEqual(playerParams[Specifications.PlayerTower], 10 - 8, "Не правильно применен параметр PlayerTower");
-             Assert.AreEqual(playerParams[Specifications.PlayerDiamondMines], 1 + 2, "Не правильно применен параметр PlayerDiamondMines");
-             Assert.AreEqual(playerParams[Specifications.PlayerMenagerie], 1 + 3, "Не правильно применен параметр PlayerMenagerie");
-             Assert.AreEqual(playerParams[Specifications.PlayerColliery], 1 + 4, "Не правильно применен параметр PlayerColliery");
-             Assert.AreEqual(playerParams[Specifications.PlayerDiamonds], 5 + 11 + 3, "Не правильно применен параметр PlayerDiamonds");
-             Assert.AreEqual(playerParams[Specifications.PlayerAnimals], 5 + 12 - 5 + 4, "Не правильно применен параметр PlayerAnimals");
-             Assert.AreEqual(playerParams[Specifications.PlayerRocks], 5 + 13 + 5, "Не правильно применен параметр PlayerRocks");
+
+             Assert.AreEqual(playerParams[Attributes.Wall], 5 - 4, "Не правильно применен параметр PlayerWall");
+             Assert.AreEqual(playerParams[Attributes.Tower], 10 - 8, "Не правильно применен параметр PlayerTower");
+             Assert.AreEqual(playerParams[Attributes.DiamondMines], 1 + 2, "Не правильно применен параметр PlayerDiamondMines");
+             Assert.AreEqual(playerParams[Attributes.Menagerie], 1 + 3, "Не правильно применен параметр PlayerMenagerie");
+             Assert.AreEqual(playerParams[Attributes.Colliery], 1 + 4, "Не правильно применен параметр PlayerColliery");
+             Assert.AreEqual(playerParams[Attributes.Diamonds], 5 + 11 + 3, "Не правильно применен параметр PlayerDiamonds");
+             Assert.AreEqual(playerParams[Attributes.Animals], 5 + 12 - 5 + 4, "Не правильно применен параметр PlayerAnimals");
+             Assert.AreEqual(playerParams[Attributes.Rocks], 5 + 13 + 5, "Не правильно применен параметр PlayerRocks");
 
              playerParams = gm.GetPlayerParams(SelectPlayer.Second);
-             Assert.AreEqual(playerParams[Specifications.PlayerWall], 5 - 4, "Не правильно применен параметр EnemyWall");
-             Assert.AreEqual(playerParams[Specifications.PlayerTower], 10 - 8, "Не правильно применен параметр EnemyTower");
-             Assert.AreEqual(playerParams[Specifications.PlayerDiamondMines], 1 + 2, "Не правильно применен параметр EnemyDiamondMines");
-             Assert.AreEqual(playerParams[Specifications.PlayerMenagerie], 1 + 3, "Не правильно применен параметр EnemyMenagerie");
-             Assert.AreEqual(playerParams[Specifications.PlayerColliery], 1 + 4, "Не правильно применен параметр EnemyColliery");
-             Assert.AreEqual(playerParams[Specifications.PlayerDiamonds], 5 + 11, "Не правильно применен параметр EnemyDiamonds");
-             Assert.AreEqual(playerParams[Specifications.PlayerAnimals], 5 + 12, "Не правильно применен параметр EnemyAnimals");
-             Assert.AreEqual(playerParams[Specifications.PlayerRocks], 5 + 13, "Не правильно применен параметр EnemyRocks");
+             Assert.AreEqual(playerParams[Attributes.Wall], 5 - 4, "Не правильно применен параметр EnemyWall");
+             Assert.AreEqual(playerParams[Attributes.Tower], 10 - 8, "Не правильно применен параметр EnemyTower");
+             Assert.AreEqual(playerParams[Attributes.DiamondMines], 1 + 2, "Не правильно применен параметр EnemyDiamondMines");
+             Assert.AreEqual(playerParams[Attributes.Menagerie], 1 + 3, "Не правильно применен параметр EnemyMenagerie");
+             Assert.AreEqual(playerParams[Attributes.Colliery], 1 + 4, "Не правильно применен параметр EnemyColliery");
+             Assert.AreEqual(playerParams[Attributes.Diamonds], 5 + 11, "Не правильно применен параметр EnemyDiamonds");
+             Assert.AreEqual(playerParams[Attributes.Animals], 5 + 12, "Не правильно применен параметр EnemyAnimals");
+             Assert.AreEqual(playerParams[Attributes.Rocks], 5 + 13, "Не правильно применен параметр EnemyRocks");
              
          }
 
@@ -164,7 +164,7 @@ namespace Arcomage.Tests
 
              var playerParams = gm.GetPlayerParams(SelectPlayer.First);
 
-             Assert.AreEqual(playerParams[Specifications.PlayerDiamonds], 5 + 11 + 1, "Не правильно применен параметр PlayerDiamonds");
+             Assert.AreEqual(playerParams[Attributes.Diamonds], 5 + 11 + 1, "Не правильно применен параметр PlayerDiamonds");
          }
 
          /// <summary>
@@ -181,8 +181,8 @@ namespace Arcomage.Tests
              GameControllerTestHelper.useCard(3, gm);
 
 
-             Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.Second)[Specifications.PlayerWall], 0, "Не правильно применен параметр EnemyDirectDamage");
-             Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.Second)[Specifications.PlayerTower], 0, "Не правильно применен параметр EnemyDirectDamage");
+             Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.Second)[Attributes.Wall], 0, "Не правильно применен параметр EnemyDirectDamage");
+             Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.Second)[Attributes.Tower], 0, "Не правильно применен параметр EnemyDirectDamage");
 
 
      
@@ -201,9 +201,9 @@ namespace Arcomage.Tests
              GameControllerTestHelper.useCard(4, gm);
 
 
-             Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.First)[Specifications.PlayerWall], 0,
+             Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.First)[Attributes.Wall], 0,
                  "Не правильно применен параметр PlayerDirectDamage");
-             Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.First)[Specifications.PlayerTower], 0,
+             Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.First)[Attributes.Tower], 0,
                  "Не правильно применен параметр PlayerDirectDamage");
 
          }
@@ -234,8 +234,8 @@ namespace Arcomage.Tests
              var result2 = gm.GetPlayerParams();
 
 
-             Assert.AreEqual(result2[Specifications.PlayerRocks], 7, "Должен быть прирост камней");
-             Assert.AreEqual(result2[Specifications.PlayerDiamonds], 7, "Должен быть прирост брилиантов");
+             Assert.AreEqual(result2[Attributes.Rocks], 7, "Должен быть прирост камней");
+             Assert.AreEqual(result2[Attributes.Diamonds], 7, "Должен быть прирост брилиантов");
 
 
 

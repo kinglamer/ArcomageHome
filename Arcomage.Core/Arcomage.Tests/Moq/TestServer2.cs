@@ -26,6 +26,11 @@ namespace Arcomage.Tests.Moq
                 cardParams = paramsM6
             });
 
+            foreach (var item in returnVal)
+            {
+                item.Init();
+            }
+
 
             return JsonConvert.SerializeObject(returnVal);
         }

@@ -17,7 +17,7 @@ namespace Arcomage.Tests.MoqStartParams
         }
 
         public int MaxPlayerCard { get; set; }
-
+        public Dictionary<Attributes, int> DefaultParams { get; set; }
 
 
         public Dictionary<Specifications, int> GenerateDefault()

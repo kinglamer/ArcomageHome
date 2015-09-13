@@ -98,7 +98,7 @@ namespace Arcomage.Tests
             gm.SendGameNotification(notify5);
 
 
-            Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.First)[Specifications.PlayerTower], 0, "Башня врага должна быть уничтожена");
+            Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.First)[Attributes.Tower], 0, "Башня врага должна быть уничтожена");
             Assert.AreEqual(gm.Winner, "AI", "Компьютер не может проиграть!");
 
         }
@@ -112,7 +112,6 @@ namespace Arcomage.Tests
         public void AICanPassMove()
         {
             gm = GameControllerTestHelper.InitDemoGame(5);
-           // GameControllerTestHelper.getCards(gm);
 
             GameControllerTestHelper.PassStroke(gm);
 

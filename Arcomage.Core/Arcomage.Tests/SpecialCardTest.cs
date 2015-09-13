@@ -38,14 +38,14 @@ namespace Arcomage.Tests
              //GameControllerTestHelper.getCards(gm);
              GameControllerTestHelper.useCard(5, gm);
              var result = gm.GetPlayerParams(SelectPlayer.First);
-             Assert.AreEqual(result[Specifications.PlayerColliery], 3, "Должно быть 3 шахты");
+             Assert.AreEqual(result[Attributes.Colliery], 3, "Должно быть 3 шахты");
 
              gm = new GameController(log, new TestServer6(), new TestStartParams2());
              AddPlayers();
            //  GameControllerTestHelper.getCards(gm);
              GameControllerTestHelper.useCard(5, gm);
              result = gm.GetPlayerParams(SelectPlayer.First);
-             Assert.AreEqual(result[Specifications.PlayerColliery], 2, "Должно быть 2 шахты");
+             Assert.AreEqual(result[Attributes.Colliery], 2, "Должно быть 2 шахты");
          }
 
 
@@ -61,7 +61,7 @@ namespace Arcomage.Tests
            //  GameControllerTestHelper.getCards(gm);
              GameControllerTestHelper.useCard(8, gm);
              var result = gm.GetPlayerParams(SelectPlayer.First);
-             Assert.AreEqual(result[Specifications.PlayerColliery], 3, "Должно быть 3 шахты");
+             Assert.AreEqual(result[Attributes.Colliery], 3, "Должно быть 3 шахты");
          }
 
 
@@ -77,14 +77,14 @@ namespace Arcomage.Tests
              //GameControllerTestHelper.getCards(gm);
              GameControllerTestHelper.useCard(12, gm);
              var result = gm.GetPlayerParams(SelectPlayer.First);
-             Assert.AreEqual(result[Specifications.PlayerWall], 6, "Стена должна быть 6");
+             Assert.AreEqual(result[Attributes.Wall], 6, "Стена должна быть 6");
 
              gm = new GameController(log, new TestServer6(), new TestStartParams2());
              AddPlayers();
            //  GameControllerTestHelper.getCards(gm);
              GameControllerTestHelper.useCard(12, gm);
              result = gm.GetPlayerParams(SelectPlayer.First);
-             Assert.AreEqual(result[Specifications.PlayerWall], 8, "Стена должна быть 8");
+             Assert.AreEqual(result[Attributes.Wall], 8, "Стена должна быть 8");
          }
 
          /// <summary>
@@ -99,8 +99,8 @@ namespace Arcomage.Tests
             // GameControllerTestHelper.getCards(gm);
              GameControllerTestHelper.useCard(31, gm);
              var result = gm.GetPlayerParams(SelectPlayer.First);
-             Assert.AreEqual(result[Specifications.PlayerTower], 3, "Башня должна быть 3");
-             Assert.AreEqual(result[Specifications.PlayerMenagerie], 2, "Зверинец должен быть равен 2");
+             Assert.AreEqual(result[Attributes.Tower], 3, "Башня должна быть 3");
+             Assert.AreEqual(result[Attributes.Menagerie], 2, "Зверинец должен быть равен 2");
 
 
              gm = new GameController(log, new TestServer6(), new TestStartParams2());
@@ -108,12 +108,12 @@ namespace Arcomage.Tests
             // GameControllerTestHelper.getCards(gm);
              GameControllerTestHelper.useCard(31, gm);
              result = gm.GetPlayerParams(SelectPlayer.First);
-             Assert.AreEqual(result[Specifications.PlayerTower], 10, "Башня должна быть 10");
-             Assert.AreEqual(result[Specifications.PlayerMenagerie], 1, "Зверинец должен быть равен 1");
+             Assert.AreEqual(result[Attributes.Tower], 10, "Башня должна быть 10");
+             Assert.AreEqual(result[Attributes.Menagerie], 1, "Зверинец должен быть равен 1");
 
              result = gm.GetPlayerParams(SelectPlayer.Second);
-             Assert.AreEqual(result[Specifications.PlayerTower], 10, "Башня должна быть 10");
-             Assert.AreEqual(result[Specifications.PlayerMenagerie], 1, "Зверинец должен быть равен 1");
+             Assert.AreEqual(result[Attributes.Tower], 10, "Башня должна быть 10");
+             Assert.AreEqual(result[Attributes.Menagerie], 1, "Зверинец должен быть равен 1");
          }
 
 
@@ -129,9 +129,9 @@ namespace Arcomage.Tests
             // GameControllerTestHelper.getCards(gm);
              GameControllerTestHelper.useCard(32, gm);
              var result = gm.GetPlayerParams(SelectPlayer.First);
-             Assert.AreEqual(result[Specifications.PlayerAnimals], 13, "Зверей должно быть 13");
-             Assert.AreEqual(result[Specifications.PlayerWall], 7, "Стена должна быть 7");
-             Assert.AreEqual(result[Specifications.PlayerMenagerie], 2, "Зверинец должен быть равен 2");
+             Assert.AreEqual(result[Attributes.Animals], 13, "Зверей должно быть 13");
+             Assert.AreEqual(result[Attributes.Wall], 7, "Стена должна быть 7");
+             Assert.AreEqual(result[Attributes.Menagerie], 2, "Зверинец должен быть равен 2");
 
 
              gm = new GameController(log, new TestServer6(), new TestStartParams2());
@@ -139,9 +139,9 @@ namespace Arcomage.Tests
            //  GameControllerTestHelper.getCards(gm);
              GameControllerTestHelper.useCard(32, gm);
              result = gm.GetPlayerParams(SelectPlayer.First);
-             Assert.AreEqual(result[Specifications.PlayerAnimals], 12, "Зверей должно быть 11");
-             Assert.AreEqual(result[Specifications.PlayerWall], 11, "Стена должна быть 6");
-             Assert.AreEqual(result[Specifications.PlayerMenagerie], 1, "Зверинец должен быть равен 1");
+             Assert.AreEqual(result[Attributes.Animals], 12, "Зверей должно быть 11");
+             Assert.AreEqual(result[Attributes.Wall], 11, "Стена должна быть 6");
+             Assert.AreEqual(result[Attributes.Menagerie], 1, "Зверинец должен быть равен 1");
          }
 
 
@@ -157,7 +157,7 @@ namespace Arcomage.Tests
            // GameControllerTestHelper.getCards(gm);
             GameControllerTestHelper.useCard(34, gm);
             var result = gm.GetPlayerParams(SelectPlayer.First);
-            Assert.AreEqual(result[Specifications.PlayerWall], 5, "Башня должна быть 5");
+            Assert.AreEqual(result[Attributes.Wall], 5, "Башня должна быть 5");
         }
 
 
@@ -173,7 +173,7 @@ namespace Arcomage.Tests
             //GameControllerTestHelper.getCards(gm);
             GameControllerTestHelper.useCard(48, gm);
             var result = gm.GetPlayerParams(SelectPlayer.First);
-            Assert.AreEqual(result[Specifications.PlayerDiamondMines], 4, "Магия должна быть равна 4");
+            Assert.AreEqual(result[Attributes.DiamondMines], 4, "Магия должна быть равна 4");
         }
 
         [Test]
@@ -184,14 +184,14 @@ namespace Arcomage.Tests
            // GameControllerTestHelper.getCards(gm);
             GameControllerTestHelper.useCard(64, gm);
             var result = gm.GetPlayerParams(SelectPlayer.First);
-            Assert.AreEqual(result[Specifications.PlayerTower], 7, "Башня должна быть равна 7");
+            Assert.AreEqual(result[Attributes.Tower], 7, "Башня должна быть равна 7");
 
             gm = new GameController(log, new TestServer6(), new TestStartParams2());
             AddPlayers();
            // GameControllerTestHelper.getCards(gm);
             GameControllerTestHelper.useCard(64, gm);
             result = gm.GetPlayerParams(SelectPlayer.First);
-            Assert.AreEqual(result[Specifications.PlayerTower], 11, "Башня должна быть 11");
+            Assert.AreEqual(result[Attributes.Tower], 11, "Башня должна быть 11");
         }
 
 
@@ -204,8 +204,8 @@ namespace Arcomage.Tests
             //GameControllerTestHelper.getCards(gm);
             GameControllerTestHelper.useCard(67, gm);
             var result = gm.GetPlayerParams(SelectPlayer.Second);
-            Assert.AreEqual(result[Specifications.PlayerWall], 0, "Стена должна быть равна 0");
-            Assert.AreEqual(result[Specifications.PlayerTower], 9, "Башня должна быть равна 9");
+            Assert.AreEqual(result[Attributes.Wall], 0, "Стена должна быть равна 0");
+            Assert.AreEqual(result[Attributes.Tower], 9, "Башня должна быть равна 9");
 
 
             gm = new GameController(log, new TestServer6(), new TestStartParams2());
@@ -214,8 +214,8 @@ namespace Arcomage.Tests
             GameControllerTestHelper.useCard(67, gm);
             result = gm.GetPlayerParams(SelectPlayer.Second);
 
-            Assert.AreEqual(result[Specifications.PlayerWall], 5, "Стена должна быть равна 5");
-            Assert.AreEqual(result[Specifications.PlayerTower], 2, "Башня должна быть равна 2");
+            Assert.AreEqual(result[Attributes.Wall], 5, "Стена должна быть равна 5");
+            Assert.AreEqual(result[Attributes.Tower], 2, "Башня должна быть равна 2");
 
         }
 
@@ -229,8 +229,8 @@ namespace Arcomage.Tests
             //GameControllerTestHelper.getCards(gm);
             GameControllerTestHelper.useCard(87, gm);
             var result = gm.GetPlayerParams(SelectPlayer.Second);
-            Assert.AreEqual(result[Specifications.PlayerWall], 0, "Стена должна быть равна 0");
-            Assert.AreEqual(result[Specifications.PlayerTower], 2, "Башня должна быть равна 2");
+            Assert.AreEqual(result[Attributes.Wall], 0, "Стена должна быть равна 0");
+            Assert.AreEqual(result[Attributes.Tower], 2, "Башня должна быть равна 2");
 
 
             gm = new GameController(log, new TestServer6(), new TestStartParams2());
@@ -239,8 +239,8 @@ namespace Arcomage.Tests
             GameControllerTestHelper.useCard(87, gm);
             result = gm.GetPlayerParams(SelectPlayer.Second);
 
-            Assert.AreEqual(result[Specifications.PlayerWall], 0, "Стена должна быть равна 0");
-            Assert.AreEqual(result[Specifications.PlayerTower], 9, "Башня должна быть равна 9");
+            Assert.AreEqual(result[Attributes.Wall], 0, "Стена должна быть равна 0");
+            Assert.AreEqual(result[Attributes.Tower], 9, "Башня должна быть равна 9");
 
         }
 
@@ -253,8 +253,8 @@ namespace Arcomage.Tests
             //GameControllerTestHelper.getCards(gm);
             GameControllerTestHelper.useCard(89, gm);
             var result = gm.GetPlayerParams(SelectPlayer.Second);
-            Assert.AreEqual(result[Specifications.PlayerWall], 0, "Стена должна быть равна 0");
-            Assert.AreEqual(result[Specifications.PlayerTower], 5, "Башня должна быть равна 5");
+            Assert.AreEqual(result[Attributes.Wall], 0, "Стена должна быть равна 0");
+            Assert.AreEqual(result[Attributes.Tower], 5, "Башня должна быть равна 5");
 
 
             gm = new GameController(log, new TestServer6(), new TestStartParams2());
@@ -263,8 +263,8 @@ namespace Arcomage.Tests
             GameControllerTestHelper.useCard(89, gm);
             result = gm.GetPlayerParams(SelectPlayer.Second);
 
-            Assert.AreEqual(result[Specifications.PlayerWall], 0, "Стена должна быть равна 0");
-            Assert.AreEqual(result[Specifications.PlayerTower], 5, "Башня должна быть равна 5");
+            Assert.AreEqual(result[Attributes.Wall], 0, "Стена должна быть равна 0");
+            Assert.AreEqual(result[Attributes.Tower], 5, "Башня должна быть равна 5");
 
         }
 
@@ -277,8 +277,8 @@ namespace Arcomage.Tests
             //GameControllerTestHelper.getCards(gm);
             GameControllerTestHelper.useCard(90, gm);
             var result = gm.GetPlayerParams(SelectPlayer.Second);
-            Assert.AreEqual(result[Specifications.PlayerWall], 0, "Стена должна быть равна 0");
-            Assert.AreEqual(result[Specifications.PlayerTower], 0, "Башня должна быть равна 0");
+            Assert.AreEqual(result[Attributes.Wall], 0, "Стена должна быть равна 0");
+            Assert.AreEqual(result[Attributes.Tower], 0, "Башня должна быть равна 0");
 
 
             gm = new GameController(log, new TestServer6(), new TestStartParams2());
@@ -287,8 +287,8 @@ namespace Arcomage.Tests
             GameControllerTestHelper.useCard(90, gm);
             result = gm.GetPlayerParams(SelectPlayer.Second);
 
-            Assert.AreEqual(result[Specifications.PlayerWall], 0, "Стена должна быть равна 0");
-            Assert.AreEqual(result[Specifications.PlayerTower], 7, "Башня должна быть равна 7");
+            Assert.AreEqual(result[Attributes.Wall], 0, "Стена должна быть равна 0");
+            Assert.AreEqual(result[Attributes.Tower], 7, "Башня должна быть равна 7");
 
         }
 
@@ -301,8 +301,8 @@ namespace Arcomage.Tests
             //GameControllerTestHelper.getCards(gm);
             GameControllerTestHelper.useCard(91, gm);
             var result = gm.GetPlayerParams(SelectPlayer.Second);
-            Assert.AreEqual(result[Specifications.PlayerWall], 0, "Стена должна быть равна 0");
-            Assert.AreEqual(result[Specifications.PlayerTower], 6, "Башня должна быть равна 6");
+            Assert.AreEqual(result[Attributes.Wall], 0, "Стена должна быть равна 0");
+            Assert.AreEqual(result[Attributes.Tower], 6, "Башня должна быть равна 6");
 
 
             gm = new GameController(log, new TestServer6(), new TestStartParams2());
@@ -311,8 +311,8 @@ namespace Arcomage.Tests
             GameControllerTestHelper.useCard(91, gm);
             result = gm.GetPlayerParams(SelectPlayer.Second);
 
-            Assert.AreEqual(result[Specifications.PlayerWall], 0, "Стена должна быть равна 0");
-            Assert.AreEqual(result[Specifications.PlayerTower], 9, "Башня должна быть равна 9");
+            Assert.AreEqual(result[Attributes.Wall], 0, "Стена должна быть равна 0");
+            Assert.AreEqual(result[Attributes.Tower], 9, "Башня должна быть равна 9");
 
         }
 
@@ -344,8 +344,8 @@ namespace Arcomage.Tests
            // GameControllerTestHelper.getCards(gm);
             GameControllerTestHelper.useCard(98, gm);
             var result = gm.GetPlayerParams(SelectPlayer.Second);
-            Assert.AreEqual(result[Specifications.PlayerWall], 0, "Стена должна быть равна 0");
-            Assert.AreEqual(result[Specifications.PlayerTower], 9, "Башня должна быть равна 9");
+            Assert.AreEqual(result[Attributes.Wall], 0, "Стена должна быть равна 0");
+            Assert.AreEqual(result[Attributes.Tower], 9, "Башня должна быть равна 9");
 
 
             gm = new GameController(log, new TestServer6(), new TestStartParams2());
@@ -354,8 +354,8 @@ namespace Arcomage.Tests
             GameControllerTestHelper.useCard(98, gm);
             result = gm.GetPlayerParams(SelectPlayer.Second);
 
-            Assert.AreEqual(result[Specifications.PlayerWall], 3, "Стена должна быть равна 3");
-            Assert.AreEqual(result[Specifications.PlayerTower], 10, "Башня должна быть равна 10");
+            Assert.AreEqual(result[Attributes.Wall], 3, "Стена должна быть равна 3");
+            Assert.AreEqual(result[Attributes.Tower], 10, "Башня должна быть равна 10");
 
         }
 
@@ -397,9 +397,9 @@ namespace Arcomage.Tests
             var result = gm.GetPlayerParams();
             Assert.AreEqual(gm.Status, CurrentAction.WaitHumanMove, "Должны вернуться к ожиданию сброса карты");
 
-            Assert.AreEqual(result[Specifications.PlayerRocks], 5, "Не должно быть прироста ресурсов до сброса");
-            Assert.AreEqual(result[Specifications.PlayerDiamonds], 5, "Не должно быть прироста ресурсов до сброса");
-            Assert.AreEqual(result[Specifications.PlayerAnimals], 5, "Не должно быть прироста ресурсов до сброса");
+            Assert.AreEqual(result[Attributes.Rocks], 5, "Не должно быть прироста ресурсов до сброса");
+            Assert.AreEqual(result[Attributes.Diamonds], 5, "Не должно быть прироста ресурсов до сброса");
+            Assert.AreEqual(result[Attributes.Animals], 5, "Не должно быть прироста ресурсов до сброса");
 
             Dictionary<string, object> notify = new Dictionary<string, object>();
             notify.Add("CurrentAction", CurrentAction.PassStroke);
@@ -407,9 +407,9 @@ namespace Arcomage.Tests
             gm.SendGameNotification(notify);
 
 
-            Assert.AreEqual(result[Specifications.PlayerRocks], 6, "должен быть прирост ресурсов");
-            Assert.AreEqual(result[Specifications.PlayerDiamonds], 6, "должен быть прирост ресурсов");
-            Assert.AreEqual(result[Specifications.PlayerAnimals], 6, "должен быть прирост ресурсов");
+            Assert.AreEqual(result[Attributes.Rocks], 6, "должен быть прирост ресурсов");
+            Assert.AreEqual(result[Attributes.Diamonds], 6, "должен быть прирост ресурсов");
+            Assert.AreEqual(result[Attributes.Animals], 6, "должен быть прирост ресурсов");
 
             Assert.AreEqual(gm.GetPlayersCard().Count, 20, "Количество карт должно быть равно 20");
 

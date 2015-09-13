@@ -119,6 +119,10 @@ namespace Arcomage.Tests.Moq
                 cardParams = paramsM
             });
 
+            foreach (var item in returnVal)
+            {
+                item.Init();
+            }
 
 
 

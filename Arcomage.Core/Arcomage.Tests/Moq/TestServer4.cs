@@ -118,6 +118,11 @@ namespace Arcomage.Tests.Moq
                 cardParams = paramsM6
             });
 
+            foreach (var item in returnVal)
+            {
+                item.Init();
+            }
+
     
             Console.WriteLine("Количество карт на сервер " + returnVal.Count);
             return JsonConvert.SerializeObject(returnVal);

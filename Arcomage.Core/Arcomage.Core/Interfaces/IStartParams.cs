@@ -9,10 +9,10 @@ namespace Arcomage.Core.Interfaces
 
 
         /// <summary>
-        /// Генерация стандартных значений для игрока:
+        /// стандартные значений для игрока:
         /// стена, башня, шахты, ресурсы
         /// </summary>
         /// <returns></returns>
-        Dictionary<Specifications, int> GenerateDefault();
+        Dictionary<Attributes, int> DefaultParams { get; set; }
     }
 }

@@ -19,6 +19,7 @@ namespace Arcomage.Tests.MoqStartParams
         }
 
         public int MaxPlayerCard { get; set; }
+        public Dictionary<Attributes, int> DefaultParams { get; set; }
 
 
         private int countGenerate; 
