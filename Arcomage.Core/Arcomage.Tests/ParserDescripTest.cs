@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Arcomage.Core;
 using Arcomage.Core.ArcomageService;
-using Arcomage.Core.Foo;
+using Arcomage.Core.AlternativeServers;
 using Arcomage.Entity;
 using Arcomage.Tests.Moq;
 using Arcomage.Tests.MoqStartParams;
@@ -19,7 +19,7 @@ namespace Arcomage.Tests
     class ParserDescripTest
     {
 
-        LogTest log = new LogTest();
+        //LogTest log = new LogTest();
         private GameController gm;
 
         [Test]
@@ -108,7 +108,7 @@ namespace Arcomage.Tests
         [Test]
         public void SqliteDBTest()
         {
-            IArcoServer host = new ArcoLocalServer(@"arcomageDB.db");
+            IArcoServer host = new ArcoSQLLiteServer(@"arcomageDB.db");
 
             string cardFromServer = host.GetRandomCard();
 

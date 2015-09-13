@@ -45,7 +45,7 @@ using Sqlite3Statement = System.IntPtr;
 
 namespace SQLite
 {
-    public class SQLiteException : System.Exception
+    public class SQLiteException : Exception
     {
         public SQLite3.Result Result { get; private set; }
 

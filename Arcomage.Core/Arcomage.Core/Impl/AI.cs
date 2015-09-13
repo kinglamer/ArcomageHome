@@ -1,10 +1,8 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Arcomage.Core.Interfaces;
 using Arcomage.Entity;
 
-namespace Arcomage.Core
+namespace Arcomage.Core.Impl
 {
     internal class AI : IPlayer
     {

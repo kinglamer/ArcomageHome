@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using Arcomage.Common;
-using Arcomage.Core.ArcomageService;
+﻿using System.Collections.Generic;
+using Arcomage.Core.Interfaces;
 using Arcomage.Entity;
-using Newtonsoft.Json;
 
-namespace Arcomage.Core
+namespace Arcomage.Core.Impl
 {
 
     internal class Player : IPlayer

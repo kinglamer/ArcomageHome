@@ -1,10 +1,7 @@
-п»їusing System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Arcomage.Entity;
 
-namespace Arcomage.Core
+namespace Arcomage.Core.Interfaces
 {
     public interface IStartParams
     {
@@ -12,8 +9,8 @@ namespace Arcomage.Core
 
 
         /// <summary>
-        /// Р“РµРЅРµСЂР°С†РёСЏ СЃС‚Р°РЅРґР°СЂС‚РЅС‹С… Р·РЅР°С‡РµРЅРёР№ РґР»СЏ РёРіСЂРѕРєР°:
-        /// СЃС‚РµРЅР°, Р±Р°С€РЅСЏ, С€Р°С…С‚С‹, СЂРµСЃСѓСЂСЃС‹
+        /// Генерация стандартных значений для игрока:
+        /// стена, башня, шахты, ресурсы
         /// </summary>
         /// <returns></returns>
         Dictionary<Specifications, int> GenerateDefault();

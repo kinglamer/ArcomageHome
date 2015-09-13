@@ -9,6 +9,8 @@ using System.ServiceModel.Security.Tokens;
 using System.Text;
 using Arcomage.Common;
 using Arcomage.Core.ArcomageService;
+using Arcomage.Core.Impl;
+using Arcomage.Core.Interfaces;
 using Arcomage.Entity;
 using Newtonsoft.Json;
 
