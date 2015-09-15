@@ -27,20 +27,8 @@ namespace Arcomage.Tests.Moq
                 name = "Card1",
                 cardParams = paramsM
             });
-
-
-            /* Стартовые значения игрока 
-           * 
-           * returnVal.Add(Specifications.PlayerWall, 5);
-          returnVal.Add(Specifications.PlayerTower, 10);
-
-          returnVal.Add(Specifications.PlayerMenagerie, 1);
-          returnVal.Add(Specifications.PlayerColliery, 1);
-          returnVal.Add(Specifications.PlayerDiamondMines, 1);
-
-          returnVal.Add(Specifications.PlayerRocks, 5);
-          returnVal.Add(Specifications.PlayerDiamonds, 5);
-          returnVal.Add(Specifications.PlayerAnimals, 5);*/
+            
+   
 
             var paramsM2 = new List<CardParams>();
             paramsM2.Add(new CardParams() { key = Specifications.PlayerTower, value = -8 });
@@ -117,6 +105,11 @@ namespace Arcomage.Tests.Moq
                 name = "CardCostAnimalsZero",
                 cardParams = paramsM6
             });
+
+            foreach (var item in returnVal)
+            {
+                item.Init();
+            }
 
     
             Console.WriteLine("Количество карт на сервер " + returnVal.Count);

@@ -1,23 +1,19 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Arcomage.Core;
 using Arcomage.Core.Interfaces;
 using Arcomage.Entity;
 
-namespace Arcomage.Tests.MoqStartParams
+namespace Arcomage.Core.Impl
 {
-    class TestStartParams2 : IStartParams
+    public class GameStartParams : IStartParams
     {
-        public TestStartParams2()
+        public Dictionary<Attributes, int> DefaultParams { get; set; }
+        public int MaxPlayerCard { get; set; }
+
+        public GameStartParams()
         {
-            MaxPlayerCard = 20;
+            MaxPlayerCard = 6;
 
             DefaultParams = new Dictionary<Attributes, int>();
-
-
             DefaultParams.Add(Attributes.Wall, 5);
             DefaultParams.Add(Attributes.Tower, 10);
 
@@ -30,11 +26,9 @@ namespace Arcomage.Tests.MoqStartParams
             DefaultParams.Add(Attributes.Animals, 5);
         }
 
-        public int MaxPlayerCard { get; set; }
-        public Dictionary<Attributes, int> DefaultParams { get; set; }
 
+  
 
-
-       
+      
     }
 }

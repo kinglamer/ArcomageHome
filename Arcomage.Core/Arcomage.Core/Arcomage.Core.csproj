@@ -56,10 +56,11 @@
     <Compile Include="GameCardLog.cs" />
     <Compile Include="GameController.cs" />
     <Compile Include="GameControllerHelper.cs" />
-    <Compile Include="GameStartParams.cs" />
-    <Compile Include="Impl\AI.cs" />
+    <Compile Include="Impl\CreatorAI.cs" />
+    <Compile Include="Impl\CreatorPlayer.cs" />
+    <Compile Include="Impl\GameStartParams.cs" />
     <Compile Include="Impl\Player.cs" />
-    <Compile Include="Interfaces\IPlayer.cs" />
+    <Compile Include="Interfaces\IPlayersCreator.cs" />
     <Compile Include="Interfaces\IStartParams.cs" />
     <Compile Include="ParseDescription.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

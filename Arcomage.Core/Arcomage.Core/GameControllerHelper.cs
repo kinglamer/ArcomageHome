@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Arcomage.Core.Impl;
 using Arcomage.Core.Interfaces;
 using Arcomage.Entity;
 
@@ -9,21 +10,21 @@ namespace Arcomage.Core
 {
     internal class GameControllerHelper
     {
-        public static Dictionary<Specifications, int> GetWinParams()
+        public static Dictionary<Attributes, int> GetWinParams()
         {
-            Dictionary<Specifications, int> WinParams = new Dictionary<Specifications, int>();
-            WinParams.Add(Specifications.PlayerTower, 50);
-            WinParams.Add(Specifications.PlayerAnimals, 150);
-            WinParams.Add(Specifications.PlayerRocks, 150);
-            WinParams.Add(Specifications.PlayerDiamonds, 150);
+            Dictionary<Attributes, int> WinParams = new Dictionary<Attributes, int>();
+            WinParams.Add(Attributes.Tower, 50);
+            WinParams.Add(Attributes.Animals, 150);
+            WinParams.Add(Attributes.Rocks, 150);
+            WinParams.Add(Attributes.Diamonds, 150);
 
             return WinParams;
         }
 
-        public static Dictionary<Specifications, int> GetLoseParams()
+        public static Dictionary<Attributes, int> GetLoseParams()
         {
-            Dictionary<Specifications, int> LoseParams = new Dictionary<Specifications, int>();
-            LoseParams.Add(Specifications.PlayerTower, 0);
+            Dictionary<Attributes, int> LoseParams = new Dictionary<Attributes, int>();
+            LoseParams.Add(Attributes.Tower, 0);
 
             return LoseParams;
         }
@@ -37,35 +38,35 @@ namespace Arcomage.Core
 
       
 
-        public static void MinusValue(Specifications spec, int value, IPlayer playerParam)
+        public static void MinusValue(Attributes spec, int value, Player playerParam)
         {
-            if (playerParam.Statistic[spec] - value <= 0)
+            if (playerParam.PlayerParams[spec] - value <= 0)
             {
-                playerParam.Statistic[spec] = 0;
+                playerParam.PlayerParams[spec] = 0;
             }
             else
             {
-                playerParam.Statistic[spec] -= value;
+                playerParam.PlayerParams[spec] -= value;
             }
 
         }
 
-        public static void PlusValue(Specifications specifications, int value, IPlayer playerParam)
+        public static void PlusValue(Attributes specifications, int value, Player playerParam)
         {
             int minValue = 0;
-            if (specifications == Specifications.PlayerDiamondMines || specifications == Specifications.PlayerColliery ||
-                specifications == Specifications.PlayerMenagerie)
+            if (specifications == Attributes.DiamondMines || specifications == Attributes.Colliery ||
+                specifications == Attributes.Menagerie)
             {
                 minValue = 1;
             }
 
-            if (playerParam.Statistic[specifications] + value <= minValue)
+            if (playerParam.PlayerParams[specifications] + value <= minValue)
             {
-                playerParam.Statistic[specifications] = minValue;
+                playerParam.PlayerParams[specifications] = minValue;
             }
             else
             {
-                playerParam.Statistic[specifications] += value;
+                playerParam.PlayerParams[specifications] += value;
             }
         }
 
@@ -75,7 +76,7 @@ namespace Arcomage.Core
         /// <param name="players"></param>
         /// <param name="winParams"></param>
         /// <param name="loseParams"></param>
-        public static string CheckPlayerParams(List<IPlayer> players, Dictionary<Specifications, int> winParams, Dictionary<Specifications, int> loseParams)
+        public static string CheckPlayerParams(List<Player> players, Dictionary<Attributes, int> winParams, Dictionary<Attributes, int> loseParams)
         {
             string returnVal = String.Empty;
 
@@ -83,7 +84,7 @@ namespace Arcomage.Core
             {
                 int Ememyindex = i == 1 ? 0 : 1;
 
-                if (IsPlayerWin(players[i].Statistic, winParams) || IsPlayerLose(players[Ememyindex].Statistic, loseParams))
+                if (IsPlayerWin(players[i].PlayerParams, winParams) || IsPlayerLose(players[Ememyindex].PlayerParams, loseParams))
                 {
                     returnVal = players[i].playerName;
                     break;
@@ -92,7 +93,7 @@ namespace Arcomage.Core
             return returnVal;
         }
 
-        private static bool IsPlayerWin(Dictionary<Specifications, int> playerStatistic, Dictionary<Specifications, int> winParams)
+        private static bool IsPlayerWin(Dictionary<Attributes, int> playerStatistic, Dictionary<Attributes, int> winParams)
         {
             foreach (var item in winParams)
             {
@@ -105,7 +106,7 @@ namespace Arcomage.Core
             return false;
         }
 
-        private static bool IsPlayerLose(Dictionary<Specifications, int> playerStatistic, Dictionary<Specifications, int> loseParams)
+        private static bool IsPlayerLose(Dictionary<Attributes, int> playerStatistic, Dictionary<Attributes, int> loseParams)
         {
             foreach (var item in loseParams)
             {

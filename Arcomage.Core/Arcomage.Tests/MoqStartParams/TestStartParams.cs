@@ -9,52 +9,54 @@ using Arcomage.Entity;
 
 namespace Arcomage.Tests.MoqStartParams
 {
-    class TestStartParams : IStartParams
+    internal class TestStartParams : IStartParams
     {
+
+        private int countGenerate;
+        public int MaxPlayerCard { get; set; }
+        public Dictionary<Attributes, int> DefaultParams { get; set; }
+
         public TestStartParams()
         {
             MaxPlayerCard = 20;
             countGenerate = 0;
-        }
 
-        public int MaxPlayerCard { get; set; }
-
-
-        private int countGenerate; 
-
-        public Dictionary<Specifications, int> GenerateDefault()
-        {
-            Dictionary<Specifications, int> returnVal = new Dictionary<Specifications, int>();
+            DefaultParams = new Dictionary<Attributes, int>();
             if (countGenerate == 0)
             {
-               
-                returnVal.Add(Specifications.PlayerWall, 0);
-                returnVal.Add(Specifications.PlayerTower, 5);
 
-                returnVal.Add(Specifications.PlayerMenagerie, 3);
-                returnVal.Add(Specifications.PlayerColliery, 1);
-                returnVal.Add(Specifications.PlayerDiamondMines, 1);
+                DefaultParams.Add(Attributes.Wall, 0);
+                DefaultParams.Add(Attributes.Tower, 5);
 
-                returnVal.Add(Specifications.PlayerRocks, 5);
-                returnVal.Add(Specifications.PlayerDiamonds, 5);
-                returnVal.Add(Specifications.PlayerAnimals, 5);
+                DefaultParams.Add(Attributes.Menagerie, 3);
+                DefaultParams.Add(Attributes.Colliery, 1);
+                DefaultParams.Add(Attributes.DiamondMines, 1);
+
+                DefaultParams.Add(Attributes.Rocks, 5);
+                DefaultParams.Add(Attributes.Diamonds, 5);
+                DefaultParams.Add(Attributes.Animals, 5);
                 countGenerate++;
             }
             else
             {
-                returnVal.Add(Specifications.PlayerWall, 5);
-                returnVal.Add(Specifications.PlayerTower, 12);
+                DefaultParams.Add(Attributes.Wall, 5);
+                DefaultParams.Add(Attributes.Tower, 12);
 
-                returnVal.Add(Specifications.PlayerMenagerie, 1);
-                returnVal.Add(Specifications.PlayerColliery, 3);
-                returnVal.Add(Specifications.PlayerDiamondMines, 4);
+                DefaultParams.Add(Attributes.Menagerie, 1);
+                DefaultParams.Add(Attributes.Colliery, 3);
+                DefaultParams.Add(Attributes.DiamondMines, 4);
 
-                returnVal.Add(Specifications.PlayerRocks, 5);
-                returnVal.Add(Specifications.PlayerDiamonds, 5);
-                returnVal.Add(Specifications.PlayerAnimals, 5);
+                DefaultParams.Add(Attributes.Rocks, 5);
+                DefaultParams.Add(Attributes.Diamonds, 5);
+                DefaultParams.Add(Attributes.Animals, 5);
             }
-           
-            return returnVal;
+
         }
     }
+
+
+
+
+
+
 }

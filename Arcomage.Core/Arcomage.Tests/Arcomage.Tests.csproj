@@ -76,7 +76,6 @@
     <Compile Include="MoqStartParams\TestStartParams.cs" />
     <Compile Include="MoqStartParams\TestStartParams2.cs" />
     <Compile Include="MoqStartParams\TestStartParams3.cs" />
-    <Compile Include="MoqStartParams\TestStartParams4.cs" />
     <Compile Include="Moq\TestServer.cs" />
     <Compile Include="Moq\TestServer2.cs" />
     <Compile Include="Moq\TestServer3.cs" />

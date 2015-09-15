@@ -1,4 +1,5 @@
-﻿using Arcomage.Core.Interfaces;
+﻿using Arcomage.Core.Impl;
+using Arcomage.Core.Interfaces;
 using Arcomage.Entity;
 
 namespace Arcomage.Core
@@ -13,7 +14,7 @@ namespace Arcomage.Core
     public class GameCardLog
     {
         //Игрок, который работал над картой
-        public GameCardLog(IPlayer player, GameEvent gameEvent, Card card, int move)
+        public GameCardLog(Player player, GameEvent gameEvent, Card card, int move)
         {
             this.player = player;
             this.gameEvent = gameEvent;
@@ -21,7 +22,7 @@ namespace Arcomage.Core
             this.move = move;
         }
 
-        public IPlayer player { get; set; }
+        public Player player { get; set; }
 
         //Событие произведенное над картой
         public GameEvent gameEvent { get; set; }
