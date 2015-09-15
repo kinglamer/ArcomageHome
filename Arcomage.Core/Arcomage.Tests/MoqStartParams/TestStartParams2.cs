@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Arcomage.Core;
+using Arcomage.Core.Interfaces;
 using Arcomage.Entity;
 
 namespace Arcomage.Tests.MoqStartParams
@@ -13,13 +14,13 @@ namespace Arcomage.Tests.MoqStartParams
         public TestStartParams2()
         {
             MaxPlayerCard = 20;
-            countGenerate = 0;
+            //countGenerate = 0;
         }
 
         public int MaxPlayerCard { get; set; }
 
 
-        private int countGenerate; 
+      //  private int countGenerate; 
 
         public Dictionary<Specifications, int> GenerateDefault()
         {

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Arcomage.Common;
+﻿using System.Collections.Generic;
 using Arcomage.Entity;
 
-namespace Arcomage.Core
+namespace Arcomage.Core.Interfaces
 {
     public interface IPlayer
     {

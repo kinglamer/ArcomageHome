@@ -9,11 +9,11 @@ using Newtonsoft.Json;
 using SQLite;
 using Arcomage.Common;
 
-namespace Arcomage.Core.Foo
+namespace Arcomage.Core.AlternativeServers
 {
-    public class ArcoLocalServer: IArcoServer
+    public class ArcoSQLLiteServer: IArcoServer
     {
-        public ArcoLocalServer(string connectionPath)
+        public ArcoSQLLiteServer(string connectionPath)
         {
             this.connectionPath = connectionPath;
         }
@@ -39,7 +39,7 @@ namespace Arcomage.Core.Foo
                         card.id = item.id;
                         card.name = item.name;
                         card.description =item.description;
-
+                 
                         returnVal.Add(card);
                     }
                 
@@ -67,6 +67,10 @@ namespace Arcomage.Core.Foo
               //  }
             }
 
+            foreach (var item in returnVal)
+            {
+                item.Init();
+            }
 
            returnVal.Randomize();
 

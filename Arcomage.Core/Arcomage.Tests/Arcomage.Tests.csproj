@@ -87,6 +87,7 @@
     <Compile Include="GameControllerTest.cs" />
     <Compile Include="ParserDescripTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RefactoringTest.cs" />
     <Compile Include="SpecialCardTest.cs" />
   </ItemGroup>
   <ItemGroup>

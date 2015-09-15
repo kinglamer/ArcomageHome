@@ -48,6 +48,12 @@ namespace Arcomage.DAL
 
                 cards = db.Cards.ToList();
             }
+
+            foreach (var item in cards)
+            {
+                item.Init();
+            }
+
             return cards;
         }
 
