@@ -83,8 +83,6 @@ namespace Arcomage.Tests
         public void ComputerMustWin()
         {
             gm = GameControllerTestHelper.InitDemoGame(3);
-           // GameControllerTestHelper.getCards(gm);
-
             GameControllerTestHelper.PassStroke(gm);
             
 
