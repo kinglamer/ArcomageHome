@@ -41,3 +41,5 @@ Unity/Unity.sln
 Unity/Arcomage-csharp.sln
 Unity/Arcomage.sln
 Unity/Arcomage.userprefs
+*.meta
+*.mdb
