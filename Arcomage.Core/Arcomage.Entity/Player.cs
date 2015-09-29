@@ -1,9 +1,13 @@
-п»їusing System.Collections.Generic;
-using Arcomage.Core.Interfaces;
-using Arcomage.Entity;
+using System.Collections.Generic;
+using Arcomage.Entity.Interfaces;
 
-namespace Arcomage.Core.Impl
+namespace Arcomage.Entity
 {
+    public enum TypePlayer
+    {
+        AI, Human
+    }
+
     public class Player
     {
 
@@ -18,7 +22,7 @@ namespace Arcomage.Core.Impl
         public List<Card> Cards { get; set; }
 
         /// <summary>
-        /// РЈСЃС‚Р°РЅРѕРІРєР° РґРµС„РѕР»С‚РЅС‹С… Р·РЅР°С‡РµРЅРёР№
+        /// Установка дефолтных значений
         /// </summary>
         public Player(string playerName, TypePlayer type, IStartParams gameParams)
         {
@@ -29,8 +33,5 @@ namespace Arcomage.Core.Impl
             Cards = new List<Card>();
         }
 
-        protected Player()
-        {
-        }
     }
 }

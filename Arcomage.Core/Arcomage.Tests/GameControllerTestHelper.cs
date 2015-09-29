@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Arcomage.Core;
+using Arcomage.Entity;
 using Arcomage.Tests.Moq;
 using Arcomage.Tests.MoqStartParams;
 using NUnit.Framework;

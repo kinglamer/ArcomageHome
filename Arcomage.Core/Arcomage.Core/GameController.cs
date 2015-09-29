@@ -12,15 +12,13 @@ using Arcomage.Core.ArcomageService;
 using Arcomage.Core.Impl;
 using Arcomage.Core.Interfaces;
 using Arcomage.Entity;
+using Arcomage.Entity.Interfaces;
 using Newtonsoft.Json;
-using Player = Arcomage.Core.Impl.Player;
+
 
 namespace Arcomage.Core
 {
-    public enum TypePlayer
-    {
-        AI, Human
-    }
+
 
     public enum SelectPlayer
     {

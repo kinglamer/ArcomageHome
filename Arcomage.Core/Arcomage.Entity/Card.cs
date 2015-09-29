@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-using System.Linq;
-using System.Text;
-
 namespace Arcomage.Entity
 {
     public class Card //Standard
@@ -124,5 +121,12 @@ namespace Arcomage.Entity
 
      
         }
+
+        public void Apply(Player playerUsed, Player enemy)
+        {
+            
+        }
     }
+
+   
 }

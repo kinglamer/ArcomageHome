@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Arcomage.Core;
-using Arcomage.Core.Interfaces;
+﻿using System.Collections.Generic;
 using Arcomage.Entity;
+using Arcomage.Entity.Interfaces;
 
 namespace Arcomage.Tests.MoqStartParams
 {

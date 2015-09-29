@@ -43,3 +43,6 @@ Unity/Arcomage.sln
 Unity/Arcomage.userprefs
 *.meta
 *.mdb
+Unity/UnityVS.Unity.CSharp.csproj
+Unity/UnityVS.Unity.sln
+Unity/Assets/Plugins/Arcomage.Core.dll.config

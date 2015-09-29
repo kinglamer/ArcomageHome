@@ -40,6 +40,8 @@
     <Compile Include="Card.cs" />
     <Compile Include="CardAttributes.cs" />
     <Compile Include="CardParams.cs" />
+    <Compile Include="Interfaces\IStartParams.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="Price.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specifications.cs" />

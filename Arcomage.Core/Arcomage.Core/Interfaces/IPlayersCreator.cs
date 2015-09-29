@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Arcomage.Core.Impl;
+using Arcomage.Entity;
 
 namespace Arcomage.Core.Interfaces
 {

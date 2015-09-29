@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using Arcomage.Entity;
 
-namespace Arcomage.Core.Interfaces
+namespace Arcomage.Entity.Interfaces
 {
     public interface IStartParams
     {
