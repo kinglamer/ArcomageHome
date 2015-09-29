@@ -28,7 +28,7 @@ namespace Arcomage.Entity
             this.playerName = playerName;
             this.type = type;
 
-            PlayerParams = gameParams.DefaultParams;
+            PlayerParams = new Dictionary<Attributes, int>(gameParams.DefaultParams);
             Cards = new List<Card>();
         }
 
