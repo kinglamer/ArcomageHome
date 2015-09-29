@@ -34,10 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Arcomage.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Arcomage.Server\Bin\Arcomage.Common.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net35\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -56,9 +52,9 @@
     <Compile Include="GameCardLog.cs" />
     <Compile Include="GameController.cs" />
     <Compile Include="GameControllerHelper.cs" />
-    <Compile Include="Impl\CreatorAI.cs" />
-    <Compile Include="Impl\CreatorPlayer.cs" />
-    <Compile Include="Impl\GameStartParams.cs" />
+    <Compile Include="Interfaces\Impl\CreatorAi.cs" />
+    <Compile Include="Interfaces\Impl\CreatorPlayer.cs" />
+    <Compile Include="Interfaces\Impl\GameStartParams.cs" />
     <Compile Include="Interfaces\IPlayersCreator.cs" />
     <Compile Include="ParseDescription.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -68,6 +64,8 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="AlternativeServers\SQLlite\SQLite.cs" />
+    <Compile Include="SpecialCard\Card12.cs" />
+    <Compile Include="SpecialCard\Card31.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -102,6 +100,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Arcomage.Common\Arcomage.Common.csproj">
+      <Project>{23650d10-2ab9-4068-93e8-ace0c0729926}</Project>
+      <Name>Arcomage.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Arcomage.Entity\Arcomage.Entity.csproj">
       <Project>{69DC8E57-C976-4B60-B7CF-B16F20732F0F}</Project>
       <Name>Arcomage.Entity</Name>
@@ -112,6 +114,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

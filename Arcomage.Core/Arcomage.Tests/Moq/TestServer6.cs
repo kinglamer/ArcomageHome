@@ -156,6 +156,15 @@ namespace Arcomage.Tests.Moq
                 cardParams = new List<CardParams>() { cardParams }
             });
 
+            returnVal.Add(new Card()
+            {
+                id = 1111,
+                name = "ultraCard",
+                cardParams = new List<CardParams>() { new CardParams(){ key = Specifications.CostAnimals, value = 0 }, 
+                new CardParams(){ key = Specifications.EnemyWall, value = 3 }, new CardParams(){ key = Specifications.PlayAgain, value = 1 },
+                new CardParams(){ key = Specifications.PlayerWall, value = 1 }}
+            });
+
             foreach (var item in returnVal)
             {
                 item.Init();

@@ -97,6 +97,12 @@ namespace Arcomage.Tests
              gm = new GameController(log, new TestServer6(), new TestStartParams());
              AddPlayers();
             // GameControllerTestHelper.getCards(gm);
+
+             Dictionary<string, object> notify = new Dictionary<string, object>();
+             notify.Add("CurrentAction", CurrentAction.HumanUseCard);
+             notify.Add("ID", 1111);
+             gm.SendGameNotification(notify);
+
              GameControllerTestHelper.useCard(31, gm);
              var result = gm.GetPlayerParams(SelectPlayer.First);
              Assert.AreEqual(result[Attributes.Tower], 3, "Башня должна быть 3");

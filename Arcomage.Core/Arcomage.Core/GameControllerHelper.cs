@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Arcomage.Core.Impl;
 using Arcomage.Core.Interfaces;
 using Arcomage.Entity;
 
@@ -38,37 +37,6 @@ namespace Arcomage.Core
 
       
 
-        public static void MinusValue(Attributes spec, int value, Player playerParam)
-        {
-            if (playerParam.PlayerParams[spec] - value <= 0)
-            {
-                playerParam.PlayerParams[spec] = 0;
-            }
-            else
-            {
-                playerParam.PlayerParams[spec] -= value;
-            }
-
-        }
-
-        public static void PlusValue(Attributes specifications, int value, Player playerParam)
-        {
-            int minValue = 0;
-            if (specifications == Attributes.DiamondMines || specifications == Attributes.Colliery ||
-                specifications == Attributes.Menagerie)
-            {
-                minValue = 1;
-            }
-
-            if (playerParam.PlayerParams[specifications] + value <= minValue)
-            {
-                playerParam.PlayerParams[specifications] = minValue;
-            }
-            else
-            {
-                playerParam.PlayerParams[specifications] += value;
-            }
-        }
 
         /// <summary>
         /// Метод для определения имени победителя

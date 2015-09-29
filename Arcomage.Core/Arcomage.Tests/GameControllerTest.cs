@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Arcomage.Common;
 using Arcomage.Core;
+using Arcomage.Core.AlternativeServers;
 using Arcomage.Entity;
 using Arcomage.Tests.Moq;
 using NUnit.Framework;
@@ -133,7 +134,7 @@ namespace Arcomage.Tests
              Assert.AreEqual(playerParams[Attributes.Menagerie], 1 + 3, "Не правильно применен параметр PlayerMenagerie");
              Assert.AreEqual(playerParams[Attributes.Colliery], 1 + 4, "Не правильно применен параметр PlayerColliery");
              Assert.AreEqual(playerParams[Attributes.Diamonds], 5 + 11 + 3, "Не правильно применен параметр PlayerDiamonds");
-             Assert.AreEqual(playerParams[Attributes.Animals], 5 + 12 - 5 + 4, "Не правильно применен параметр PlayerAnimals");
+             Assert.AreEqual(playerParams[Attributes.Animals], 5 + 12 + 4, "Не правильно применен параметр PlayerAnimals");
              Assert.AreEqual(playerParams[Attributes.Rocks], 5 + 13 + 5, "Не правильно применен параметр PlayerRocks");
 
              playerParams = gm.GetPlayerParams(SelectPlayer.Second);
@@ -269,7 +270,7 @@ namespace Arcomage.Tests
          public void TestCardTricker()
          {
              LogTest log = new LogTest();
-             GameController gm = new GameController(log);
+             GameController gm = new GameController(log, new ArcoSQLLiteServer(@"arcomageDB.db"));
              
 
              gm.AddPlayer(TypePlayer.Human, "Human");

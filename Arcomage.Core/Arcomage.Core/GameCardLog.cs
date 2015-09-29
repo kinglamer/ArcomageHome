@@ -1,5 +1,4 @@
-﻿using Arcomage.Core.Impl;
-using Arcomage.Core.Interfaces;
+﻿using Arcomage.Core.Interfaces;
 using Arcomage.Entity;
 
 namespace Arcomage.Core

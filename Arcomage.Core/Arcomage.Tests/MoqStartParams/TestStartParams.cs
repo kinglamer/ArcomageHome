@@ -7,15 +7,13 @@ namespace Arcomage.Tests.MoqStartParams
     internal class TestStartParams : IStartParams
     {
 
-        private int countGenerate;
         public int MaxPlayerCard { get; set; }
         public Dictionary<Attributes, int> DefaultParams { get; set; }
 
-        public TestStartParams()
+        public TestStartParams(int countGenerate = 0)
         {
             MaxPlayerCard = 20;
-            countGenerate = 0;
-
+  
             DefaultParams = new Dictionary<Attributes, int>();
             if (countGenerate == 0)
             {
@@ -30,7 +28,6 @@ namespace Arcomage.Tests.MoqStartParams
                 DefaultParams.Add(Attributes.Rocks, 5);
                 DefaultParams.Add(Attributes.Diamonds, 5);
                 DefaultParams.Add(Attributes.Animals, 5);
-                countGenerate++;
             }
             else
             {

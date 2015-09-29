@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Security.Policy;
 using System.ServiceModel;
-using System.ServiceModel.PeerResolvers;
-using System.ServiceModel.Security.Tokens;
-using System.Text;
 using Arcomage.Common;
 using Arcomage.Core.ArcomageService;
-using Arcomage.Core.Impl;
 using Arcomage.Core.Interfaces;
+using Arcomage.Core.Interfaces.Impl;
+using Arcomage.Core.SpecialCard;
 using Arcomage.Entity;
 using Arcomage.Entity.Interfaces;
 using Newtonsoft.Json;
@@ -116,7 +112,7 @@ namespace Arcomage.Core
         private IArcoServer host;
 
         private Dictionary<CurrentAction, EventMethod> eventHandlers;
-        private Dictionary<int, Action> specialCardHandlers;
+        private Dictionary<int, Card> specialCardHandlers;
 
         //очередная подтасовка, что игрок начинал ход с определенным набором карт
         private List<int> specialHand = new List<int>(); 
@@ -168,12 +164,13 @@ namespace Arcomage.Core
             eventHandlers.Add(CurrentAction.EndAIMove, EndAIMove);
             eventHandlers.Add(CurrentAction.EndGame, EndGame);
             eventHandlers.Add(CurrentAction.PlayerMustDropCard, PlayerMustDropCard);
-
-            specialCardHandlers = new Dictionary<int, Action>();
-            specialCardHandlers.Add(5, Card5);
-            specialCardHandlers.Add(8, Card8);
-            specialCardHandlers.Add(12, Card12);
-            specialCardHandlers.Add(31, Card31);
+            
+            specialCardHandlers = new Dictionary<int, Card>();
+          //  specialCardHandlers.Add(5, Card5);
+          //  specialCardHandlers.Add(8, Card8);
+            specialCardHandlers.Add(12, new Card12());
+            specialCardHandlers.Add(31, new Card31());
+          /* 
             specialCardHandlers.Add(32, Card32);
             specialCardHandlers.Add(34, Card34);
             specialCardHandlers.Add(39, CardWithDiscard);
@@ -185,7 +182,7 @@ namespace Arcomage.Core
             specialCardHandlers.Add(89, Card89);
             specialCardHandlers.Add(90, Card90);
             specialCardHandlers.Add(91, Card91);
-            specialCardHandlers.Add(98, Card98);
+            specialCardHandlers.Add(98, Card98);*/
 
           
         }
@@ -267,7 +264,8 @@ namespace Arcomage.Core
                 return;
             }
 
-            IPlayersCreator creator; 
+            IPlayersCreator creator = null;
+             
             if (tp == TypePlayer.AI)
             {
                 creator = new CreatorAi();
@@ -276,7 +274,7 @@ namespace Arcomage.Core
             {
                 creator = new CreatorPlayer();
             }
-            players.Add(creator.FactoryMethod(name));
+            players.Add(creator.FactoryMethod(name, startParams));
           
             
         
@@ -313,56 +311,15 @@ namespace Arcomage.Core
         /// </summary>
         public bool IsCanUseCard(Price price)
         {
-           // bool returnVal = false;
-
-            int countResourse = players[currentPlayer].PlayerParams[price.attributes];
-
-            if (countResourse >= price.value)
-            {
+            if (players[currentPlayer].PlayerParams[price.attributes] >= price.value)
                 return true;
-            }
 
             return false;
-            /*foreach (var item in cardAttributes)
-            {
-
-                i
-                switch (item.key)
-                {
-                    case Specifications.CostDiamonds:
-                        if (players[currentPlayer].Statistic[Specifications.PlayerDiamonds] >= item.value)
-                        {
-                            returnVal = true;
-                        }
-                        break;
-                    case Specifications.CostAnimals:
-                        if (players[currentPlayer].Statistic[Specifications.PlayerAnimals] >= item.value)
-                        {
-                            returnVal = true;
-                        }
-                        break;
-                    case Specifications.CostRocks:
-                        if (players[currentPlayer].Statistic[Specifications.PlayerRocks] >= item.value)
-                        {
-                            returnVal = true;
-                        }
-                        break;
-                }
-            }*/
-
-          //  if (cardParams.Count == 0)
-               // log.Error("У карты не указана стоимость");
-
-
-
-          //  return returnVal;
         }
 
         public bool IsCanUseCard(int id)
         {
             int index;
-            //List<CardParams> costCard = GetCardById(id, out index);
-
             return IsCanUseCard(GetCardById(id, out index).price);
         }
 
@@ -473,28 +430,26 @@ namespace Arcomage.Core
             }
 
             int index;
-           // List<CardParams> costCard = GetCardById(id, out index);
+            var card = GetCardById(id, out index);
 
-
-            if (IsCanUseCard(GetCardById(id, out index).price))
+            if (IsCanUseCard(card.price))
             {
                 log.Info("Player: " + players[currentPlayer].playerName + " use card: " + players[currentPlayer].Cards[index].name);
 
+                 int Ememyindex = currentPlayer == 1 ? 0 : 1;
                 //если карта не имеет специального обработчика, тогда используем как обычно
                 if (!specialCardHandlers.ContainsKey(id))
                 {
-                    //TODO: добавить обработку 
-                   // ApplyCardParamsToPlayer(players[currentPlayer].Cards[index].cardParams);
+                    card.Apply(players[currentPlayer], players[Ememyindex]);
                 }
                 else //иначе вызываем специальный обработчик и потом отнимаем стоимость карты
                 {
-                    specialCardHandlers[id].Invoke();
-                    //TODO: добавить обработку стоимости
-                   // ApplyCardParamsToPlayer(costCard);
-
+                    specialCardHandlers[id].copyParams(card);
+                    specialCardHandlers[id].Apply(players[currentPlayer], players[Ememyindex]);
                 }
 
-            
+                if (card.playAgain)
+                    Status = CurrentAction.PlayAgain;
                
 
                 logCard.Add(new GameCardLog(players[currentPlayer], GameEvent.Used,players[currentPlayer].Cards[index],currentMove));
@@ -516,10 +471,6 @@ namespace Arcomage.Core
         private Card GetCardById(int id, out int index)
         {
             index = players[currentPlayer].Cards.FindIndex(x => x.id == id);
-
-            /*List<CardParams> costCard = players[currentPlayer].Cards[index].cardParams.Where(x => x.key == Specifications.CostDiamonds ||
-                                                                                 x.key == Specifications.CostAnimals ||
-                                                                                 x.key == Specifications.CostRocks).ToList();*/
             return players[currentPlayer].Cards[index];
         }
 
@@ -562,17 +513,6 @@ namespace Arcomage.Core
         }
 
 
-
-        private void UpdateStatistic()
-        {
-            var playerParams = players[currentPlayer].PlayerParams;
-
-            log.Info("UpdateStatistic for " + players[currentPlayer].type);
-            GameControllerHelper.PlusValue(Attributes.Diamonds, playerParams[Attributes.DiamondMines], players[currentPlayer]);
-            GameControllerHelper.PlusValue(Attributes.Animals, playerParams[Attributes.Menagerie], players[currentPlayer]);
-            GameControllerHelper.PlusValue(Attributes.Rocks, playerParams[Attributes.Colliery], players[currentPlayer]);
-        }
-
         private void MakeMoveAI()
         {
             log.Info("----===== Ход компьютера =====----");
@@ -602,7 +542,7 @@ namespace Arcomage.Core
                 {
                     Status = CurrentAction.GetAICard;
                     GetCard();
-                    UpdateStatistic();
+                    players[currentPlayer].UpdateParams();
                     Status = CurrentAction.AIUseCard;
                 }
 
@@ -620,7 +560,7 @@ namespace Arcomage.Core
                             {
                                 additionaStatus = CurrentAction.None;
                                 Status = CurrentAction.GetAICard;
-                                UpdateStatistic();
+                                players[currentPlayer].UpdateParams();
                             }
 
                             if (Status == CurrentAction.GetAICard)
@@ -754,13 +694,13 @@ namespace Arcomage.Core
 
             if (tempVal < 0)
             {
-                GameControllerHelper.PlusValue(Attributes.Wall, -players[player].PlayerParams[Attributes.Wall], players[player]);
+              /*  Card.PlusValue(Attributes.Wall, -players[player].PlayerParams[Attributes.Wall], players[player]);
 
-                GameControllerHelper.PlusValue(Attributes.Tower, tempVal, players[player]);
+                Card.PlusValue(Attributes.Tower, tempVal, players[player]);*/
             }
             else
             {
-                GameControllerHelper.PlusValue(Attributes.Wall, value, players[player]);
+               // Card.PlusValue(Attributes.Wall, value, players[player]);
             }
         }
 
@@ -842,7 +782,7 @@ namespace Arcomage.Core
                         Status = CurrentAction.GetAICard;
                     }
 
-                    UpdateStatistic();
+                    players[currentPlayer].UpdateParams();
                     
                 }
             }
@@ -878,7 +818,7 @@ namespace Arcomage.Core
         {
             if (information["CurrentAction"].ToString() == "UpdateStatAI")
             {
-                UpdateStatistic();
+                players[currentPlayer].UpdateParams();
                 Status = CurrentAction.UpdateStatAI;
             }
         }
@@ -977,7 +917,7 @@ namespace Arcomage.Core
                 }
 
 
-                UpdateStatistic();
+                players[currentPlayer].UpdateParams();
             }
         }
 
@@ -988,7 +928,7 @@ namespace Arcomage.Core
             {
                 if (PassMove((int)information["ID"]))
                 {
-                    UpdateStatistic();
+                    players[currentPlayer].UpdateParams();
                     Status = CurrentAction.GetPlayerCard;
                     information["CurrentAction"] = CurrentAction.PassStroke.ToString();
                     SendGameNotification(information);
@@ -1003,14 +943,14 @@ namespace Arcomage.Core
                     if (Status != CurrentAction.PlayAgain)
                     {
                         if (additionaStatus != CurrentAction.PlayerMustDropCard)
-                            UpdateStatistic();
+                            players[currentPlayer].UpdateParams();
 
                         Status = CurrentAction.HumanUseCard;
                     
                     }
                     else
                     {
-                        UpdateStatistic();
+                        players[currentPlayer].UpdateParams();
 
                         Status = CurrentAction.GetPlayerCard;
                         information["CurrentAction"] = CurrentAction.WaitHumanMove.ToString();
@@ -1194,12 +1134,6 @@ namespace Arcomage.Core
           
         }
 
-        private void Card12()
-        {
-            //If wall = 0,+6 wall,else +3 wall
-            IfElseWithValue(Specifications.PlayerWall, 6, 3,0);
-
-        }
 
         private void Card31()
         {

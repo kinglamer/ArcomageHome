@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using Arcomage.Core.Interfaces;
 using Arcomage.Entity;
 using Arcomage.Entity.Interfaces;
 
-namespace Arcomage.Core.Impl
+namespace Arcomage.Core.Interfaces.Impl
 {
     public class GameStartParams : IStartParams
     {

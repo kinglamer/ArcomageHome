@@ -82,7 +82,6 @@
     <Compile Include="Moq\TestServer4.cs" />
     <Compile Include="Moq\TestServer5.cs" />
     <Compile Include="Moq\TestServer6.cs" />
-    <Compile Include="NUnitExample.cs" />
     <Compile Include="GameControllerTest.cs" />
     <Compile Include="ParserDescripTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

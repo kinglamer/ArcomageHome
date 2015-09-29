@@ -39,8 +39,7 @@ namespace Arcomage.Tests
         public void TestSpecialCardFromServer()
         {
             int countDesc = 0;
-            string url = "http://arcomage.somee.com/ArcoServer.svc?wsdl"; 
-            IArcoServer host = new ArcoServerClient(new BasicHttpBinding(), new EndpointAddress(url));
+            IArcoServer host = new ArcoSQLLiteServer(@"arcomageDB.db");
 
             string cardFromServer = host.GetRandomCard();
 
@@ -65,8 +64,7 @@ namespace Arcomage.Tests
         [Test]
         public void SpecialSymbolsInCardTest()
         {
-            string url = "http://arcomage.somee.com/ArcoServer.svc?wsdl";
-            IArcoServer host = new ArcoServerClient(new BasicHttpBinding(), new EndpointAddress(url));
+            IArcoServer host = new ArcoSQLLiteServer(@"arcomageDB.db");
 
             string cardFromServer = host.GetRandomCard();
 
@@ -86,8 +84,7 @@ namespace Arcomage.Tests
         [Test]
         public void SpecialSymbolsInCard2Test()
         {
-            string url = "http://arcomage.somee.com/ArcoServer.svc?wsdl";
-            IArcoServer host = new ArcoServerClient(new BasicHttpBinding(), new EndpointAddress(url));
+            IArcoServer host = new ArcoSQLLiteServer(@"arcomageDB.db");
 
             string cardFromServer = host.GetRandomCard();
 

@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace Arcomage.Entity
 {
-    public class Card //Standard
+    public class Card 
     {
         public int id { get; set; }
         public string name { get; set; }
@@ -122,11 +122,93 @@ namespace Arcomage.Entity
      
         }
 
-        public void Apply(Player playerUsed, Player enemy)
+        public virtual void Apply(Player playerUsed, Player enemy)
         {
-            
+            foreach (var item in cardAttributes)
+            {
+                Player target = playerUsed;
+
+                if(item.target == Target.Enemy)
+                   target = enemy;
+
+                if (item.attributes == Attributes.DirectDamage)
+                {
+                    item.value = item.value > 0 ? -item.value : item.value; //делаю число отрицательным, необходимо в базе переделать все эти значения на отрицательные
+                    int remainingDamage = target.PlayerParams[Attributes.Wall] + item.value;
+
+                    target.PlayerParams[Attributes.Wall] = getNewValue(target.PlayerParams[Attributes.Wall], item);
+
+                    if (remainingDamage < 0)
+                    {
+                        CardAttributes newItem = new CardAttributes() {attributes = Attributes.Tower, value = remainingDamage};
+
+                        target.PlayerParams[Attributes.Tower] = getNewValue(target.PlayerParams[Attributes.Tower], newItem);
+                    }
+
+                    continue;
+                }
+
+                target.PlayerParams[item.attributes] = getNewValue(target.PlayerParams[item.attributes], item);
+
+            }
+        }
+
+        public void copyParams(Card card)
+        {
+            cardAttributes = card.cardAttributes;
+            playAgain = card.playAgain;
+            price = card.price;
+        }
+    
+
+        private static int getNewValue(int currentVal, CardAttributes item)
+        {
+            int newValue = currentVal + item.value;
+            if (newValue < 0)
+            {
+                newValue = 0;
+                if (item.attributes == Attributes.DiamondMines || item.attributes == Attributes.Colliery ||
+                    item.attributes == Attributes.Menagerie)
+                {
+                    newValue = 1;
+                }
+            }
+            return newValue;
+        }
+
+
+        private void MinusValue(Attributes spec, int value, Player playerParam)
+        {
+            if (playerParam.PlayerParams[spec] - value <= 0)
+            {
+                playerParam.PlayerParams[spec] = 0;
+            }
+            else
+            {
+                playerParam.PlayerParams[spec] -= value;
+            }
+
+        }
+
+        private void PlusValue(Attributes specifications, int value, Player playerParam)
+        {
+            int minValue = 0;
+            if (specifications == Attributes.DiamondMines || specifications == Attributes.Colliery ||
+                specifications == Attributes.Menagerie)
+            {
+                minValue = 1;
+            }
+
+            if (playerParam.PlayerParams[specifications] + value <= minValue)
+            {
+                playerParam.PlayerParams[specifications] = minValue;
+            }
+            else
+            {
+                playerParam.PlayerParams[specifications] += value;
+            }
         }
     }
 
-   
+    
 }
