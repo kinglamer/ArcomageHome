@@ -1,26 +1,19 @@
-п»їusing System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 using Arcomage.Core;
-using Arcomage.Core.ArcomageService;
 using Arcomage.Core.AlternativeServers;
-using Arcomage.Entity;
+using Arcomage.Core.ArcomageService;
 using Arcomage.Entity.Cards;
-using Arcomage.Tests.Moq;
-using Arcomage.Tests.MoqStartParams;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
-namespace Arcomage.Tests
+namespace Arcomage.Tests.AnotherTests
 {
     [TestFixture]
     class ParserDescripTest
     {
 
-        //LogTest log = new LogTest();
         private GameController gm;
 
         [Test]
@@ -30,9 +23,7 @@ namespace Arcomage.Tests
                "<span style=\"font-weight: bold; color: #66ff00; font-style: italic; font-size: 8pt;\">Test</span>";
 
             Assert.AreEqual(ParseDescription.Parse(value), "<size=8><i><color=#66ff00><b>Test</b></color></i></size>",
-                "РЎС‚СЂРѕРєР° РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅР° РЅРµРїСЂР°РІРёР»СЊРЅРѕ");
-
-
+                "Строка преобразована неправильно");
         }
 
 
@@ -41,9 +32,7 @@ namespace Arcomage.Tests
         {
             int countDesc = 0;
             IArcoServer host = new ArcoSQLLiteServer(@"arcomageDB.db");
-
             string cardFromServer = host.GetRandomCard();
-
             List<Card> result = JsonConvert.DeserializeObject<List<Card>>(cardFromServer);
 
             foreach (var item in result)
@@ -52,54 +41,45 @@ namespace Arcomage.Tests
 
                 if (item.description.Length > 0 && description.Length == 0)
                 {
-                  //  ParseDescription.Parse(item.description);
                     countDesc++;
                     Console.WriteLine("item " + item.name + " has no descript. Original text: " + Environment.NewLine + item.description + Environment.NewLine);
                 }
                
             }
 
-            Assert.AreEqual(countDesc, 0, "РќРµ РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ РєР°СЂС‚ СЃ РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‰РёРј РѕРїРёСЃР°РЅРёРµРј");
+            Assert.AreEqual(countDesc, 0, "Не должно быть карт с отсутствующим описанием");
         }
 
         [Test]
         public void SpecialSymbolsInCardTest()
         {
             IArcoServer host = new ArcoSQLLiteServer(@"arcomageDB.db");
-
             string cardFromServer = host.GetRandomCard();
-
             List<Card> result = JsonConvert.DeserializeObject<List<Card>>(cardFromServer);
-
             string description = "";
 
             foreach (var item in result.Where(x=>x.id == 90))
             {
                  description = ParseDescription.Parse(item.description);
-
             }
 
-            Assert.AreEqual(description.IndexOf("&"), -1, "РќРµ РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ Р·РЅР°РєРѕРІ Р°РјРїРµСЂСЃР°РЅС‚");
+            Assert.AreEqual(description.IndexOf("&"), -1, "Не должно быть знаков амперсант");
         }
 
         [Test]
         public void SpecialSymbolsInCard2Test()
         {
             IArcoServer host = new ArcoSQLLiteServer(@"arcomageDB.db");
-
             string cardFromServer = host.GetRandomCard();
-
             List<Card> result = JsonConvert.DeserializeObject<List<Card>>(cardFromServer);
-
             string description = "";
 
             foreach (var item in result.Where(x => x.id == 8))
             {
                 description = ParseDescription.Parse(item.description);
-
             }
 
-            Assert.AreEqual(description.IndexOf("&"), -1, "РќРµ РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ Р·РЅР°РєРѕРІ Р°РјРїРµСЂСЃР°РЅС‚");
+            Assert.AreEqual(description.IndexOf("&"), -1, "Не должно быть знаков амперсант");
         }
 
 
@@ -107,13 +87,11 @@ namespace Arcomage.Tests
         public void SqliteDBTest()
         {
             IArcoServer host = new ArcoSQLLiteServer(@"arcomageDB.db");
-
             string cardFromServer = host.GetRandomCard();
-
             List<Card> result = JsonConvert.DeserializeObject<List<Card>>(cardFromServer);
 
-            Assert.AreEqual(result.Count, 102, "Р”РѕР»Р¶РЅРѕ Р±С‹С‚СЊ 102 РєР°СЂС‚С‹");
-            Assert.AreNotEqual(result.First().id, 2, "РџРµСЂРІРѕР№ РєР°СЂС‚РѕР№ РЅРµ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ РєР°СЂС‚Р° 2");
+            Assert.AreEqual(result.Count, 102, "Должно быть 102 карты");
+            Assert.AreNotEqual(result.First().id, 2, "Первой картой не должна быть карта 2");
         }
     }
 }

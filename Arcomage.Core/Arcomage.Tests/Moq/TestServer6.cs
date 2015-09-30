@@ -18,16 +18,12 @@ namespace Arcomage.Tests.Moq
 
             var cardParams = new CardParams() {key = Specifications.CostAnimals, value = 0};
 
-        
-          
-
             returnVal.Add(new Card()
             {
                 id = 5,
                 name = "Mother Lode",
                 cardParams = new List<CardParams>() { cardParams }
             });
-          
 
             returnVal.Add(new Card()
             {
@@ -64,9 +60,7 @@ namespace Arcomage.Tests.Moq
                 name = "Flood Water",
                 cardParams = new List<CardParams>() { cardParams }
             });
-
-
-
+            
             returnVal.Add(new Card()
             {
                 id = 32,
@@ -87,8 +81,6 @@ namespace Arcomage.Tests.Moq
                 name = "Prism",
                 cardParams = new List<CardParams>() { cardParams }
             });
-          
-          
 
             returnVal.Add(new Card()
             {
@@ -118,9 +110,7 @@ namespace Arcomage.Tests.Moq
                 name = "Lighting Shard",
                 cardParams = new List<CardParams>() { cardParams }
             });
-
-           
-          
+            
 
             returnVal.Add(new Card()
             {

@@ -16,8 +16,6 @@ namespace Arcomage.Tests.Moq
         {
             List<Card> returnVal = new List<Card>();
 
-          
-
             var paramsM = new List<CardParams>();
             paramsM.Add(new CardParams() { key = Specifications.EnemyTower, value = -50 });
             paramsM.Add(new CardParams() { key = Specifications.CostAnimals, value = 100 });
@@ -29,7 +27,6 @@ namespace Arcomage.Tests.Moq
                 cardParams = paramsM
             });
             
-   
 
             var paramsM2 = new List<CardParams>();
             paramsM2.Add(new CardParams() { key = Specifications.PlayerTower, value = -8 });
@@ -113,7 +110,6 @@ namespace Arcomage.Tests.Moq
             }
 
     
-            Console.WriteLine("Количество карт на сервер " + returnVal.Count);
             return JsonConvert.SerializeObject(returnVal);
         }
     }

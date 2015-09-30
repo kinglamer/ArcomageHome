@@ -16,10 +16,6 @@ namespace Arcomage.Tests.Moq
         {
             List<Card> returnVal = new List<Card>();
 
-    
-
-      
-
             var paramsM6 = new List<CardParams>();
             paramsM6.Add(new CardParams() { key = Specifications.PlayerDiamonds, value = 11 });
             paramsM6.Add(new CardParams() { key = Specifications.CostAnimals, value = 100 });
@@ -30,21 +26,6 @@ namespace Arcomage.Tests.Moq
                 name = "Check Change Diamonds",
                 cardParams = paramsM6
             });
-
-
-
-            /* Стартовые значения игрока 
-           * 
-           * returnVal.Add(Specifications.PlayerWall, 5);
-          returnVal.Add(Specifications.PlayerTower, 10);
-
-          returnVal.Add(Specifications.PlayerMenagerie, 1);
-          returnVal.Add(Specifications.PlayerColliery, 1);
-          returnVal.Add(Specifications.PlayerDiamondMines, 1);
-
-          returnVal.Add(Specifications.PlayerRocks, 5);
-          returnVal.Add(Specifications.PlayerDiamonds, 5);
-          returnVal.Add(Specifications.PlayerAnimals, 5);*/
 
             var paramsM2 = new List<CardParams>();
             paramsM2.Add(new CardParams() { key = Specifications.PlayerTower, value = -8 });
@@ -125,8 +106,6 @@ namespace Arcomage.Tests.Moq
             {
                 item.Init();
             }
-
-
 
             return JsonConvert.SerializeObject(returnVal);
         }
