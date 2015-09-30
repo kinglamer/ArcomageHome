@@ -66,6 +66,20 @@
     <Compile Include="AlternativeServers\SQLlite\SQLite.cs" />
     <Compile Include="SpecialCard\Card12.cs" />
     <Compile Include="SpecialCard\Card31.cs" />
+    <Compile Include="SpecialCard\Card32.cs" />
+    <Compile Include="SpecialCard\Card34.cs" />
+    <Compile Include="SpecialCard\Card39.cs" />
+    <Compile Include="SpecialCard\Card48.cs" />
+    <Compile Include="SpecialCard\Card5.cs" />
+    <Compile Include="SpecialCard\Card64.cs" />
+    <Compile Include="SpecialCard\Card67.cs" />
+    <Compile Include="SpecialCard\Card73.cs" />
+    <Compile Include="SpecialCard\Card8.cs" />
+    <Compile Include="SpecialCard\Card87.cs" />
+    <Compile Include="SpecialCard\Card89.cs" />
+    <Compile Include="SpecialCard\Card90.cs" />
+    <Compile Include="SpecialCard\Card91.cs" />
+    <Compile Include="SpecialCard\Card98.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Arcomage.Core;
+using Arcomage.Core.Interfaces.Impl;
 using Arcomage.Entity;
 using Arcomage.Tests.Moq;
 using Arcomage.Tests.MoqStartParams;
@@ -82,8 +83,8 @@ namespace Arcomage.Tests
             
 
            Assert.AreNotEqual(gm, null, "Геймконтроллер не должен быть пустым");
-           gm.AddPlayer(TypePlayer.Human, "Human");
-           gm.AddPlayer(TypePlayer.AI, "AI");
+           gm.AddPlayer(TypePlayer.Human, "Human", new GameStartParams());
+           gm.AddPlayer(TypePlayer.AI, "AI", new GameStartParams());
 
 
             Dictionary<string, object> notify = new Dictionary<string, object>();

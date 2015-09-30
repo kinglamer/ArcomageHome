@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Arcomage.Common;
 using Arcomage.Core;
 using Arcomage.Core.AlternativeServers;
+using Arcomage.Core.Interfaces.Impl;
 using Arcomage.Entity;
 using Arcomage.Tests.Moq;
 using NUnit.Framework;
@@ -156,15 +157,10 @@ namespace Arcomage.Tests
          [Test]
          public void CheckAddDiamonds()
          {
-
              gm = GameControllerTestHelper.InitDemoGame(2);
-
-             //GameControllerTestHelper.getCards(gm);
-
              GameControllerTestHelper.useCard(6, gm);
 
              var playerParams = gm.GetPlayerParams(SelectPlayer.First);
-
              Assert.AreEqual(playerParams[Attributes.Diamonds], 5 + 11 + 1, "Не правильно применен параметр PlayerDiamonds");
          }
 
@@ -176,11 +172,7 @@ namespace Arcomage.Tests
          public void CheckApplyEnemyDirectDamage()
          {
              gm = GameControllerTestHelper.InitDemoGame();
-             //GameControllerTestHelper.getCards(gm);
-
-
              GameControllerTestHelper.useCard(3, gm);
-
 
              Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.Second)[Attributes.Wall], 0, "Не правильно применен параметр EnemyDirectDamage");
              Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.Second)[Attributes.Tower], 0, "Не правильно применен параметр EnemyDirectDamage");
@@ -271,10 +263,10 @@ namespace Arcomage.Tests
          {
              LogTest log = new LogTest();
              GameController gm = new GameController(log, new ArcoSQLLiteServer(@"arcomageDB.db"));
-             
 
-             gm.AddPlayer(TypePlayer.Human, "Human");
-             gm.AddPlayer(TypePlayer.AI, "AI");
+
+             gm.AddPlayer(TypePlayer.Human, "Human", new GameStartParams());
+             gm.AddPlayer(TypePlayer.AI, "AI", new GameStartParams());
 
 
              Dictionary<string, object> notify = new Dictionary<string, object>();

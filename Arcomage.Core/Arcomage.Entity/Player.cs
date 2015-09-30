@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Arcomage.Entity.Interfaces;
 
@@ -34,11 +35,12 @@ namespace Arcomage.Entity
 
         public void UpdateParams()
         {
-
             PlayerParams[Attributes.Diamonds] += PlayerParams[Attributes.DiamondMines];
             PlayerParams[Attributes.Rocks] += PlayerParams[Attributes.Colliery];
             PlayerParams[Attributes.Animals] += PlayerParams[Attributes.Menagerie];
-            
+            Debug.Print("UpdateParams");
+
+           
         }
 
     }

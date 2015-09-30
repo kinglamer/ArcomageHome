@@ -54,7 +54,7 @@ namespace Arcomage.Core
 
         #region Variables 
 
-        private readonly int MaxCard;
+        private int MaxCard;
         private List<Player> players { get; set; }
         private int currentPlayer { get; set; }
 
@@ -102,7 +102,7 @@ namespace Arcomage.Core
         }
 
         protected readonly ILog log;
-        protected readonly IStartParams startParams;
+      //  protected readonly IStartParams startParams;
 
         private readonly Dictionary<Attributes, int> WinParams;
         private readonly Dictionary<Attributes, int> LoseParams;
@@ -126,13 +126,13 @@ namespace Arcomage.Core
         #endregion
 
 
-        public GameController(ILog _log, IArcoServer server = null, IStartParams _startParams = null)
+        public GameController(ILog _log, IArcoServer server = null)
         {
-            if (_startParams == null)
-                _startParams = new GameStartParams();
-            startParams = _startParams;
+           // if (_startParams == null)
+             //   _startParams = new GameStartParams();
+          //  startParams = _startParams;
 
-            MaxCard = startParams.MaxPlayerCard;
+            MaxCard = 6;//startParams.MaxPlayerCard;
             Status = CurrentAction.None;
             log = _log;
             LoseParams = GameControllerHelper.GetLoseParams();
@@ -166,24 +166,22 @@ namespace Arcomage.Core
             eventHandlers.Add(CurrentAction.PlayerMustDropCard, PlayerMustDropCard);
             
             specialCardHandlers = new Dictionary<int, Card>();
-          //  specialCardHandlers.Add(5, Card5);
-          //  specialCardHandlers.Add(8, Card8);
+            specialCardHandlers.Add(5,new Card5());
+            specialCardHandlers.Add(8,new Card8());
             specialCardHandlers.Add(12, new Card12());
             specialCardHandlers.Add(31, new Card31());
-          /* 
-            specialCardHandlers.Add(32, Card32);
-            specialCardHandlers.Add(34, Card34);
-            specialCardHandlers.Add(39, CardWithDiscard);
-            specialCardHandlers.Add(48, Card48);
-            specialCardHandlers.Add(64, Card64);
-            specialCardHandlers.Add(67, Card67);
-            specialCardHandlers.Add(73, CardWithDiscard);
-            specialCardHandlers.Add(87, Card87);
-            specialCardHandlers.Add(89, Card89);
-            specialCardHandlers.Add(90, Card90);
-            specialCardHandlers.Add(91, Card91);
-            specialCardHandlers.Add(98, Card98);*/
-
+            specialCardHandlers.Add(32, new Card32());
+            specialCardHandlers.Add(34,new Card34());
+            specialCardHandlers.Add(39,new Card39());
+            specialCardHandlers.Add(48,new Card48());
+            specialCardHandlers.Add(64,new Card64());
+            specialCardHandlers.Add(67,new Card67());
+            specialCardHandlers.Add(73,new Card73());
+            specialCardHandlers.Add(87,new Card87());
+            specialCardHandlers.Add(89,new Card89());
+            specialCardHandlers.Add(90,new Card90());
+            specialCardHandlers.Add(91,new Card91());
+            specialCardHandlers.Add(98,new Card98());
           
         }
 
@@ -191,6 +189,10 @@ namespace Arcomage.Core
 
         #region public methods
 
+        public void ChangeMaxCard(int NewMaxCard)
+        {
+            MaxCard = NewMaxCard;
+        }
 
         public List<Card> GetAIUsedCard()
         {
@@ -244,12 +246,25 @@ namespace Arcomage.Core
             }
             else
             {
-                return startParams.DefaultParams;
+                 Dictionary<Attributes, int> DefaultParams = new Dictionary<Attributes, int>();
+                 DefaultParams = new Dictionary<Attributes, int>();
+                 DefaultParams.Add(Attributes.Wall, 5);
+                 DefaultParams.Add(Attributes.Tower, 10);
+
+                 DefaultParams.Add(Attributes.Menagerie, 1);
+                 DefaultParams.Add(Attributes.Colliery, 1);
+                 DefaultParams.Add(Attributes.DiamondMines, 1);
+
+                 DefaultParams.Add(Attributes.Rocks, 5);
+                 DefaultParams.Add(Attributes.Diamonds, 5);
+                 DefaultParams.Add(Attributes.Animals, 5);
+
+                return DefaultParams;
             }
         }
 
 
-        public void AddPlayer(TypePlayer tp, string name)
+        public void AddPlayer(TypePlayer tp, string name, IStartParams startParams)
         {
 
             if (Status == CurrentAction.StartGame)
@@ -446,10 +461,15 @@ namespace Arcomage.Core
                 {
                     specialCardHandlers[id].copyParams(card);
                     specialCardHandlers[id].Apply(players[currentPlayer], players[Ememyindex]);
+
+                    if (specialCardHandlers[id].discard)
+                        additionaStatus = CurrentAction.PlayerMustDropCard;
                 }
 
                 if (card.playAgain)
                     Status = CurrentAction.PlayAgain;
+
+                
                
 
                 logCard.Add(new GameCardLog(players[currentPlayer], GameEvent.Used,players[currentPlayer].Cards[index],currentMove));
@@ -599,168 +619,6 @@ namespace Arcomage.Core
 #endregion
 
 
-        #region apply params 
-
-        /// <summary>
-        /// Применения параметров карты к игроку
-        /// </summary>
-        private void ApplyCardParamsToPlayer(ICollection<CardAttributes> cardAttr)
-        {
-            /*      log.Info(string.Format("BEFORE player: {3} type: {0} val: {1} currentVal: {2}", item.key, item.value,
-            players[currentPlayer].Statistic.ContainsKey(item.key) ? players[currentPlayer].Statistic[item.key].ToString() : "Ключа нет"
-            , players[currentPlayer].type));*/
-
-            /*    log.Info(string.Format("AFTER player: {3} type: {0} val: {1} currentVal: {2}", item.key, item.value,
-             players[currentPlayer].Statistic.ContainsKey(item.key) ? players[currentPlayer].Statistic[item.key].ToString() : "Ключа нет"
-             , players[currentPlayer].type));*/
-
-
-
-            /*
-
-            foreach (var item in cardAttr)
-            {
-                try
-                {
-                 
-                    switch (item.attributes)
-                    {
-                        case Attributes.PlayerTower:
-                        case Attributes.PlayerWall:
-                        case Attributes.PlayerDiamondMines:
-                        case Attributes.PlayerMenagerie:
-                        case Attributes.PlayerColliery:
-                        case Attributes.PlayerDiamonds:
-                        case Attributes.PlayerAnimals:
-                        case Attributes.PlayerRocks:
-             
-                           GameControllerHelper.PlusValue(item.key, item.value, players[currentPlayer]);
-
-                  
-
-                     break;
-                   case Attributes.EnemyTower:
-                   case Attributes.EnemyWall:
-                   case Attributes.EnemyDiamondMines:
-                   case Attributes.EnemyMenagerie:
-                   case Attributes.EnemyColliery:
-                   case Attributes.EnemyDiamonds:
-                   case Attributes.EnemyAnimals:
-                   case Attributes.EnemyRocks:
-                       ApplyCardParamFromEnemy(item);
-                       break;
-                   case Attributes.CostDiamonds:
-                       GameControllerHelper.MinusValue(Attributes.Diamonds, item.value, players[currentPlayer]);
-                       break;
-                   case Attributes.CostAnimals:
-                       GameControllerHelper.MinusValue(Attributes.Animals, item.value, players[currentPlayer]);
-                       break;
-                   case Attributes.CostRocks:
-                       GameControllerHelper.MinusValue(Attributes.Rocks, item.value, players[currentPlayer]);
-                       break;
-                   case Attributes.EnemyDirectDamage:
-                       int Ememyindex = currentPlayer == 1 ? 0 : 1;
-                       ApplyDirectDamage(item, Ememyindex);
-                       break;
-                   case Attributes.PlayerDirectDamage:
-                       ApplyDirectDamage(item, currentPlayer);
-                       break;
-                   case Attributes.PlayAgain:
-                       if (Status != CurrentAction.EndHumanMove || Status != CurrentAction.EndAIMove || Status != CurrentAction.EndGame)
-                           Status = CurrentAction.PlayAgain;
-                       break;
-                   default:
-                       throw new ArgumentOutOfRangeException();
-               }
-                  
-           }
-           catch (Exception ex)
-           {
-               log.Error("Ex: " + ex + "\n Additional Info: " + item.key);
-           }
-       }*/
-
-
-        }
-
-        private void ApplyDirectDamage(CardParams item, int player)
-        {
-            int value = item.value;
-            
-            if (item.value > 0)
-                value = -item.value;
-
-            int tempVal = players[player].PlayerParams[Attributes.Wall] + value;
-
-            if (tempVal < 0)
-            {
-              /*  Card.PlusValue(Attributes.Wall, -players[player].PlayerParams[Attributes.Wall], players[player]);
-
-                Card.PlusValue(Attributes.Tower, tempVal, players[player]);*/
-            }
-            else
-            {
-               // Card.PlusValue(Attributes.Wall, value, players[player]);
-            }
-        }
-
-        /// <summary>
-        /// Метод для изменения параметров противника
-        /// </summary>
-        /// <param name="item"></param>
-        private void ApplyCardParamFromEnemy(CardParams item)
-        {
-
-           /* Specifications resutl = Specifications.NotSet;
-            switch (item.key)
-            {
-                case Specifications.EnemyTower:
-                    resutl = Specifications.PlayerTower;
-                    break;
-                case Specifications.EnemyWall:
-                    resutl = Specifications.PlayerWall;
-                    break;
-                case Specifications.EnemyDiamondMines:
-                    resutl = Specifications.PlayerDiamondMines;
-                    break;
-                case Specifications.EnemyMenagerie:
-                    resutl = Specifications.PlayerMenagerie;
-                    break;
-                case Specifications.EnemyColliery:
-                    resutl = Specifications.PlayerColliery;
-                    break;
-                case Specifications.EnemyDiamonds:
-                    resutl = Specifications.PlayerDiamonds;
-                    break;
-                case Specifications.EnemyAnimals:
-                    resutl = Specifications.PlayerAnimals;
-                    break;
-                case Specifications.EnemyRocks:
-                    resutl = Specifications.PlayerRocks;
-                    break;
-            }
-
-            // log.Info("playerName:" + playerName + ": " + Statistic[resutl]);
-
-
-            int index = currentPlayer == 1 ? 0 : 1;
-
-   
-
-            GameControllerHelper.PlusValue(resutl, item.value, players[index]);*/
-
-            /*   log.Info(string.Format("BEFORE player: {3} type: {0} val: {1} currentVal: {2}", item.key, item.value,
-                players[index].Statistic.ContainsKey(resutl) ? players[index].Statistic[resutl].ToString() : "Ключа нет"
-                , players[index].type));*/
-            /*    log.Info(string.Format("BEFORE player: {3} type: {0} val: {1} currentVal: {2}", item.key, item.value,
-              players[index].Statistic.ContainsKey(resutl) ? players[index].Statistic[resutl].ToString() : "Ключа нет"
-              , players[index].type));*/
-
-            //  log.Info("playerName:" + playerName + ": " + Statistic[resutl]);
-
-        }
-
-        #endregion
 
         #region Methods switch
 
@@ -879,7 +737,6 @@ namespace Arcomage.Core
             {
                 if (additionaStatus == CurrentAction.PlayerMustDropCard)
                 {
-                   // UpdateStatistic();
                     Status = CurrentAction.GetPlayerCard;
                     information["CurrentAction"] = CurrentAction.WaitHumanMove.ToString();
                     SendGameNotification(information);
@@ -887,6 +744,7 @@ namespace Arcomage.Core
                 else
                 {
                     Status = CurrentAction.UpdateStatHuman;
+                    players[currentPlayer].UpdateParams();
                 }
 
             }
@@ -942,8 +800,8 @@ namespace Arcomage.Core
                 {
                     if (Status != CurrentAction.PlayAgain)
                     {
-                        if (additionaStatus != CurrentAction.PlayerMustDropCard)
-                            players[currentPlayer].UpdateParams();
+                        //if (additionaStatus != CurrentAction.PlayerMustDropCard)
+                          //  players[currentPlayer].UpdateParams();
 
                         Status = CurrentAction.HumanUseCard;
                     
@@ -1052,420 +910,6 @@ namespace Arcomage.Core
         }
 
         #endregion
-
-
-        #region Special Card Methods
-
-        private void IfElseWithValue(Specifications spec, int value1, int value2)
-        {
-           /* List<CardParams> result = new List<CardParams>();
-            int index = currentPlayer == 1 ? 0 : 1;
-            if (players[currentPlayer].PlayerParams[spec] < players[index].PlayerParams[spec])
-            {
-                result.Add(new CardParams()
-                {
-                    card = null,
-                    id = 0,
-                    key = spec,
-                    value = value1
-                }); 
-               
-            }
-            else
-            {
-                result.Add(new CardParams()
-                {
-                    card = null,
-                    id = 0,
-                    key = spec,
-                    value = value2
-                }); 
-            }
-
-            ApplyCardParamsToPlayer(result);*/
-        }
-
-        private void IfElseWithValue(Specifications spec, int value1, int value2, int equalVal)
-        {
-            List<CardParams> result = new List<CardParams>();
-
-          /*  if (players[currentPlayer].Statistic[spec] == equalVal)
-            {
-                result.Add(new CardParams()
-                {
-                    card = null,
-                    id = 0,
-                    key = spec,
-                    value = value1
-                });
-
-            }
-            else
-            {
-                result.Add(new CardParams()
-                {
-                    card = null,
-                    id = 0,
-                    key = spec,
-                    value = value2
-                });
-            }
-
-            ApplyCardParamsToPlayer(result);*/
-        }
-
-        private void Card5( )
-        {
-            IfElseWithValue(Specifications.PlayerColliery,2,1);
-        }
-
-      
-
-        private void Card8()
-        {
-            //If quarry < enemy quarry, quarry = enemy quarry
-
-            Specifications spec = Specifications.PlayerColliery;
-        
-
-           /* int index = currentPlayer == 1 ? 0 : 1;
-            if (players[currentPlayer].Statistic[spec] < players[index].Statistic[spec])
-                players[currentPlayer].Statistic[spec] = players[index].Statistic[spec];*/
-          
-        }
-
-
-        private void Card31()
-        {
-            Specifications spec = Specifications.PlayerWall;
-
-            //  Player(s) w/lowest Wall are -1 Dungeon -2 Tower
-
-            List<CardParams> result = new List<CardParams>();
-
-          /*  int index = currentPlayer == 1 ? 0 : 1;
-            if (players[currentPlayer].Statistic[spec] < players[index].Statistic[spec])
-            {
-                result.Add(new CardParams()
-                {
-                    card = null,
-                    id = 0,
-                    key = Specifications.PlayerMenagerie,
-                    value = -1
-                });
-
-                result.Add(new CardParams()
-                {
-                    card = null,
-                    id = 0,
-                    key = Specifications.PlayerTower,
-                    value = -2
-                });
-            }
-            else if (players[currentPlayer].Statistic[spec] > players[index].Statistic[spec])
-            {
-                result.Add(new CardParams()
-                {
-                    card = null,
-                    id = 0,
-                    key = Specifications.EnemyMenagerie,
-                    value = -1
-                });
-
-                result.Add(new CardParams()
-                {
-                    card = null,
-                    id = 0,
-                    key = Specifications.EnemyTower,
-                    value = -2
-                });
-
-            }
-
-            ApplyCardParamsToPlayer(result);*/
-        }
-
-
-        private void Card32()
-        {
-         //   +6 Recruits +6 Wall . if dungeon < enemy dungeon +1 Dungeon
-
-            Specifications spec = Specifications.PlayerMenagerie;
-
-            List<CardParams> result = new List<CardParams>();
-
-          /*  result.Add(new CardParams()
-            {
-                card = null,
-                id = 0,
-                key = Specifications.PlayerAnimals,
-                value = 6
-            });
-
-            result.Add(new CardParams()
-            {
-                card = null,
-                id = 0,
-                key = Specifications.PlayerWall,
-                value = 6
-            });
-
-            int index = currentPlayer == 1 ? 0 : 1;
-            if (players[currentPlayer].Statistic[spec] < players[index].Statistic[spec])
-            {
-
-                result.Add(new CardParams()
-                {
-                    card = null,
-                    id = 0,
-                    key = Specifications.PlayerMenagerie,
-                    value = 1
-                });
-            }
-
-            ApplyCardParamsToPlayer(result);*/
-        }
-
-        private void Card34()
-        {
-          //  Switch your Wall with enemy Wall
-            Attributes spec = Attributes.Wall;
-            int index = currentPlayer == 1 ? 0 : 1;
-            int tempVal = players[currentPlayer].PlayerParams[spec];
-
-            players[currentPlayer].PlayerParams[spec] = players[index].PlayerParams[spec];
-            players[index].PlayerParams[spec] = tempVal;
-        }
-
-
-        private void Card48()
-        {
-           // All players magic equals the highest player's magic 
-            Attributes spec = Attributes.DiamondMines;
-            int index = currentPlayer == 1 ? 0 : 1;
-
-            if (players[currentPlayer].PlayerParams[spec] < players[index].PlayerParams[spec])
-            {
-                players[currentPlayer].PlayerParams[spec] = players[index].PlayerParams[spec];
-            }
-            else 
-            {
-                players[index].PlayerParams[spec] = players[currentPlayer].PlayerParams[spec];
-            }
-           
-        }
-
-        private void Card64()
-        {
-           // if Tower < Enemy Tower +2 Tower else +1 Tower
-            IfElseWithValue(Specifications.PlayerTower, 2, 1);
-        }
-
-        private void Card67()
-        {
-          //  if Tower > Enemy Wall 8 Damage to Enemy Tower else 8 Damage
-
-            int index = currentPlayer == 1 ? 0 : 1;
-            List<CardParams> result = new List<CardParams>();
-          /*  if (players[currentPlayer].Statistic[Specifications.PlayerTower] > players[index].Statistic[Specifications.PlayerWall])
-            {
-            
-               result.Add(new CardParams()
-               {
-                   card = null,
-                   id =0,
-                   key = Specifications.EnemyTower,
-                   value = -8
-               }); 
-              
-            }
-            else
-            {
-                result.Add(new CardParams()
-                {
-                    card = null,
-                    id = 0,
-                    key = Specifications.EnemyDirectDamage,
-                    value = -8
-                }); 
-            }
-
-             ApplyCardParamsToPlayer(result);*/
-
-        }
-
-        private void Card87()
-        {
-           // if Enemy Wall = 0 10 Damage else 6 Damage
-            Specifications spec = Specifications.PlayerWall;
-            List<CardParams> result = new List<CardParams>();
-
-            int index = currentPlayer == 1 ? 0 : 1;
-           /* if (players[index].Statistic[spec] == 0)
-            {
-                 result.Add(new CardParams()
-               {
-                   card = null,
-                   id =0,
-                   key = Specifications.EnemyDirectDamage,
-                   value = 10
-               }); 
-            }
-            else
-            {
-                result.Add(new CardParams()
-                {
-                    card = null,
-                    id = 0,
-                    key = Specifications.EnemyDirectDamage,
-                    value = 6
-                }); 
-            }
-
-            ApplyCardParamsToPlayer(result);*/
-
-        }
-
-        private void Card89()
-        {
-            //if Enemy Wall > 0 10 Damage else 7 Damage
-
-            Specifications spec = Specifications.PlayerWall;
-            List<CardParams> result = new List<CardParams>();
-
-            int index = currentPlayer == 1 ? 0 : 1;
-          /*  if (players[index].Statistic[spec] > 0)
-            {
-                result.Add(new CardParams()
-                {
-                    card = null,
-                    id = 0,
-                    key = Specifications.EnemyDirectDamage,
-                    value = 10
-                });
-            }
-            else
-            {
-                result.Add(new CardParams()
-                {
-                    card = null,
-                    id = 0,
-                    key = Specifications.EnemyDirectDamage,
-                    value = 7
-                });
-            }
-
-            ApplyCardParamsToPlayer(result);*/
-        }
-
-        private void Card90()
-        {
-            //if Magic > Enemy Magic 12 Damage else 8 Damage
-
-            Specifications spec = Specifications.PlayerDiamondMines;
-            List<CardParams> result = new List<CardParams>();
-         
-           /* int index = currentPlayer == 1 ? 0 : 1;
-            if (players[currentPlayer].Statistic[spec] > players[index].Statistic[spec])
-            {
-                result.Add(new CardParams()
-                {
-                    card = null,
-                    id = 0,
-                    key = Specifications.EnemyDirectDamage,
-                    value = 12
-                });
-            }
-            else 
-            {
-                result.Add(new CardParams()
-                {
-                    card = null,
-                    id = 0,
-                    key = Specifications.EnemyDirectDamage,
-                    value = 8
-                });
-            }
-
-            ApplyCardParamsToPlayer(result);*/
-        }
-
-        private void Card91()
-        {
-           // if Wall > Enemy Wall 6 Damage to Enemy Tower else 6 Damage 
-
-            Specifications spec = Specifications.PlayerWall;
-            List<CardParams> result = new List<CardParams>();
-
-          /*  int index = currentPlayer == 1 ? 0 : 1;
-            if (players[currentPlayer].Statistic[spec] > players[index].Statistic[spec])
-            {
-                result.Add(new CardParams()
-                {
-                    card = null,
-                    id = 0,
-                    key = Specifications.EnemyTower,
-                    value = -6
-                });
-            }
-            else
-            {
-                result.Add(new CardParams()
-                {
-                    card = null,
-                    id = 0,
-                    key = Specifications.EnemyDirectDamage,
-                    value = 6
-                });
-            }
-
-            ApplyCardParamsToPlayer(result);*/
-
-        }
-
-
-        private void Card98()
-        {
-            //if Wall > Enemy Wall 3 Damage else 2 Damage
-
-            Specifications spec = Specifications.PlayerWall;
-            List<CardParams> result = new List<CardParams>();
-
-          /*  int index = currentPlayer == 1 ? 0 : 1;
-            if (players[currentPlayer].Statistic[spec] > players[index].Statistic[spec])
-            {
-                result.Add(new CardParams()
-                {
-                    card = null,
-                    id = 0,
-                    key = Specifications.EnemyDirectDamage,
-                    value = 3
-                });
-            }
-            else
-            {
-                result.Add(new CardParams()
-                {
-                    card = null,
-                    id = 0,
-                    key = Specifications.EnemyDirectDamage,
-                    value = 2
-                });
-            }*/
-
-          //  ApplyCardParamsToPlayer(result);
-        }
-
-
-        private void CardWithDiscard()
-        {
-            //Draw 1 card Discard 1 card Play again
-            additionaStatus = CurrentAction.PlayerMustDropCard;
-        }
-
-        #endregion
-
-
 
     }
 }

@@ -16,6 +16,7 @@ namespace Arcomage.Entity
         public Price price;
         public List<CardAttributes> cardAttributes;
         public bool playAgain = false;
+        public bool discard = false;
 
         public Card()
         {
