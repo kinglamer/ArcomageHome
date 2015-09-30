@@ -13,22 +13,13 @@ namespace Arcomage.Core.SpecialCard
 
             // if Enemy Wall = 0 10 Damage else 6 Damage
 
-            if (enemy.PlayerParams[Attributes.Wall] == 0)
-            {
-                enemy.PlayerParams[Attributes.Tower] -= 10;
-                if (enemy.PlayerParams[Attributes.Tower] < 0)
-                    enemy.PlayerParams[Attributes.Tower] = 0;
-            }
-            else
-            {
-                int remaingDamage = enemy.PlayerParams[Attributes.Wall] - 6;
-                if (remaingDamage < 0)
-                    enemy.PlayerParams[Attributes.Wall] = 0;
+            int value = enemy.PlayerParams[Attributes.Wall] == 0 ? 10: 6;
+         
+            CardAttributes item = new CardAttributes();
+            item.attributes = Attributes.DirectDamage;
+            item.value = value;
 
-                enemy.PlayerParams[Attributes.Tower] += remaingDamage;
-                if (enemy.PlayerParams[Attributes.Tower] < 0)
-                    enemy.PlayerParams[Attributes.Tower] = 0;
-            }
+            ApplyDirectDamage(item, enemy);
 
         }
     }

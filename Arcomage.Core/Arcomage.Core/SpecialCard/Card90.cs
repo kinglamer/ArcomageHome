@@ -14,19 +14,13 @@ namespace Arcomage.Core.SpecialCard
 
             //if Magic > Enemy Magic 12 Damage else 8 Damage
 
-            int damage = 8;
-            if (playerUsed.PlayerParams[Attributes.Diamonds] > enemy.PlayerParams[Attributes.Diamonds])
-            {
-                damage = 12;
-            }
+            int value = playerUsed.PlayerParams[Attributes.Diamonds] > enemy.PlayerParams[Attributes.Diamonds] ? 12 : 8;
 
-            int remaingDamage = enemy.PlayerParams[Attributes.Wall] - damage;
-            if (remaingDamage < 0)
-                enemy.PlayerParams[Attributes.Wall] = 0;
+            CardAttributes item = new CardAttributes();
+            item.attributes = Attributes.DirectDamage;
+            item.value = value;
 
-            enemy.PlayerParams[Attributes.Tower] += remaingDamage;
-            if (enemy.PlayerParams[Attributes.Tower] < 0)
-                enemy.PlayerParams[Attributes.Tower] = 0;
+            ApplyDirectDamage(item, enemy);
 
         }
     }

@@ -1,6 +1,35 @@
-﻿namespace Arcomage.Entity
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Arcomage.Entity
 {
-    public enum Specifications 
+    public enum TypePlayer
+    {
+        AI, Human
+    }
+
+    public enum Attributes
+    {
+        Tower,
+        Wall,
+        DiamondMines,
+        Menagerie,
+        Colliery,
+        Diamonds,
+        Animals,
+        Rocks,
+        DirectDamage
+    }
+
+    public enum Target
+    {
+        Player,
+        Enemy
+    }
+
+    public enum Specifications
     {
         NotSet = 0,
         PlayerTower,
@@ -29,4 +58,6 @@
         EnemyDirectDamage,
         PlayerDirectDamage
     }
+
+
 }

@@ -134,17 +134,7 @@ namespace Arcomage.Entity
 
                 if (item.attributes == Attributes.DirectDamage)
                 {
-                    item.value = item.value > 0 ? -item.value : item.value; //делаю число отрицательным, необходимо в базе переделать все эти значения на отрицательные
-                    int remainingDamage = target.PlayerParams[Attributes.Wall] + item.value;
-
-                    target.PlayerParams[Attributes.Wall] = getNewValue(target.PlayerParams[Attributes.Wall], item);
-
-                    if (remainingDamage < 0)
-                    {
-                        CardAttributes newItem = new CardAttributes() {attributes = Attributes.Tower, value = remainingDamage};
-
-                        target.PlayerParams[Attributes.Tower] = getNewValue(target.PlayerParams[Attributes.Tower], newItem);
-                    }
+                    ApplyDirectDamage(item, target);
 
                     continue;
                 }
@@ -153,6 +143,28 @@ namespace Arcomage.Entity
 
             }
         }
+
+        public static void ApplyDirectDamage(CardAttributes item, Player target)
+        {
+            item.value = item.value > 0 ? -item.value : item.value;
+                //делаю число отрицательным, необходимо в базе переделать все эти значения на отрицательные
+            int remainingDamage = target.PlayerParams[Attributes.Wall] + item.value;
+
+            target.PlayerParams[Attributes.Wall] = getNewValue(target.PlayerParams[Attributes.Wall], item);
+
+            if (remainingDamage < 0)
+            {
+                CardAttributes newItem = new CardAttributes() {attributes = Attributes.Tower, value = remainingDamage};
+
+                target.PlayerParams[Attributes.Tower] = getNewValue(target.PlayerParams[Attributes.Tower], newItem);
+            }
+        }
+
+        public void ApplyDirectDamage(Player playerUsed, Player enemy, int value)
+        {
+            
+        }
+         
 
         public void copyParams(Card card)
         {
@@ -175,39 +187,6 @@ namespace Arcomage.Entity
                 }
             }
             return newValue;
-        }
-
-
-        private void MinusValue(Attributes spec, int value, Player playerParam)
-        {
-            if (playerParam.PlayerParams[spec] - value <= 0)
-            {
-                playerParam.PlayerParams[spec] = 0;
-            }
-            else
-            {
-                playerParam.PlayerParams[spec] -= value;
-            }
-
-        }
-
-        private void PlusValue(Attributes specifications, int value, Player playerParam)
-        {
-            int minValue = 0;
-            if (specifications == Attributes.DiamondMines || specifications == Attributes.Colliery ||
-                specifications == Attributes.Menagerie)
-            {
-                minValue = 1;
-            }
-
-            if (playerParam.PlayerParams[specifications] + value <= minValue)
-            {
-                playerParam.PlayerParams[specifications] = minValue;
-            }
-            else
-            {
-                playerParam.PlayerParams[specifications] += value;
-            }
         }
     }
 

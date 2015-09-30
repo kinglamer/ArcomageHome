@@ -1,29 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Arcomage.Entity
+﻿namespace Arcomage.Entity
 {
-    public enum Attributes{
-        Tower,
-        Wall,
-        DiamondMines,
-        Menagerie,
-        Colliery,
-        Diamonds,
-        Animals,
-        Rocks,
-        DirectDamage
-     }
-
-    public enum Target {
-        Player,
-        Enemy
-       }
-
-
-
+    
     public class CardAttributes
     {
         public Attributes attributes { get; set; }    

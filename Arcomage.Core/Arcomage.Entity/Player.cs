@@ -5,10 +5,7 @@ using Arcomage.Entity.Interfaces;
 
 namespace Arcomage.Entity
 {
-    public enum TypePlayer
-    {
-        AI, Human
-    }
+  
 
     public class Player
     {
@@ -38,9 +35,6 @@ namespace Arcomage.Entity
             PlayerParams[Attributes.Diamonds] += PlayerParams[Attributes.DiamondMines];
             PlayerParams[Attributes.Rocks] += PlayerParams[Attributes.Colliery];
             PlayerParams[Attributes.Animals] += PlayerParams[Attributes.Menagerie];
-            Debug.Print("UpdateParams");
-
-           
         }
 
     }

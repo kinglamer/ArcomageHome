@@ -15,37 +15,6 @@ using Newtonsoft.Json;
 namespace Arcomage.Core
 {
 
-
-    public enum SelectPlayer
-    {
-        First = 0,
-        Second,
-        None
-    }
-
-    public enum CurrentAction
-    {
-        None, //Произошел первый запуск
-        StartGame, //Начало игры
-        GetPlayerCard, //Получить карты для игрока
-        WaitHumanMove, //Ожидание хода игрока
-        HumanUseCard, //Игрок использовал карту
-        HumanCanPlayAgain, //Игрок может сходить еще раз
-        AnimateHumanMove, //Анимация использования карты игрока
-        UpdateStatHuman, //Обновление статистики игрока
-        UpdateStatAI, //Обновление статистики компьютера
-        EndHumanMove, //Завершение хода игрока, берутся еще карты
-        PlayerMustDropCard, //Статус, что игрок обязан сбросить карту
-        PlayAgain, //Флаг того, что нужно сыграть еще одну карту
-        AIUseCard, //Флаг того, что компьютер завершил использование всех карт (появилось в следствие того, что есть карты, которые заставляют брать еще карту)
-        AIMoveIsAnimated, //Анимация стола противника
-        AIUseCardAnimation, //Анимация использование хода противника
-        EndAIMove, //Завершение хода противника
-        EndGame, //Завершение игры
-        PassStroke, //пропуск хода
-        GetAICard //компьютер берет следующую добавочную карту
-    }
-
    
     public delegate void EventMethod(Dictionary<string, object> info);
 
@@ -102,8 +71,6 @@ namespace Arcomage.Core
         }
 
         protected readonly ILog log;
-      //  protected readonly IStartParams startParams;
-
         private readonly Dictionary<Attributes, int> WinParams;
         private readonly Dictionary<Attributes, int> LoseParams;
         private const string url = "http://arcomage.somee.com/ArcoServer.svc?wsdl"; //"http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";

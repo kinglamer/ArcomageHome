@@ -3,12 +3,7 @@ using Arcomage.Entity;
 
 namespace Arcomage.Core
 {
-    public enum GameEvent
-    {
-        None,
-        Used,
-        Droped
-    }
+
 
     public class GameCardLog
     {
