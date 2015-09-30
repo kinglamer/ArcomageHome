@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Arcomage.Entity;
+using Arcomage.Entity.Cards;
 
 namespace Arcomage.DAL
 {

@@ -10,6 +10,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Arcomage.DAL;
 using Arcomage.Entity;
+using Arcomage.Entity.Cards;
 
 namespace Arcomage.Server
 {

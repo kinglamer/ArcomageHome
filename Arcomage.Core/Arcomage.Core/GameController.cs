@@ -8,6 +8,7 @@ using Arcomage.Core.Interfaces;
 using Arcomage.Core.Interfaces.Impl;
 using Arcomage.Core.SpecialCard;
 using Arcomage.Entity;
+using Arcomage.Entity.Cards;
 using Arcomage.Entity.Interfaces;
 using Newtonsoft.Json;
 
@@ -164,9 +165,6 @@ namespace Arcomage.Core
         public List<Card> GetAIUsedCard()
         {
             List<Card> returnVal = new List<Card>();
-
-
-
             var result = logCard.Where(x=>x.player.type == TypePlayer.AI && x.move == currentMove);
 
             foreach (var item in result)
@@ -180,18 +178,12 @@ namespace Arcomage.Core
         public void SendGameNotification(Dictionary<string, object> information)
         {
             if (information == null || information.Count == 0  || !information.ContainsKey("CurrentAction"))
-            {
                 log.Error("Нет информации о событие");
-            }
 
             if (eventHandlers.ContainsKey(Status))
-            {
                 eventHandlers[Status](information);
-            }
             else
-            {
                 log.Error("Cтатус " + Status + " не описан в коде");
-            }
         }
 
        
@@ -200,9 +192,7 @@ namespace Arcomage.Core
         {
             
             if (selectPlayer == SelectPlayer.None)
-            {
                 selectPlayer = (SelectPlayer)currentPlayer;
-            }
 
             int i = (int) selectPlayer;
 
@@ -211,9 +201,9 @@ namespace Arcomage.Core
                 log.Info("GetPlayerParams type: " + players[i].type);
                 return players[i].PlayerParams;
             }
-            else
-            {
-                 Dictionary<Attributes, int> DefaultParams = new Dictionary<Attributes, int>();
+           
+
+            Dictionary<Attributes, int> DefaultParams = new Dictionary<Attributes, int>();
                  DefaultParams = new Dictionary<Attributes, int>();
                  DefaultParams.Add(Attributes.Wall, 5);
                  DefaultParams.Add(Attributes.Tower, 10);
@@ -226,8 +216,8 @@ namespace Arcomage.Core
                  DefaultParams.Add(Attributes.Diamonds, 5);
                  DefaultParams.Add(Attributes.Animals, 5);
 
-                return DefaultParams;
-            }
+            return DefaultParams;
+            
         }
 
 
@@ -246,19 +236,9 @@ namespace Arcomage.Core
                 return;
             }
 
-            IPlayersCreator creator = null;
-             
-            if (tp == TypePlayer.AI)
-            {
-                creator = new CreatorAi();
-            }
-            else
-            {
-                creator = new CreatorPlayer();
-            }
-            players.Add(creator.FactoryMethod(name, startParams));
+            IPlayersCreator creator = tp == TypePlayer.AI ? (IPlayersCreator) new CreatorAi() : new CreatorPlayer();
           
-            
+            players.Add(creator.FactoryMethod(name, startParams));
         
         }
 
@@ -266,9 +246,7 @@ namespace Arcomage.Core
         public List<Card> GetPlayersCard(SelectPlayer selectPlayer = SelectPlayer.None)
         {
             if (selectPlayer == SelectPlayer.None)
-            {
                 selectPlayer = (SelectPlayer)currentPlayer;
-            }
 
             int i = (int)selectPlayer;
 
@@ -277,17 +255,11 @@ namespace Arcomage.Core
                 log.Info("GetPlayerParams type: " + players[i].type);
                 return players[i].Cards;
             }
-            else
-            {
-                return new List<Card>();
-            }
+          
+            return new List<Card>();
         }
 
-
-       
-
-
-        #region Can Use Card 
+        
         /// <summary>
         /// Проверка хватает ли ресурсов для использования карты
         /// </summary>
@@ -305,7 +277,6 @@ namespace Arcomage.Core
             return IsCanUseCard(GetCardById(id, out index).price);
         }
 
-        #endregion
 
         #endregion
 
@@ -418,16 +389,16 @@ namespace Arcomage.Core
             {
                 log.Info("Player: " + players[currentPlayer].playerName + " use card: " + players[currentPlayer].Cards[index].name);
 
-                 int Ememyindex = currentPlayer == 1 ? 0 : 1;
+                int Enemyindex = currentPlayer == 1 ? 0 : 1;
                 //если карта не имеет специального обработчика, тогда используем как обычно
                 if (!specialCardHandlers.ContainsKey(id))
                 {
-                    card.Apply(players[currentPlayer], players[Ememyindex]);
+                    card.Apply(players[currentPlayer], players[Enemyindex]);
                 }
                 else //иначе вызываем специальный обработчик и потом отнимаем стоимость карты
                 {
                     specialCardHandlers[id].copyParams(card);
-                    specialCardHandlers[id].Apply(players[currentPlayer], players[Ememyindex]);
+                    specialCardHandlers[id].Apply(players[currentPlayer], players[Enemyindex]);
 
                     if (specialCardHandlers[id].discard)
                         additionaStatus = CurrentAction.PlayerMustDropCard;
@@ -444,12 +415,9 @@ namespace Arcomage.Core
                 players[currentPlayer].Cards.RemoveAt(index);
                 return true;
             }
-            else
-            {
-                log.Info("Player: " + players[currentPlayer].playerName + " can't use card: " + players[currentPlayer].Cards[index].name);
-            }
-
-
+           
+            
+            log.Info("Player: " + players[currentPlayer].playerName + " can't use card: " + players[currentPlayer].Cards[index].name);
             return false;
         }
 

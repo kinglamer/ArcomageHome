@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using Arcomage.Entity;
+using Arcomage.Entity.Cards;
 
 namespace Arcomage.Core.SpecialCard
 {

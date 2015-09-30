@@ -6,6 +6,7 @@ using System.Linq;
 using Arcomage.Common;
 using Arcomage.DAL;
 using Arcomage.Entity;
+using Arcomage.Entity.Cards;
 using Newtonsoft.Json;
 
 namespace Arcomage.Server

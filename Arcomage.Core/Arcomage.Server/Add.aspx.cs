@@ -2,6 +2,7 @@
 using Arcomage.Entity;
 using System;
 using System.Collections.Generic;
+using Arcomage.Entity.Cards;
 
 namespace Arcomage.Server
 {

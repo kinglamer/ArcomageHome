@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace Arcomage.Entity
+namespace Arcomage.Entity.Cards
 {
     public class CardParams 
     {

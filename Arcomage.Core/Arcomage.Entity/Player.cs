@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Arcomage.Entity.Cards;
 using Arcomage.Entity.Interfaces;
 
 namespace Arcomage.Entity

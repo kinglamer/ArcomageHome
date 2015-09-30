@@ -7,6 +7,7 @@ using Arcomage.Core;
 using Arcomage.Core.ArcomageService;
 using Arcomage.Core.AlternativeServers;
 using Arcomage.Entity;
+using Arcomage.Entity.Cards;
 using Arcomage.Tests.Moq;
 using Arcomage.Tests.MoqStartParams;
 using Newtonsoft.Json;

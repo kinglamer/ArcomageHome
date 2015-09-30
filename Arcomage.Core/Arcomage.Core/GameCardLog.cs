@@ -1,5 +1,6 @@
 ﻿using Arcomage.Core.Interfaces;
 using Arcomage.Entity;
+using Arcomage.Entity.Cards;
 
 namespace Arcomage.Core
 {

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Arcomage.Core.ArcomageService;
 using Arcomage.Entity;
+using Arcomage.Entity.Cards;
 using Newtonsoft.Json;
 
 namespace Arcomage.Tests.Moq

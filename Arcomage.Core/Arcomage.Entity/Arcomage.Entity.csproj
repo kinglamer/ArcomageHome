@@ -37,13 +37,13 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Card.cs" />
-    <Compile Include="CardAttributes.cs" />
-    <Compile Include="CardParams.cs" />
+    <Compile Include="Cards\Card.cs" />
+    <Compile Include="Cards\CardAttributes.cs" />
+    <Compile Include="Cards\CardParams.cs" />
+    <Compile Include="Cards\Price.cs" />
     <Compile Include="EnumCatalog.cs" />
     <Compile Include="Interfaces\IStartParams.cs" />
     <Compile Include="Player.cs" />
-    <Compile Include="Price.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

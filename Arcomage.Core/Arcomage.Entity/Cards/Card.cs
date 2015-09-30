@@ -1,8 +1,8 @@
-п»їusing System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace Arcomage.Entity
+namespace Arcomage.Entity.Cards
 {
     public class Card 
     {
@@ -24,7 +24,7 @@ namespace Arcomage.Entity
         }
 
 
-        //TODO: РёР·Р±Р°РІРёС‚СЊСЃСЏ РІ РґР°Р»СЊРЅРµР№С€РµРј РѕС‚ РґР°РЅРЅРѕР№ РїРµСЂРµРёРЅРёС†РёР°Р»РёР·Р°С†РёРё
+        //TODO: избавиться в дальнейшем от данной переинициализации
         public void Init()
         {
             if (cardParams != null && cardParams.Count > 0 && cardAttributes == null)
@@ -147,7 +147,7 @@ namespace Arcomage.Entity
         public static void ApplyDirectDamage(CardAttributes item, Player target)
         {
             item.value = item.value > 0 ? -item.value : item.value;
-                //РґРµР»Р°СЋ С‡РёСЃР»Рѕ РѕС‚СЂРёС†Р°С‚РµР»СЊРЅС‹Рј, РЅРµРѕР±С…РѕРґРёРјРѕ РІ Р±Р°Р·Рµ РїРµСЂРµРґРµР»Р°С‚СЊ РІСЃРµ СЌС‚Рё Р·РЅР°С‡РµРЅРёСЏ РЅР° РѕС‚СЂРёС†Р°С‚РµР»СЊРЅС‹Рµ
+                //делаю число отрицательным, необходимо в базе переделать все эти значения на отрицательные
             int remainingDamage = target.PlayerParams[Attributes.Wall] + item.value;
 
             target.PlayerParams[Attributes.Wall] = getNewValue(target.PlayerParams[Attributes.Wall], item);
