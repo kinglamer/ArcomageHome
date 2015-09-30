@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
-using Arcomage.Common;
 using Arcomage.Core.ArcomageService;
+using Arcomage.Core.Common;
 using Arcomage.Core.Interfaces;
 using Arcomage.Core.Interfaces.Impl;
 using Arcomage.Core.SpecialCard;

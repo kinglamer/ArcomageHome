@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System;
 using System.Text.RegularExpressions;
 
-namespace Arcomage.Core
+namespace Arcomage.Core.Common
 {
     public class ParseDescription
     {

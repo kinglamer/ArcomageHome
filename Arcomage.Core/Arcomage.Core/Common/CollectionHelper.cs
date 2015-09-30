@@ -1,8 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-
-namespace Arcomage.Common
+namespace Arcomage.Core.Common
 {
     public static class CollectionHelper
     {

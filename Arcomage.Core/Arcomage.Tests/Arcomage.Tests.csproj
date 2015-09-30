@@ -98,10 +98,6 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Arcomage.Common\Arcomage.Common.csproj">
-      <Project>{23650D10-2AB9-4068-93E8-ACE0C0729926}</Project>
-      <Name>Arcomage.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Arcomage.Core\Arcomage.Core.csproj">
       <Project>{A08C490A-7C60-4FDA-B452-A7136A039FB9}</Project>
       <Name>Arcomage.Core</Name>

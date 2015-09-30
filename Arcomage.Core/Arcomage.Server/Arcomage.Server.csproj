@@ -146,9 +146,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Arcomage.Common\Arcomage.Common.csproj">
-      <Project>{23650d10-2ab9-4068-93e8-ace0c0729926}</Project>
-      <Name>Arcomage.Common</Name>
+    <ProjectReference Include="..\Arcomage.Core\Arcomage.Core.csproj">
+      <Project>{A08C490A-7C60-4FDA-B452-A7136A039FB9}</Project>
+      <Name>Arcomage.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Arcomage.DAL\Arcomage.DAL.csproj">
       <Project>{41A48EE5-32B4-413F-98A0-8C4FA09CCC41}</Project>

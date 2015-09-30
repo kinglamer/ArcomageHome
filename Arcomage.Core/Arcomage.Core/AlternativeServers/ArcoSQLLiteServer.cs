@@ -4,11 +4,11 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using Arcomage.Core.ArcomageService;
+using Arcomage.Core.Common;
 using Arcomage.Entity;
 using Arcomage.Entity.Cards;
 using Newtonsoft.Json;
 using SQLite;
-using Arcomage.Common;
 
 namespace Arcomage.Core.AlternativeServers
 {

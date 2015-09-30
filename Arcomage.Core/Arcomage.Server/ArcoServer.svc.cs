@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using Arcomage.Common;
+using Arcomage.Core.Common;
 using Arcomage.DAL;
 using Arcomage.Entity;
 using Arcomage.Entity.Cards;

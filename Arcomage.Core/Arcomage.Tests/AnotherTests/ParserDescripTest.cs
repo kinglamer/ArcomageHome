@@ -4,6 +4,7 @@ using System.Linq;
 using Arcomage.Core;
 using Arcomage.Core.AlternativeServers;
 using Arcomage.Core.ArcomageService;
+using Arcomage.Core.Common;
 using Arcomage.Entity.Cards;
 using Newtonsoft.Json;
 using NUnit.Framework;
