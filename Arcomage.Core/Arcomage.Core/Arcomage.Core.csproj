@@ -56,10 +56,7 @@
     <Compile Include="GameController.cs" />
     <Compile Include="GameControllerHelper.cs" />
     <Compile Include="Interfaces\ILog.cs" />
-    <Compile Include="Interfaces\Impl\CreatorAi.cs" />
-    <Compile Include="Interfaces\Impl\CreatorPlayer.cs" />
     <Compile Include="Interfaces\Impl\GameStartParams.cs" />
-    <Compile Include="Interfaces\IPlayersCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\ArcomageService\Reference.cs">
       <AutoGen>True</AutoGen>

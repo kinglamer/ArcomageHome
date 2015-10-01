@@ -133,13 +133,9 @@ namespace Arcomage.Entity.Cards
                    target = enemy;
 
                 if (item.attributes == Attributes.DirectDamage)
-                {
                     ApplyDirectDamage(item, target);
-
-                    continue;
-                }
-
-                target.PlayerParams[item.attributes] = getNewValue(target.PlayerParams[item.attributes], item);
+                else
+                    target.PlayerParams[item.attributes] = getNewValue(target.PlayerParams[item.attributes], item);
 
             }
         }

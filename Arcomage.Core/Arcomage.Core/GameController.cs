@@ -236,9 +236,11 @@ namespace Arcomage.Core
                 return;
             }
 
-            IPlayersCreator creator = tp == TypePlayer.AI ? (IPlayersCreator) new CreatorAi() : new CreatorPlayer();
-          
-            players.Add(creator.FactoryMethod(name, startParams));
+           // IPlayersCreator creator = tp == TypePlayer.AI ? (IPlayersCreator) new CreatorAi() : new CreatorPlayer();
+
+            players.Add(new Player(name, tp, startParams));
+
+           // players.Add(creator.FactoryMethod(name, startParams));
         
         }
 
