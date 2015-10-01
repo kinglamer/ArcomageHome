@@ -1,12 +1,16 @@
 ﻿using System.IO;
-using Arcomage.Core.Foo;
+using Arcomage.Core;
+using Arcomage.Core.Common;
+using Arcomage.Core.Interfaces;
+using Arcomage.Core.AlternativeServers;
+using Arcomage.Core.ArcomageService;
 using UnityEngine;
 using System.Collections;
-using Arcomage.Core;
 using Arcomage.Entity;
+using Arcomage.Entity.Cards;
+using Arcomage.Entity.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
-using Arcomage.Common;
 using AssemblyCSharp;
 using System;
 using Random = UnityEngine.Random;
@@ -61,6 +65,7 @@ public class SceneScript : MonoBehaviour, ILog
 		private object[] myMusic; // declare this as Object array
 		public bool Mute = false;
 		public static Dictionary<SoundTypes, AudioClip> AudioClips;
+        AudioSource audios;
         
 		void Awake ()
 		{
@@ -71,6 +76,7 @@ public class SceneScript : MonoBehaviour, ILog
 //				}
           
 				myMusic = Resources.LoadAll ("Music", typeof(AudioClip));
+                audios = GetComponent<AudioSource>();
 				playRandomMusic ();
 
 				AudioClips = new Dictionary<SoundTypes, AudioClip> ();
@@ -87,20 +93,19 @@ public class SceneScript : MonoBehaviour, ILog
 				AudioClips.Add (SoundTypes.towerwallgain, Resources.Load ("sounds/towerwallgain") as AudioClip);
 				AudioClips.Add (SoundTypes.victory, Resources.Load ("sounds/victory") as AudioClip);
 				AudioClips.Add (SoundTypes.wallup, Resources.Load ("sounds/wall up") as AudioClip);
-            
+
 		}
 
 		private void playRandomMusic ()
 		{
-				audio.clip = myMusic [Random.Range (0, myMusic.Length)] as AudioClip;
-				audio.Play ();
+				audios.clip = myMusic [Random.Range (0, myMusic.Length)] as AudioClip;
+				audios.Play ();
 		}
 
 		void Start ()
 		{
 				LoadTextures ();
 				StartNewGame ();
-               
 		}
 
 		private void LoadTextures ()
@@ -125,7 +130,7 @@ public class SceneScript : MonoBehaviour, ILog
 				GameIsOver = false;
 
                 string filePath = GetStreamingAssetsPath("arcomageDB.db");
-                var newServe = new ArcoLocalServer(filePath);
+                var newServe = new ArcoSQLLiteServer(filePath);
                 Debug.LogWarning("newServe.Path: " + newServe.connectionPath);
                 gm = new GameController(this, newServe);
 
@@ -198,7 +203,7 @@ public class SceneScript : MonoBehaviour, ILog
 				card.GetComponent<DoneCardScript> ().cardCost = costCard.value;
 
 				if (!isAICard) {
-						card.GetComponent<DoneCardScript> ().CardIsActive = gm.IsCanUseCard (myCard.cardParams);
+						card.GetComponent<DoneCardScript> ().CardIsActive = gm.IsCanUseCard (myCard.price);
 				}
 				card.GetComponent<DoneCardScript> ().thisCard = myCard;
 
@@ -299,7 +304,7 @@ public class SceneScript : MonoBehaviour, ILog
 						notify.Add ("ID", cardID);
 						gm.SendGameNotification (notify);
 
-						audio.PlayOneShot (AudioClips [SoundTypes.card]);
+						audios.PlayOneShot (AudioClips [SoundTypes.card]);
 						PlaySecondSound (soundParam);
 
 						cardObject.GetComponent<CardMoover> ().enabled = true;
@@ -380,38 +385,37 @@ public class SceneScript : MonoBehaviour, ILog
 		{
                 
 
-				Dictionary<Specifications,int> humanparam = gm.GetPlayerParams (SelectPlayer.First);
-				Dictionary<Specifications,int> enemyparam = gm.GetPlayerParams (SelectPlayer.Second);
-		
-				gameObject.GetComponent<GUIScript> ().PlayerTower.text = humanparam [Specifications.PlayerTower].ToString ();
-				gameObject.GetComponent<GUIScript> ().PlayerWall.text = humanparam [Specifications.PlayerWall].ToString ();
-				gameObject.GetComponent<GUIScript> ().PlayerDiamonds.text = humanparam [Specifications.PlayerDiamonds].ToString ();
-				gameObject.GetComponent<GUIScript> ().PlayerAnimal.text = humanparam [Specifications.PlayerAnimals].ToString ();
-				gameObject.GetComponent<GUIScript> ().PlayerRock.text = humanparam [Specifications.PlayerRocks].ToString ();
-				gameObject.GetComponent<GUIScript> ().PlayerMine.text = humanparam [Specifications.PlayerColliery].ToString ();
-				gameObject.GetComponent<GUIScript> ().PlayerMagic.text = humanparam [Specifications.PlayerDiamondMines].ToString ();
-				gameObject.GetComponent<GUIScript> ().PlayerMenagerie.text = humanparam [Specifications.PlayerMenagerie].ToString ();
+				Dictionary<Attributes,int> humanparam = gm.GetPlayerParams (SelectPlayer.First);
+				Dictionary<Attributes,int> enemyparam = gm.GetPlayerParams (SelectPlayer.Second);
+                gameObject.GetComponent<GUIScript>().PlayerTower.text = humanparam[Attributes.Tower].ToString();
+				gameObject.GetComponent<GUIScript> ().PlayerWall.text = humanparam [Attributes.Wall].ToString ();
+				gameObject.GetComponent<GUIScript> ().PlayerDiamonds.text = humanparam [Attributes.Diamonds].ToString ();
+                gameObject.GetComponent<GUIScript>().PlayerAnimal.text = humanparam[Attributes.Animals].ToString();
+                gameObject.GetComponent<GUIScript>().PlayerRock.text = humanparam[Attributes.Rocks].ToString();
+				gameObject.GetComponent<GUIScript> ().PlayerMine.text = humanparam [Attributes.Colliery].ToString ();
+				gameObject.GetComponent<GUIScript> ().PlayerMagic.text = humanparam [Attributes.DiamondMines].ToString ();
+				gameObject.GetComponent<GUIScript> ().PlayerMenagerie.text = humanparam [Attributes.Menagerie].ToString ();
 				
-				gameObject.GetComponent<GUIScript> ().EnemyTower.text = enemyparam [Specifications.PlayerTower].ToString ();
-				gameObject.GetComponent<GUIScript> ().EnemyWall.text = enemyparam [Specifications.PlayerWall].ToString ();
-				gameObject.GetComponent<GUIScript> ().EnemyDiamonds.text = enemyparam [Specifications.PlayerDiamonds].ToString ();
-				gameObject.GetComponent<GUIScript> ().EnemyAnimal.text = enemyparam [Specifications.PlayerAnimals].ToString ();
-				gameObject.GetComponent<GUIScript> ().EnemyRock.text = enemyparam [Specifications.PlayerRocks].ToString ();
-				gameObject.GetComponent<GUIScript> ().EnemyMine.text = enemyparam [Specifications.PlayerColliery].ToString ();
-				gameObject.GetComponent<GUIScript> ().EnemyMagic.text = enemyparam [Specifications.PlayerDiamondMines].ToString ();
-				gameObject.GetComponent<GUIScript> ().EnemyMenagerie.text = enemyparam [Specifications.PlayerMenagerie].ToString ();
+				gameObject.GetComponent<GUIScript> ().EnemyTower.text = enemyparam [Attributes.Tower].ToString ();
+				gameObject.GetComponent<GUIScript> ().EnemyWall.text = enemyparam [Attributes.Wall].ToString ();
+				gameObject.GetComponent<GUIScript> ().EnemyDiamonds.text = enemyparam [Attributes.Diamonds].ToString ();
+				gameObject.GetComponent<GUIScript> ().EnemyAnimal.text = enemyparam [Attributes.Animals].ToString ();
+				gameObject.GetComponent<GUIScript> ().EnemyRock.text = enemyparam [Attributes.Rocks].ToString ();
+				gameObject.GetComponent<GUIScript> ().EnemyMine.text = enemyparam [Attributes.Colliery].ToString ();
+				gameObject.GetComponent<GUIScript> ().EnemyMagic.text = enemyparam [Attributes.DiamondMines].ToString ();
+				gameObject.GetComponent<GUIScript> ().EnemyMenagerie.text = enemyparam [Attributes.Menagerie].ToString ();
 				
 				GameObject[] PlayerCards = GameObject.FindGameObjectsWithTag ("Card");
         
 
 				foreach (GameObject card in PlayerCards) {
-						card.GetComponent<DoneCardScript> ().CardIsActive = gm.IsCanUseCard (card.GetComponent<DoneCardScript> ().thisCard.cardParams);
+						card.GetComponent<DoneCardScript> ().CardIsActive = gm.IsCanUseCard (card.GetComponent<DoneCardScript> ().thisCard.price);
 				}
 
-				PlayerTower.GetComponent<BuildingsScript> ().Height = humanparam [Specifications.PlayerTower];
-				EnemyTower.GetComponent<BuildingsScript> ().Height = enemyparam [Specifications.PlayerTower];
-				PlayerWall.GetComponent<BuildingsScript> ().Height = humanparam [Specifications.PlayerWall];
-				EnemyWall.GetComponent<BuildingsScript> ().Height = enemyparam [Specifications.PlayerWall];
+                PlayerTower.GetComponent<BuildingsScript>().Height = humanparam[Attributes.Tower];
+                EnemyTower.GetComponent<BuildingsScript>().Height = enemyparam[Attributes.Tower];
+                PlayerWall.GetComponent<BuildingsScript>().Height = humanparam[Attributes.Wall];
+                EnemyWall.GetComponent<BuildingsScript>().Height = enemyparam[Attributes.Wall];
 
 		}
 
@@ -429,7 +433,7 @@ public class SceneScript : MonoBehaviour, ILog
 		{
         
 
-				if (!audio.isPlaying)
+				if (!audios.isPlaying)
 						playRandomMusic ();
 
 				CurrentAction prev_action = curr;
@@ -444,27 +448,27 @@ public class SceneScript : MonoBehaviour, ILog
 										UpdateGameParameters ();
 										PushCardOnDeck (new Vector3 ());
 										if (gm.additionaStatus == CurrentAction.PlayerMustDropCard) {
-												gameScreenText.guiText.text = "You need to drop a card";
-												gameScreenText.guiText.enabled = true;
+												gameScreenText.GetComponent<GUIText>().text = "You need to drop a card";
+												gameScreenText.GetComponent<GUIText>().enabled = true;
 										}
 								}
 								break;
 						}
 				case CurrentAction.HumanUseCard:
 						{
-								gameScreenText.guiText.enabled = false;
+								gameScreenText.GetComponent<GUIText>().enabled = false;
 								break;
 						}
 				case CurrentAction.PassStroke:
 						{
-								gameScreenText.guiText.enabled = false;
+								gameScreenText.GetComponent<GUIText>().enabled = false;
 								break;
 						}
 				case CurrentAction.PlayerMustDropCard:
 						{
 								PushCardOnDeck (new Vector3 ());
-								gameScreenText.guiText.text = "You need to drop a card";
-								gameScreenText.guiText.enabled = true;
+								gameScreenText.GetComponent<GUIText>().text = "You need to drop a card";
+								gameScreenText.GetComponent<GUIText>().enabled = true;
 								break;
 						}
 				case CurrentAction.UpdateStatHuman:
@@ -484,7 +488,7 @@ public class SceneScript : MonoBehaviour, ILog
 												CreateCard (card, ref vect, true);
 												var soundParam = card.cardParams.LastOrDefault ();
 
-												audio.PlayOneShot (AudioClips [SoundTypes.card]);
+												audios.PlayOneShot (AudioClips [SoundTypes.card]);
 												PlaySecondSound (soundParam);
 
 												x += 5;
@@ -571,7 +575,7 @@ public class SceneScript : MonoBehaviour, ILog
 				}
 
 				if (typeS != SoundTypes.None) {
-						audio.PlayOneShot (SceneScript.AudioClips [typeS], 0.7f);
+						audios.PlayOneShot (SceneScript.AudioClips [typeS], 0.7f);
 				}
 		}
 

@@ -18,8 +18,8 @@ public class CardPassMoover : MonoBehaviour
 				passText = GameObject.Find ("PassText");
 				transform.Translate (Vector3.back * 2f);
 				target = new Vector3 (transform.position.x, -25f, transform.position.z);
-				passText.guiText.text = "PASS";
-				passText.guiText.enabled = true;
+				passText.GetComponent<GUIText>().text = "PASS";
+                passText.GetComponent<GUIText>().enabled = true;
 		}
 	
 		// Update is called once per frame
@@ -33,7 +33,7 @@ public class CardPassMoover : MonoBehaviour
 
 		void OnDisable ()
 		{
-				passText.guiText.enabled = false;
+            passText.GetComponent<GUIText>().enabled = false;
 		}
 
 }
