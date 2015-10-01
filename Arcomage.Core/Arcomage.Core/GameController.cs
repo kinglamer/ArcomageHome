@@ -221,7 +221,7 @@ namespace Arcomage.Core
         }
 
 
-        public void AddPlayer(TypePlayer tp, string name, IStartParams startParams)
+        public void AddPlayer(TypePlayer tp, string name, IStartParams startParams = null)
         {
 
             if (Status == CurrentAction.StartGame)
@@ -237,6 +237,9 @@ namespace Arcomage.Core
             }
 
            // IPlayersCreator creator = tp == TypePlayer.AI ? (IPlayersCreator) new CreatorAi() : new CreatorPlayer();
+
+            if (startParams == null)
+                startParams = new GameStartParams();
 
             players.Add(new Player(name, tp, startParams));
 
