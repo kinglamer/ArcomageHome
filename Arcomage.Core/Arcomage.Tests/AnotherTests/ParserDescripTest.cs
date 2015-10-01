@@ -15,8 +15,6 @@ namespace Arcomage.Tests.AnotherTests
     class ParserDescripTest
     {
 
-        private GameController gm;
-
         [Test]
         public void StringMustBeEqual()
         {

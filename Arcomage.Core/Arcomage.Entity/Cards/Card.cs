@@ -138,6 +138,8 @@ namespace Arcomage.Entity.Cards
                     target.PlayerParams[item.attributes] = getNewValue(target.PlayerParams[item.attributes], item);
 
             }
+
+            playerUsed.PlayerParams[price.attributes] -= price.value;
         }
 
         public static void ApplyDirectDamage(CardAttributes item, Player target)
@@ -155,12 +157,6 @@ namespace Arcomage.Entity.Cards
                 target.PlayerParams[Attributes.Tower] = getNewValue(target.PlayerParams[Attributes.Tower], newItem);
             }
         }
-
-        public void ApplyDirectDamage(Player playerUsed, Player enemy, int value)
-        {
-            
-        }
-         
 
         public void copyParams(Card card)
         {
