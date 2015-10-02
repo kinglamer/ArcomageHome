@@ -96,11 +96,8 @@ namespace Arcomage.Core
 
         public GameController(ILog _log, IArcoServer server = null)
         {
-           // if (_startParams == null)
-             //   _startParams = new GameStartParams();
-          //  startParams = _startParams;
 
-            MaxCard = 6;//startParams.MaxPlayerCard;
+            MaxCard = 6;
             Status = CurrentAction.None;
             log = _log;
             LoseParams = GameControllerHelper.GetLoseParams();
@@ -108,13 +105,9 @@ namespace Arcomage.Core
             players = new List<Player>();
            
             if (server == null)
-            {
                 host = new ArcoServerClient(new BasicHttpBinding(), new EndpointAddress(url));
-            }
             else
-            {
                 host = server;
-            }
 
             //Устанавливаем соответствие между методом и статусом
             eventHandlers = new Dictionary<CurrentAction, EventMethod>();
@@ -124,8 +117,8 @@ namespace Arcomage.Core
             eventHandlers.Add(CurrentAction.WaitHumanMove, WaitHumanMove);
             eventHandlers.Add(CurrentAction.PassStroke, PassStroke);
             eventHandlers.Add(CurrentAction.HumanUseCard, HumanUseCard);
-            eventHandlers.Add(CurrentAction.UpdateStatHuman, UpdateStatHuman);
-            eventHandlers.Add(CurrentAction.UpdateStatAI, UpdateStatAI);
+            eventHandlers.Add(CurrentAction.UpdateStatHuman, UpdateStat);
+            eventHandlers.Add(CurrentAction.UpdateStatAI, UpdateStat);
             eventHandlers.Add(CurrentAction.EndHumanMove, EndHumanMove);
             eventHandlers.Add(CurrentAction.AIMoveIsAnimated, AIMoveIsAnimated);
             eventHandlers.Add(CurrentAction.AIUseCardAnimation, AIUseCardAnimation);
@@ -177,7 +170,7 @@ namespace Arcomage.Core
 
         public void SendGameNotification(Dictionary<string, object> information)
         {
-            if (information == null || information.Count == 0  || !information.ContainsKey("CurrentAction"))
+           if (information == null || information.Count == 0  || !information.ContainsKey("CurrentAction"))
                 log.Error("Нет информации о событие");
 
             if (eventHandlers.ContainsKey(Status))
@@ -236,15 +229,10 @@ namespace Arcomage.Core
                 return;
             }
 
-           // IPlayersCreator creator = tp == TypePlayer.AI ? (IPlayersCreator) new CreatorAi() : new CreatorPlayer();
-
             if (startParams == null)
                 startParams = new GameStartParams();
 
             players.Add(new Player(name, tp, startParams));
-
-           // players.Add(creator.FactoryMethod(name, startParams));
-        
         }
 
 
@@ -300,13 +288,12 @@ namespace Arcomage.Core
                 log.Error("Нельзя получить карты при текущем статусе");
                 return null;
             }
-              List<Card> serverCards = new List<Card>();
+            
+            
+            List<Card> serverCards = new List<Card>();
             if (QCard.Count < MaxCard)
             {
-
-
                 string cardFromServer = host.GetRandomCard();
-
                 serverCards = JsonConvert.DeserializeObject<List<Card>>(cardFromServer);
 
                 if (serverCards.Count == 0)
@@ -318,14 +305,9 @@ namespace Arcomage.Core
                 }
             }
 
-            log.Info("Стэк карт равен " + QCard.Count);
-
-
 
             List<Card> returnVal = new List<Card>();
-
             int playerCountCard = 0;
-
 
             //если хоти смухлевать с картами для игрока
             if (specialHand.Count > 0)
@@ -336,20 +318,17 @@ namespace Arcomage.Core
                        break;
 
                     var newCard = serverCards.FirstOrDefault(x => x.id == item);
-                    newCard.description = ParseDescription.Parse(newCard.description);
-
                     if (newCard != null)
                     {
+                        newCard.description = ParseDescription.Parse(newCard.description);
                         returnVal.Add(newCard);
                         playerCountCard++;
                     }
                 }
 
-                log.Info("Player: " + players[currentPlayer].playerName + " GET " + returnVal.Count + " cards");
                 players[currentPlayer].Cards.AddRange(returnVal);
                 specialHand = new List<int>();
                 return returnVal;
-               
             }
 
      
@@ -368,9 +347,7 @@ namespace Arcomage.Core
                 playerCountCard++;
             }
 
-            log.Info("Player: " + players[currentPlayer].playerName + " GET " + returnVal.Count + " cards");
             players[currentPlayer].Cards.AddRange(returnVal);
-
             return returnVal;
         }
 
@@ -381,26 +358,16 @@ namespace Arcomage.Core
         /// <returns>если карту не удалось использовать возвращается false</returns>
         private bool UseCard(int id)
         {
-            if (isGameEnded)
-            {
-                log.Info("Игра уже закончилась");
-                return false;
-            }
-
             int index;
             var card = GetCardById(id, out index);
 
             if (IsCanUseCard(card.price))
             {
-                log.Info("Player: " + players[currentPlayer].playerName + " use card: " + players[currentPlayer].Cards[index].name);
 
                 int Enemyindex = currentPlayer == 1 ? 0 : 1;
-                //если карта не имеет специального обработчика, тогда используем как обычно
                 if (!specialCardHandlers.ContainsKey(id))
-                {
                     card.Apply(players[currentPlayer], players[Enemyindex]);
-                }
-                else //иначе вызываем специальный обработчик и потом отнимаем стоимость карты
+                else 
                 {
                     specialCardHandlers[id].copyParams(card);
                     specialCardHandlers[id].Apply(players[currentPlayer], players[Enemyindex]);
@@ -412,17 +379,12 @@ namespace Arcomage.Core
                 if (card.playAgain)
                     Status = CurrentAction.PlayAgain;
 
-                
-               
-
                 logCard.Add(new GameCardLog(players[currentPlayer], GameEvent.Used,players[currentPlayer].Cards[index],currentMove));
 
                 players[currentPlayer].Cards.RemoveAt(index);
                 return true;
             }
-           
             
-            log.Info("Player: " + players[currentPlayer].playerName + " can't use card: " + players[currentPlayer].Cards[index].name);
             return false;
         }
 
@@ -434,32 +396,21 @@ namespace Arcomage.Core
             return players[currentPlayer].Cards[index];
         }
 
-
     
 
         private bool PassMove(int id)
         {
-            if (isGameEnded)
-            {
-                log.Info("Игра уже закончилась");
-                return false;
-            }
-
-            if (id == 40 )
+            if (id == 40)
             {
                 log.Info("Эту карту нельзя сбросить!");
                 return false;
             }
 
             int index = players[currentPlayer].Cards.FindIndex(x => x.id == id);
-
-
-
+            
             try
             {
                 logCard.Add(new GameCardLog(players[currentPlayer], GameEvent.Droped, players[currentPlayer].Cards[index], currentMove));
-
-                log.Info("Player: " + players[currentPlayer].playerName + " DROP CARD " + players[currentPlayer].Cards[index].name);
                 players[currentPlayer].Cards.RemoveAt(index);               
                 return true;
             }
@@ -485,9 +436,6 @@ namespace Arcomage.Core
 
                 Status = CurrentAction.EndHumanMove;
             }
-            
-           
-
           
 
             while (Status != CurrentAction.AIUseCard)
@@ -624,12 +572,11 @@ namespace Arcomage.Core
         private void EndHumanMove(Dictionary<string, object> information = null)
         {
             Status = CurrentAction.GetPlayerCard;
-            Dictionary<string, object> notify = new Dictionary<string, object>();
-            notify.Add("CurrentAction", CurrentAction.EndHumanMove);
-            SendGameNotification(notify);
+            SendGameNotification(new Dictionary<string, object>() {{ "CurrentAction", CurrentAction.EndHumanMove }});
 
             currentPlayer = currentPlayer == 1 ? 0 : 1;
             currentMove++;
+
             if (players[currentPlayer].type == TypePlayer.AI)
             {
                 MakeMoveAI();
@@ -637,115 +584,80 @@ namespace Arcomage.Core
             }
         }
 
-        private void UpdateStatAI(Dictionary<string, object> information)
-        {
-            if (information["CurrentAction"].ToString() == "EndAIMove")
-            {
-                Winner = GameControllerHelper.CheckPlayerParams(players, WinParams, LoseParams);
-                if (Winner.Length > 0)
-                {
-                    Status = CurrentAction.EndGame;
-                }
-                else
-                {
-                    Status = CurrentAction.EndAIMove;
-                    SendGameNotification(information);
-                }
-            }
-        }
 
-        private void UpdateStatHuman(Dictionary<string, object> information)
+
+        private void UpdateStat(Dictionary<string, object> information)
         {
-            if (information["CurrentAction"].ToString() == "EndHumanMove")
+            Winner = GameControllerHelper.CheckPlayerParams(players, WinParams, LoseParams);
+            if (Winner.Length > 0)
             {
-                Winner = GameControllerHelper.CheckPlayerParams(players, WinParams, LoseParams);
-                if (Winner.Length > 0)
-                {
-                    Status = CurrentAction.EndGame;
-                }
-                else
-                {
-                    Status = CurrentAction.EndHumanMove;
-                    SendGameNotification(information);
-                }
+                Status = CurrentAction.EndGame;
+                return;
+            }
+
+            if (information["CurrentAction"].ToString() == "EndHumanMove" || information["CurrentAction"].ToString() == "EndAIMove")
+            {
+                Status = information["CurrentAction"].ToString() == "EndHumanMove" ? CurrentAction.EndHumanMove : CurrentAction.EndAIMove;
+                SendGameNotification(information);
             }
         }
 
         private void HumanUseCard(Dictionary<string, object> information)
         {
-            if (information["CurrentAction"].ToString() == "AnimateHumanMove")
-            {
-                if (additionaStatus == CurrentAction.PlayerMustDropCard)
-                {
-                    Status = CurrentAction.GetPlayerCard;
-                    information["CurrentAction"] = CurrentAction.WaitHumanMove.ToString();
-                    SendGameNotification(information);
-                }
-                else
-                {
-                    Status = CurrentAction.UpdateStatHuman;
-                    players[currentPlayer].UpdateParams();
-                }
+            if (information["CurrentAction"].ToString() != "AnimateHumanMove")
+                return;
 
+            if (additionaStatus == CurrentAction.PlayerMustDropCard)
+            {             
+
+                Status = CurrentAction.GetPlayerCard;
+                information["CurrentAction"] = CurrentAction.WaitHumanMove.ToString();
+                SendGameNotification(information);
+            }
+            else
+            {
+                Status = CurrentAction.UpdateStatHuman;
+                players[currentPlayer].UpdateParams();
             }
         }
 
         private void PassStroke(Dictionary<string, object> information)
         {
-            if (information["CurrentAction"].ToString() == "AnimateHumanMove")
+            if (information["CurrentAction"].ToString() != "AnimateHumanMove")
+                return;
+
+            if (additionaStatus == CurrentAction.PlayerMustDropCard)
             {
-                if (additionaStatus == CurrentAction.PlayerMustDropCard)
-                {
-                    additionaStatus = CurrentAction.None;
+                additionaStatus = CurrentAction.None;
 
-                    Status = CurrentAction.GetPlayerCard;
-                    information["CurrentAction"] = CurrentAction.WaitHumanMove.ToString();
-                    SendGameNotification(information);
-                }
-                else
-                {
-                    if (players[currentPlayer].type == TypePlayer.Human)
-                    {
-                        Status = CurrentAction.UpdateStatHuman;
-                    }
-                    else
-                    {
-                        Status = CurrentAction.UpdateStatAI;
-                    }
-                }
-
-
-                players[currentPlayer].UpdateParams();
+                Status = CurrentAction.GetPlayerCard;
+                information["CurrentAction"] = CurrentAction.WaitHumanMove.ToString();
+                SendGameNotification(information);
             }
+            else
+                Status = players[currentPlayer].type == TypePlayer.Human
+                    ? CurrentAction.UpdateStatHuman
+                    : CurrentAction.UpdateStatAI;
+
+            players[currentPlayer].UpdateParams();
         }
 
         private void WaitHumanMove(Dictionary<string, object> information)
         {
-
-            if (additionaStatus == CurrentAction.PlayerMustDropCard)
+            if (additionaStatus == CurrentAction.PlayerMustDropCard && PassMove((int)information["ID"]))
             {
-                if (PassMove((int)information["ID"]))
-                {
-                    players[currentPlayer].UpdateParams();
-                    Status = CurrentAction.GetPlayerCard;
-                    information["CurrentAction"] = CurrentAction.PassStroke.ToString();
-                    SendGameNotification(information);
-                }
+                players[currentPlayer].UpdateParams();
+                Status = CurrentAction.GetPlayerCard;
+                information["CurrentAction"] = CurrentAction.PassStroke.ToString();
+                SendGameNotification(information);
+                
                 return;
             }
 
-            if (information["CurrentAction"].ToString() == "HumanUseCard")
+            if (information["CurrentAction"].ToString() == "HumanUseCard" && UseCard((int)information["ID"]))
             {
-                if (UseCard((int)information["ID"]))
-                {
                     if (Status != CurrentAction.PlayAgain)
-                    {
-                        //if (additionaStatus != CurrentAction.PlayerMustDropCard)
-                          //  players[currentPlayer].UpdateParams();
-
                         Status = CurrentAction.HumanUseCard;
-                    
-                    }
                     else
                     {
                         players[currentPlayer].UpdateParams();
@@ -754,15 +666,10 @@ namespace Arcomage.Core
                         information["CurrentAction"] = CurrentAction.WaitHumanMove.ToString();
                         SendGameNotification(information);
                     }
-                }
             }
-            else if (information["CurrentAction"].ToString() == "PassStroke")
-            {
-                if (PassMove((int)information["ID"]))
-                {
+            
+            if (information["CurrentAction"].ToString() == "PassStroke" && PassMove((int)information["ID"]))
                     Status = CurrentAction.PassStroke;
-                }
-            }
         }
 
         private void GetPlayerCard(Dictionary<string, object> information)
@@ -786,7 +693,6 @@ namespace Arcomage.Core
         
                 Status = CurrentAction.GetPlayerCard;
                 information["CurrentAction"] = CurrentAction.WaitHumanMove.ToString();
-
                 SendGameNotification(information);
             }
         }
@@ -811,38 +717,31 @@ namespace Arcomage.Core
                 Status = CurrentAction.StartGame;
                 additionaStatus = CurrentAction.None;
 
-
                 if (information.ContainsKey("currentPlayer"))
                 {
                     var op = GameControllerHelper.ConvertObjToEnum<TypePlayer>(information["currentPlayer"]);
 
                     if (op != players[currentPlayer].type)
-                    {
                         currentPlayer = currentPlayer == 1 ? 0 : 1;
-                    }
                 }
                 else
                 {
                     Random rnd = new Random();
                     currentPlayer = rnd.Next(0, 2);
                 }
+
                 log.Info("Game is started. CurrentPlayer: " + currentPlayer);
                 currentMove = 0;
 
                 Dictionary<string, object> notify = new Dictionary<string, object>();
+
                 if (players[currentPlayer].type == TypePlayer.AI)
-                {
                     notify.Add("CurrentAction", CurrentAction.AIUseCardAnimation);
-                }
                 else
-                {
                     notify.Add("CurrentAction", CurrentAction.GetPlayerCard);
-                }
 
                 if (information.ContainsKey("CardTricksters"))
-                {
                     specialHand = (List<int>)information["CardTricksters"];
-                }
 
 
                 SendGameNotification(notify);

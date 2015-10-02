@@ -349,30 +349,23 @@ namespace Arcomage.Tests.AnotherTests
         [Test]
         public void CardWithDiscardPlayerTest()
         {
-            /* 1.  используешь карту №39 и 73, которая позволяет еще раз сходить
- 2. получаешь еще одну карту
- 3, сбрасываешь карту
-  4, добавляются ресурсы
- 5,получаешь еще одну карту
- 6, юзаешь карту
- 7, добавляются ресурсы*/
+
             gm = new GameController(log, new TestServer6());
             gm.ChangeMaxCard(20);
             AddPlayers(new TestStartParams2(), new TestStartParams2());
-            Assert.AreEqual(gm.GetPlayersCard().Count, 18, "Количество карт должно быть равно 5");
+            Assert.AreEqual(gm.GetPlayersCard().Count, 18, "Количество карт должно быть равно 18");
             Assert.AreEqual(gm.IsCanUseCard(39), true, "Не возможно использовать карту");
 
-            //перед информацию о том, какую карту использовал игрок
-            Dictionary<string, object> notify2 = new Dictionary<string, object>();
-            notify2.Add("CurrentAction", CurrentAction.HumanUseCard);
-            notify2.Add("ID", 39);
-            gm.SendGameNotification(notify2);
+            gm.SendGameNotification(new Dictionary<string, object>()
+            {
+                {"CurrentAction", CurrentAction.HumanUseCard },
+                {"ID", 39}
+            });
 
             Assert.AreEqual(gm.Status, CurrentAction.HumanUseCard, "Игрок должен сбросить карту");
 
-            Dictionary<string, object> notify1 = new Dictionary<string, object>();
-            notify1.Add("CurrentAction", CurrentAction.AnimateHumanMove);
-            gm.SendGameNotification(notify1);
+
+            gm.SendGameNotification(new Dictionary<string, object>() {{"CurrentAction", CurrentAction.AnimateHumanMove}});
 
 
             var result = gm.GetPlayerParams();
@@ -381,11 +374,12 @@ namespace Arcomage.Tests.AnotherTests
             Assert.AreEqual(result[Attributes.Rocks], 5, "Не должно быть прироста ресурсов до сброса");
             Assert.AreEqual(result[Attributes.Diamonds], 5, "Не должно быть прироста ресурсов до сброса");
             Assert.AreEqual(result[Attributes.Animals], 5, "Не должно быть прироста ресурсов до сброса");
-
-            Dictionary<string, object> notify = new Dictionary<string, object>();
-            notify.Add("CurrentAction", CurrentAction.PassStroke);
-            notify.Add("ID", 5);
-            gm.SendGameNotification(notify);
+            
+            gm.SendGameNotification(new Dictionary<string, object>()
+            {
+                {"CurrentAction", CurrentAction.PassStroke },
+                {"ID", 5}
+            });
 
 
             Assert.AreEqual(result[Attributes.Rocks], 6, "должен быть прирост ресурсов");
@@ -404,7 +398,6 @@ namespace Arcomage.Tests.AnotherTests
         [Test]
         public void CardWithDiscardAITest()
         {
-
             gm = new GameController(log, new TestServer6()); 
             gm.ChangeMaxCard(20);
             AddPlayers(new TestStartParams2(), new TestStartParams2());

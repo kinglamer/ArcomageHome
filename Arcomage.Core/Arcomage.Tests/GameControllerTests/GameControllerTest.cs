@@ -170,8 +170,7 @@ namespace Arcomage.Tests.GameControllerTests
                  {"ID", 55}
              });
 
-             var result = gm.logCard.FirstOrDefault(x => x.player.type == TypePlayer.Human && x.gameEvent == GameEvent.Used);
-             Assert.AreEqual(result.card.id, 55, "Human должен был использовать карту 55");
+             Assert.AreEqual(gm.logCard.FirstOrDefault(x => x.player.type == TypePlayer.Human && x.gameEvent == GameEvent.Used).card.id, 55, "Human должен был использовать карту 55");
 
              var result2 = gm.GetPlayerParams();
              Assert.AreEqual(result2[Attributes.Rocks], 7, "Должен быть прирост камней");
