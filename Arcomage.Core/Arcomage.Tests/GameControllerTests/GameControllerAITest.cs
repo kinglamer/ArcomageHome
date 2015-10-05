@@ -51,7 +51,7 @@ namespace Arcomage.Tests.GameControllerTests
         {
             gm = GameControllerTestHelper.InitDemoGame();
             GameControllerTestHelper.PassStroke(gm);
-            Assert.AreEqual(gm.GetAIUsedCard().LastOrDefault().id, 2, "Компьютер должен использовать карту id 2");
+            Assert.AreEqual(gm.GetAiUsedCard().LastOrDefault().id, 2, "Компьютер должен использовать карту id 2");
         }
 
 
@@ -111,7 +111,7 @@ namespace Arcomage.Tests.GameControllerTests
             Assert.AreEqual(gm.logCard.FirstOrDefault(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Used).card.id, 55,
                 "AI должен был использовать карту 55");
 
-            Assert.AreEqual(gm.GetAIUsedCard().Count, 2, "AI должен был использовать 2 карты");
+            Assert.AreEqual(gm.GetAiUsedCard().Count, 2, "AI должен был использовать 2 карты");
         }
 
     }
