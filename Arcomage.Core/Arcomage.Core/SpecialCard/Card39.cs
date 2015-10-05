@@ -17,6 +17,7 @@ namespace Arcomage.Core.SpecialCard
             //Draw 1 card Discard 1 card Play again
            // additionaStatus = CurrentAction.PlayerMustDropCard;
             discard = true;
+           //playAgain = true;
         }
 
     }

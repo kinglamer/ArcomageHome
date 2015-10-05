@@ -44,7 +44,7 @@ namespace Arcomage.Tests.Moq
             {
                 id = 73,
                 name = "Elven Scout",
-                cardParams = new List<CardParams>() { cardParams }
+                cardParams = new List<CardParams>() { cardParams, new CardParams() { key = Specifications.PlayAgain, value = 1 } }
             });
 
             returnVal.Add(new Card()

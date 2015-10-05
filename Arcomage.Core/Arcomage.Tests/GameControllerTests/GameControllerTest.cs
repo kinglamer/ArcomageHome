@@ -4,6 +4,7 @@ using Arcomage.Core;
 using Arcomage.Core.AlternativeServers;
 using Arcomage.Core.Interfaces.Impl;
 using Arcomage.Entity;
+using Arcomage.Tests.Moq;
 using NUnit.Framework;
 
 namespace Arcomage.Tests.GameControllerTests
@@ -12,7 +13,6 @@ namespace Arcomage.Tests.GameControllerTests
     class GameControllerTest
      {
 
-         private GameController gm;
 
          [SetUp]
          public void Init()
@@ -27,7 +27,7 @@ namespace Arcomage.Tests.GameControllerTests
          [Test]
          public void GameIsStarted()
          {
-             gm = GameControllerTestHelper.InitDemoGame();
+            GameController  gm = GameControllerTestHelper.InitDemoGame();
             // Assert.AreEqual(gm.Status, CurrentAction.WaitHumanMove, "Игра не стартовала");
          }
 
@@ -38,9 +38,9 @@ namespace Arcomage.Tests.GameControllerTests
          [Test]
          public void PlayerMustWin()
          {
-             gm = GameControllerTestHelper.InitDemoGame();
+             GameController gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> { 1 });
              GameControllerTestHelper.UseCard(1, gm);
-
+             gm.NextPlayerTurn();
              Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Tower], 0, "Башня врага должна быть уничтожена");
             // Assert.AreEqual(gm.Status, CurrentAction.UpdateStatHuman, "Текущий статус должен быть равным обновлению статистики игрока");
 
@@ -57,7 +57,7 @@ namespace Arcomage.Tests.GameControllerTests
          [Test]
          public void PlayerCanUserCard()
          {
-             gm = GameControllerTestHelper.InitDemoGame();
+             GameController gm = GameControllerTestHelper.InitDemoGame(0,null,null,6, new List<int>{1});
              Assert.AreEqual(gm.IsCanUseCard(1), true, "Не возможно использовать карту");
          }
         
@@ -69,7 +69,7 @@ namespace Arcomage.Tests.GameControllerTests
          [Test]
          public void CheckPlayerInit()
          {
-             gm = GameControllerTestHelper.InitDemoGame();
+             GameController gm = GameControllerTestHelper.InitDemoGame();
              Assert.IsNotNull(gm.CurrentPlayer.PlayerParams, "Стартовые параметры игрока не должны быть пустыми");
              Assert.IsTrue(gm.CurrentPlayer.Cards.Count > 1, " Должно быть хотя бы одна карта");
          }
@@ -85,27 +85,31 @@ namespace Arcomage.Tests.GameControllerTests
          [Test]
          public void CheckApplyCardParams()
          {
-
-             gm = GameControllerTestHelper.InitDemoGame();
+             GameController gm = new GameController(new LogTest(), new TestServer());
+             gm.AddPlayer(TypePlayer.Human, "Human", new GameStartParams());
+             gm.AddPlayer(TypePlayer.Human, "AI", new GameStartParams());
+             gm.StartGame(0);
+             
              GameControllerTestHelper.UseCard(2, gm);
+             gm.NextPlayerTurn();
           
-             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Wall], 5 - 4, "Не правильно применен параметр PlayerWall");
-             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Tower], 10 - 8, "Не правильно применен параметр PlayerTower");
-             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.DiamondMines], 1 + 2, "Не правильно применен параметр PlayerDiamondMines");
-             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Menagerie], 1 + 3, "Не правильно применен параметр PlayerMenagerie");
-             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Colliery], 1 + 4, "Не правильно применен параметр PlayerColliery");
-             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Diamonds], 5 + 11 + 3, "Не правильно применен параметр PlayerDiamonds");
-             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Animals], 5 + 12 + 4 -5, "Не правильно применен параметр PlayerAnimals");
-             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Rocks], 5 + 13 + 5, "Не правильно применен параметр PlayerRocks");
+             Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Wall], 5 - 4, "Не правильно применен параметр PlayerWall");
+             Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Tower], 10 - 8, "Не правильно применен параметр PlayerTower");
+             Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.DiamondMines], 1 + 2, "Не правильно применен параметр PlayerDiamondMines");
+             Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Menagerie], 1 + 3, "Не правильно применен параметр PlayerMenagerie");
+             Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Colliery], 1 + 4, "Не правильно применен параметр PlayerColliery");
+             Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Diamonds], 5 + 11 + 3, "Не правильно применен параметр PlayerDiamonds");
+             Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Animals], 5 + 12 + 4 - 5, "Не правильно применен параметр PlayerAnimals");
+             Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Rocks], 5 + 13 + 5, "Не правильно применен параметр PlayerRocks");
 
-            Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Wall], 5 - 4, "Не правильно применен параметр EnemyWall");
-            Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Tower], 10 - 8, "Не правильно применен параметр EnemyTower");
-            Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.DiamondMines], 1 + 2, "Не правильно применен параметр EnemyDiamondMines");
-            Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Menagerie], 1 + 3, "Не правильно применен параметр EnemyMenagerie");
-            Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Colliery], 1 + 4, "Не правильно применен параметр EnemyColliery");
-            Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Diamonds], 5 + 11, "Не правильно применен параметр EnemyDiamonds");
-            Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Animals], 5 + 12, "Не правильно применен параметр EnemyAnimals");
-            Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Rocks], 5 + 13, "Не правильно применен параметр EnemyRocks");
+             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Wall], 5 - 4, "Не правильно применен параметр EnemyWall");
+             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Tower], 10 - 8, "Не правильно применен параметр EnemyTower");
+             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.DiamondMines], 1 + 2, "Не правильно применен параметр EnemyDiamondMines");
+             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Menagerie], 1 + 3, "Не правильно применен параметр EnemyMenagerie");
+             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Colliery], 1 + 4, "Не правильно применен параметр EnemyColliery");
+             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Diamonds], 5 + 11, "Не правильно применен параметр EnemyDiamonds");
+             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Animals], 5 + 12, "Не правильно применен параметр EnemyAnimals");
+             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Rocks], 5 + 13, "Не правильно применен параметр EnemyRocks");
              
          }
 
@@ -116,8 +120,9 @@ namespace Arcomage.Tests.GameControllerTests
          [Test]
          public void CheckAddDiamonds()
          {
-             gm = GameControllerTestHelper.InitDemoGame(2);
+             GameController gm = GameControllerTestHelper.InitDemoGame(2);
              GameControllerTestHelper.UseCard(6, gm);
+             gm.NextPlayerTurn();
              Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Diamonds], 5 + 11 + 1, "Не правильно применен параметр PlayerDiamonds");
          }
 
@@ -128,7 +133,7 @@ namespace Arcomage.Tests.GameControllerTests
          [Test]
          public void CheckApplyEnemyDirectDamage()
          {
-             gm = GameControllerTestHelper.InitDemoGame();
+             GameController gm = GameControllerTestHelper.InitDemoGame();
              GameControllerTestHelper.UseCard(3, gm);
              Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Wall], 0, "Не правильно применен параметр EnemyDirectDamage");
              Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Tower], 0, "Не правильно применен параметр EnemyDirectDamage");
@@ -142,7 +147,7 @@ namespace Arcomage.Tests.GameControllerTests
          [Test]
          public void CheckApplyPlayerDirectDamage()
          {
-             gm = GameControllerTestHelper.InitDemoGame();
+             GameController gm = GameControllerTestHelper.InitDemoGame();
              GameControllerTestHelper.UseCard(4, gm);
 
              Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Wall], 0, "Не правильно применен параметр PlayerDirectDamage");
@@ -157,18 +162,18 @@ namespace Arcomage.Tests.GameControllerTests
          [Test]
          public void CheckPlayAgain()
          {
-             gm = GameControllerTestHelper.InitDemoGame();
+             GameController gm = GameControllerTestHelper.InitDemoGame();
              Assert.AreEqual(gm.IsCanUseCard(55), true, "Не возможно использовать карту");
 
     
              gm.MakePlayerMove(55);
-
+             gm.NextPlayerTurn();
              Assert.AreEqual(gm.logCard.FirstOrDefault(x => x.player.type == TypePlayer.Human && x.gameEvent == GameEvent.Used).card.id, 55, "Human должен был использовать карту 55");
 
         
-             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Rocks], 7, "Должен быть прирост камней");
-             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Diamonds], 7, "Должен быть прирост брилиантов");
-            // Assert.AreEqual(gm.Status, CurrentAction.WaitHumanMove, "Человек может использовать еще одну карту");
+             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Rocks], 5, "Прироста камней не должно быть");
+             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Diamonds], 6, "Прироста брилиантов не должно быть");
+             Assert.AreEqual(gm.CurrentPlayer.gameActions.Contains(GameAction.PlayAgain), true, "Человек может использовать еще одну карту");
          }
 
          /// <summary>
@@ -178,7 +183,7 @@ namespace Arcomage.Tests.GameControllerTests
          [Test]
          public void PlayerCanPassMove()
          {
-             gm = GameControllerTestHelper.InitDemoGame(5);
+             GameController gm = GameControllerTestHelper.InitDemoGame(5);
              GameControllerTestHelper.PassStroke(gm);
              var result = gm.logCard.FirstOrDefault(x => x.player.type == TypePlayer.Human && x.gameEvent == GameEvent.Droped);
              //Внимание: при усовершенствование AI данный тест может измениться, .т.к. комп уже осознано будет выбирать какую карту сбросить

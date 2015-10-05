@@ -105,6 +105,15 @@ namespace Arcomage.Tests.Moq
                 cardParams = paramsM6
             });
 
+
+            returnVal.Add(new Card()
+            {
+                id = 7,
+                name = "null",
+                cardParams = new List<CardParams>{new CardParams() { key = Specifications.CostAnimals, value = 0 }}
+            });
+
+
             foreach (var item in returnVal)
             {
                 item.Init();

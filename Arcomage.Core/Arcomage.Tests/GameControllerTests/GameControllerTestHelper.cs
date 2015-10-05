@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Arcomage.Core;
+using Arcomage.Core.AlternativeServers;
 using Arcomage.Core.Interfaces.Impl;
 using Arcomage.Entity;
 using Arcomage.Entity.Interfaces;
@@ -52,6 +53,9 @@ namespace Arcomage.Tests.GameControllerTests
                     break;
                 case 6:
                     gm = new GameController(log, new TestServer6());
+                    break;
+                case 7:
+                    gm = new GameController(log, new ArcoSQLLiteServer(@"arcomageDB.db"));
                     break;
                 default:
                     gm = new GameController(log, new TestServer());

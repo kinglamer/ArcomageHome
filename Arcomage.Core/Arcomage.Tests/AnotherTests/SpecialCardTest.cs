@@ -28,7 +28,7 @@ namespace Arcomage.Tests.AnotherTests
          [Test]
          public void Card5Test_1()
          {
-             GameController gm = GameControllerTestHelper.InitDemoGame(6,new TestStartParams(), new TestStartParams(1));
+             GameController gm = GameControllerTestHelper.InitDemoGame(6, new TestStartParams(), new TestStartParams(1), 6, new List<int> { 5 });
              GameControllerTestHelper.UseCard(5, gm);
              Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Colliery], 3, "Должно быть 3 шахты");
          }
@@ -37,7 +37,7 @@ namespace Arcomage.Tests.AnotherTests
          [Test]
          public void Card5Test_2()
          {
-             GameController gm = GameControllerTestHelper.InitDemoGame(6,new TestStartParams2(), new TestStartParams2());
+             GameController gm = GameControllerTestHelper.InitDemoGame(6,new TestStartParams2(), new TestStartParams2(), 6, new List<int> {5});
              GameControllerTestHelper.UseCard(5, gm);
              Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Colliery], 2, "Должно быть 2 шахты");
          }
@@ -98,9 +98,9 @@ namespace Arcomage.Tests.AnotherTests
 
 
          [Test]
-         public void Card32Test()
+         public void Card32Test_1()
          {
-             GameController gm = GameControllerTestHelper.InitDemoGame(6, new TestStartParams3(), new TestStartParams3(1), 20, new List<int> { 32 });
+             GameController gm = GameControllerTestHelper.InitDemoGame(6, new TestStartParams3(), new TestStartParams3(1), 20, new List<int> { 32 }, new List<int> { 5 });
              GameControllerTestHelper.UseCard(32, gm);
              gm.NextPlayerTurn();
 
@@ -112,7 +112,7 @@ namespace Arcomage.Tests.AnotherTests
          [Test]
          public void Card32Test_2()
          {
-             GameController gm = GameControllerTestHelper.InitDemoGame(6, new TestStartParams2(), new TestStartParams2(), 20, new List<int> { 32 });
+             GameController gm = GameControllerTestHelper.InitDemoGame(6, new TestStartParams2(), new TestStartParams2(), 20, new List<int> { 32 }, new List<int> { 5 });
              GameControllerTestHelper.UseCard(32, gm);
              gm.NextPlayerTurn();
              Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Animals], 12, "Зверей должно быть 12");
@@ -328,16 +328,15 @@ namespace Arcomage.Tests.AnotherTests
         /// Результат: должны быть использованы и сброшены определенные карты. Должна обновиться статистика после Статус PlayerMustDropCard изменен на GetAICard
          /// </summary>
         [Test]
-        public void CardWithDiscardAITest()
+        public void CardWithDiscardAiTest()
         {
-            GameController gm = GameControllerTestHelper.InitDemoGame(6, new TestStartParams2(), new TestStartParams2(), 20, null, new List<int> { 73,31 });
-            GameControllerTestHelper.PassStroke(gm);
+            GameController gm = GameControllerTestHelper.InitDemoGame(6, new TestStartParams2(), new TestStartParams2(), 20, new List<int> { 1 }, new List<int> { 73, 1,31 });
+            gm.MakePlayerMove(1, true);
             gm.NextPlayerTurn();
-            var result = gm.logCard.Where(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Used);
 
             //Внимание: при усовершенствование AI данный тест может измениться, .т.к. комп уже осознано будет выбирать какую карту сбросить
-            Assert.AreEqual(result.Count(x => x.card.id == 73), 1, "AI должен был использовать карту 73");
-            Assert.AreEqual(result.Count(x => x.card.id == 31), 1, "AI должен был использовать карту 31");
+            Assert.AreEqual(gm.logCard.Count(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Used && x.card.id == 73), 1, "AI должен был использовать карту 73");
+            Assert.AreEqual(gm.logCard.Count(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Used && x.card.id == 31), 1, "AI должен был использовать карту 31");
 
             var result2 = gm.logCard.FirstOrDefault(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Droped);
             Assert.AreEqual(result2.card.id, 1, "AI должен был сбросить карту 1");

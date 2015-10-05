@@ -81,9 +81,9 @@ namespace Arcomage.Tests.GameControllerTests
         [Test]
         public void AICanPassMove()
         {
-            gm = GameControllerTestHelper.InitDemoGame(5);
+            gm = GameControllerTestHelper.InitDemoGame(5, null, null,6,null, new List<int>{2});
             GameControllerTestHelper.PassStroke(gm);
-
+            gm.NextPlayerTurn();
             //Внимание: при усовершенствование AI данный тест может измениться, .т.к. комп уже осознано будет выбирать какую карту сбросить
             Assert.AreEqual(gm.logCard.LastOrDefault(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Droped).card.id, 2, "AI должен сбросить карту 2");
         }
@@ -97,9 +97,9 @@ namespace Arcomage.Tests.GameControllerTests
         public void AICanGetAnotherCard()
         {
             //Внимание: при усовершенствование AI данный тест может измениться, .т.к. комп уже осознано будет выбирать какую карту сбросить
-            gm = GameControllerTestHelper.InitDemoGame(4);
+            gm = GameControllerTestHelper.InitDemoGame(4, null, null, 6, null, new List<int>{55, 6});
             GameControllerTestHelper.PassStroke(gm);
-            
+            gm.NextPlayerTurn();
             Assert.AreEqual(gm.logCard.LastOrDefault(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Used).card.id, 6,
                 "AI должен был использовать карту 6");
 

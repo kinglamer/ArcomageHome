@@ -15,7 +15,15 @@ namespace Arcomage.Entity
 
         public override Card ChooseCard()
         {
-            return Cards.FirstOrDefault(item => PlayerParams[item.price.attributes] >= item.price.value);
+            Card card = Cards.FirstOrDefault(item => PlayerParams[item.price.attributes] >= item.price.value);
+
+            if (card == null)
+            {
+                card = Cards[0];
+                gameActions.Add(GameAction.DropCard);
+            }
+
+            return card;
         }
     }
 }

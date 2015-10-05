@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.ServiceModel;
 using Arcomage.Core.ArcomageService;
@@ -220,7 +221,7 @@ namespace Arcomage.Core
             }
 
             EnemyPlayer = players[enemy];
-
+            isGameEnded = false;
 
             log.Info("Game is started. CurrentPlayer: " + CurrentPlayer);
 
@@ -285,7 +286,7 @@ namespace Arcomage.Core
                 }
             }
 
-            while (CurrentPlayer.Cards.Count < MaxCard)
+            while (player.Cards.Count < MaxCard)
             {
                 if (QCard.Count == 0)
                     break;
@@ -332,7 +333,7 @@ namespace Arcomage.Core
 
 
                 logCard.Add(new GameCardLog(CurrentPlayer, GameEvent.Used, CurrentPlayer.Cards[index], currentMove));
-
+                Debug.Print(CurrentPlayer.playerName + " use " + CurrentPlayer.Cards[index].id);
                 CurrentPlayer.Cards.RemoveAt(index);
             }
             else
@@ -347,6 +348,7 @@ namespace Arcomage.Core
                 {
                     CurrentPlayer.gameActions.Remove(GameAction.DropCard);
                     logCard.Add(new GameCardLog(CurrentPlayer, GameEvent.Droped, CurrentPlayer.Cards[index], currentMove));
+                    Debug.Print(CurrentPlayer.playerName + " drop " + CurrentPlayer.Cards[index].id);
                     CurrentPlayer.Cards.RemoveAt(index);  
                 }
                 catch
@@ -362,7 +364,7 @@ namespace Arcomage.Core
 
         public void NextPlayerTurn()
         {
-            if (!CurrentPlayer.gameActions.Contains(GameAction.Succes))
+            if (!CurrentPlayer.gameActions.Contains(GameAction.Succes) || isGameEnded)
                 return;
 
                 SetPlayerCards(CurrentPlayer);
@@ -370,7 +372,14 @@ namespace Arcomage.Core
                 CurrentPlayer.UpdateParams();
                 CurrentPlayer.gameActions.Clear();
 
-                SetPlayerCards(EnemyPlayer);
+                Winner = GameControllerHelper.CheckPlayerParams(players, WinParams, LoseParams);
+            if (Winner.Length > 0)
+            {
+                isGameEnded = true;
+                return;
+            }
+
+            SetPlayerCards(EnemyPlayer);
 
                 Player temp = CurrentPlayer;
                 CurrentPlayer = EnemyPlayer;
@@ -401,11 +410,11 @@ namespace Arcomage.Core
             {
                 switch (gameAction)
                 {
+                    case GameAction.DropCard: //TODO: зашить, что сначала идет сброс
+                        MakePlayerMove(CurrentPlayer.Cards.First().id, true);
+                        break;
                     case GameAction.PlayAgain:
                         MakePlayerMove(CurrentPlayer.ChooseCard().id);
-                        break;
-                    case GameAction.DropCard:
-                        MakePlayerMove(CurrentPlayer.Cards.First().id, true);
                         break;
                 }
             }
