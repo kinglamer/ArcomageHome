@@ -11,7 +11,7 @@ namespace Arcomage.Core
         Used,
         Droped
     }
-
+    
     public enum SelectPlayer
     {
         First = 0,

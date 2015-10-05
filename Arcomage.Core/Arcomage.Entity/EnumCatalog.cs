@@ -10,6 +10,13 @@ namespace Arcomage.Entity
         AI, Human
     }
 
+    public enum GameAction
+    {
+        PlayAgain,
+        DropCard,
+        Succes
+    }
+
     public enum Attributes
     {
         Tower,

@@ -19,6 +19,8 @@ namespace Arcomage.Entity
 
         public List<Card> Cards { get; set; }
 
+        public List<GameAction> gameActions { get; set; }
+
         /// <summary>
         /// Установка дефолтных значений
         /// </summary>
@@ -29,6 +31,7 @@ namespace Arcomage.Entity
 
             PlayerParams = new Dictionary<Attributes, int>(gameParams.DefaultParams);
             Cards = new List<Card>();
+            gameActions = new List<GameAction>();
         }
 
         public void UpdateParams()
@@ -38,5 +41,12 @@ namespace Arcomage.Entity
             PlayerParams[Attributes.Animals] += PlayerParams[Attributes.Menagerie];
         }
 
+        public virtual Card ChooseCard()
+        {
+            if (Cards.Count > 0)
+                return Cards[0];
+
+            return new Card();
+        }
     }
 }

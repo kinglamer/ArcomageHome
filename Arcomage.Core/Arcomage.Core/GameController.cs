@@ -26,7 +26,11 @@ namespace Arcomage.Core
 
         private int MaxCard;
         public List<Player> players { get; private set; }
-        private int currentPlayer { get; set; }
+
+        public Player CurrentPlayer { get; set; }
+        public Player EnemyPlayer { get; set; }
+
+      //  private int currentPlayer { get; set; }
 
        /* private CurrentAction _additionaStatus;
 
@@ -56,6 +60,8 @@ namespace Arcomage.Core
 
         private int currentMove { get; set; }
 
+        public bool isGameEnded;
+
        /* private bool isGameEnded
         {
             get
@@ -75,6 +81,8 @@ namespace Arcomage.Core
         private readonly Dictionary<Attributes, int> WinParams;
         private readonly Dictionary<Attributes, int> LoseParams;
         private const string url = "http://arcomage.somee.com/ArcoServer.svc?wsdl"; //"http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
+
+        List<Card> serverCards = new List<Card>();
 
         public string Winner { get;private set; }
         private IArcoServer host;
@@ -96,7 +104,7 @@ namespace Arcomage.Core
 
         public GameController(ILog _log, IArcoServer server = null)
         {
-
+            isGameEnded = true;
             MaxCard = 6;
            // Status = CurrentAction.None;
             log = _log;
@@ -146,12 +154,81 @@ namespace Arcomage.Core
           
         }
 
-    
-
-
         public void ChangeMaxCard(int newMaxCard)
         {
             MaxCard = newMaxCard;
+        }
+
+        public void AddPlayer(TypePlayer tp, string name, IStartParams startParams = null)
+        {
+            if (players.Count == 2)
+            {
+                log.Error("Достигнуто максимальное количество игроков");
+                return;
+            }
+
+            if (startParams == null)
+                startParams = new GameStartParams();
+
+            players.Add(new Player(name, tp, startParams));
+        }
+
+        public void StartGame(int currentPlayer = -1, IEnumerable<int> cardTricksters = null)
+        {
+            if (players.Count == 0)
+            {
+                log.Error("Добавьте игроков в игру. Сейчас их " + players.Count);
+                return;
+            }
+
+            if (!isGameEnded)
+            {
+                log.Info("Игра еще не закончилась");
+                return;
+            }
+
+            int enemy;
+            if (currentPlayer != -1)
+            {
+                CurrentPlayer = players[currentPlayer];
+                enemy = currentPlayer == 1 ? 0 : 1;
+            }
+            else
+            {
+                Random rnd = new Random();
+                int indexPlayer = rnd.Next(0, 2);
+                enemy = indexPlayer == 1 ? 0 : 1;
+                CurrentPlayer = players[indexPlayer];
+            }
+
+            EnemyPlayer = players[enemy];
+
+
+            log.Info("Game is started. CurrentPlayer: " + CurrentPlayer);
+
+            currentMove = 0;
+            serverCards = JsonConvert.DeserializeObject<List<Card>>(host.GetRandomCard());
+
+
+            if (cardTricksters != null)
+                foreach (var item in cardTricksters)
+                {
+                    if (CurrentPlayer.Cards.Count == MaxCard)
+                        break;
+
+                    var newCard = serverCards.FirstOrDefault(x => x.id == item);
+                    if (newCard != null)
+                    {
+                        newCard.description = ParseDescription.Parse(newCard.description);
+                        CurrentPlayer.Cards.Add(newCard);
+                    }
+                }
+
+            SetPlayerCards(CurrentPlayer);
+            SetPlayerCards(EnemyPlayer);
+
+            if(CurrentPlayer.type == TypePlayer.AI)
+                MakeMoveAi();
         }
 
         public List<Card> GetAiUsedCard()
@@ -167,81 +244,13 @@ namespace Arcomage.Core
             return returnVal;
         }
 
-        public List<Card> GetPlayersCard(SelectPlayer selectPlayer = SelectPlayer.None)
-        {
-            int i = (int)(selectPlayer == SelectPlayer.None ? (SelectPlayer)currentPlayer : selectPlayer);
-
-            if (players[i] != null)
-            {
-                log.Info("GetPlayerParams type: " + players[i].type);
-                return players[i].Cards;
-            }
-
-            return new List<Card>();
-        }
-       
-
-        public Dictionary<Attributes, int> GetPlayerParams(SelectPlayer selectPlayer = SelectPlayer.None)
-        {
-
-            int i = (int)(selectPlayer == SelectPlayer.None ? (SelectPlayer)currentPlayer : selectPlayer);
-
-            if (players[i] != null)
-            {
-                log.Info("GetPlayerParams type: " + players[i].type);
-                return players[i].PlayerParams;
-            }
-           
-
-            Dictionary<Attributes, int> DefaultParams = new Dictionary<Attributes, int>();
-                 DefaultParams = new Dictionary<Attributes, int>();
-                 DefaultParams.Add(Attributes.Wall, 5);
-                 DefaultParams.Add(Attributes.Tower, 10);
-
-                 DefaultParams.Add(Attributes.Menagerie, 1);
-                 DefaultParams.Add(Attributes.Colliery, 1);
-                 DefaultParams.Add(Attributes.DiamondMines, 1);
-
-                 DefaultParams.Add(Attributes.Rocks, 5);
-                 DefaultParams.Add(Attributes.Diamonds, 5);
-                 DefaultParams.Add(Attributes.Animals, 5);
-
-            return DefaultParams;
-            
-        }
-
-
-        public void AddPlayer(TypePlayer tp, string name, IStartParams startParams = null)
-        {
-
-            if (Status == CurrentAction.StartGame)
-            {
-                log.Error("Невозможно добавить игроков во время игры");
-                return;
-            }
-
-            if (players.Count == 2)
-            {
-                log.Error("Достигнуто максимальное количество игроков");
-                return;
-            }
-
-            if (startParams == null)
-                startParams = new GameStartParams();
-
-            players.Add(new Player(name, tp, startParams));
-        }
-
-
-
-
         
         /// <summary>
         /// Проверка хватает ли ресурсов для использования карты
         /// </summary>
         public bool IsCanUseCard(Price price)
         {
-            if (players[currentPlayer].PlayerParams[price.attributes] >= price.value)
+            if (CurrentPlayer.PlayerParams[price.attributes] >= price.value)
                 return true;
 
             return false;
@@ -258,228 +267,143 @@ namespace Arcomage.Core
 
 
         /// <summary>
-        /// Получает карту из стека карт
+        /// Устанавливаем карты для игрока
         /// </summary>
         /// <returns></returns>
-        private List<Card> GetCard()
+        private void SetPlayerCards(Player player)
         {
-            List<Card> returnVal = new List<Card>();
-            List<Card> serverCards = new List<Card>();
-            int playerCountCard = 0;
-
-            if (Status != CurrentAction.GetPlayerCard && Status != CurrentAction.GetAICard)
-            {
-                log.Error("Нельзя получить карты при текущем статусе");
-                return null;
-            }
-            
-            
             if (QCard.Count < MaxCard)
             {
-                string cardFromServer = host.GetRandomCard();
-                serverCards = JsonConvert.DeserializeObject<List<Card>>(cardFromServer);
-
-                if (serverCards.Count == 0)
-                    return null;
-
+                serverCards.Randomize(); //TODO: стоил ли перемешивать список карт, каждый раз перед добавлением в стэк?
                 foreach (var item in serverCards)
                 {
                     QCard.Enqueue(item);
                 }
             }
-            
 
-            //если хоти смухлевать с картами для игрока
-            if (specialHand.Count > 0)
-            {
-                foreach (var item in specialHand)
-                {
-                   if(playerCountCard == MaxCard)
-                       break;
-
-                    var newCard = serverCards.FirstOrDefault(x => x.id == item);
-                    if (newCard != null)
-                    {
-                        newCard.description = ParseDescription.Parse(newCard.description);
-                        returnVal.Add(newCard);
-                        playerCountCard++;
-                    }
-                }
-
-                players[currentPlayer].Cards.AddRange(returnVal);
-                specialHand = new List<int>();
-                return returnVal;
-            }
-
-     
-
-            if (players[currentPlayer].Cards != null)
-                playerCountCard = players[currentPlayer].Cards.Count;
-
-            while (playerCountCard < MaxCard)
+            while (CurrentPlayer.Cards.Count < MaxCard)
             {
                 if (QCard.Count == 0)
                     break;
 
                 var newCard = QCard.Dequeue();
                 newCard.description = ParseDescription.Parse(newCard.description);
-                returnVal.Add(newCard);
-                playerCountCard++;
+                player.Cards.Add(newCard);
             }
-
-            players[currentPlayer].Cards.AddRange(returnVal);
-            return returnVal;
         }
 
         /// <summary>
         /// Использование карты игроком
         /// </summary>
         /// <param name="id">Уникальный номер карты в БД</param>
-        /// <returns>если карту не удалось использовать возвращается false</returns>
-        public bool UseCard(int id)
+        /// <param name="dropCard">Флаг, что карта сбрасывается</param>
+        public void MakePlayerMove(int id, bool dropCard = false)
         {
+            if (CurrentPlayer.gameActions.Contains(GameAction.Succes))
+                return;
+
             int index;
             var card = GetCardById(id, out index);
-
-            if (IsCanUseCard(card.price))
+            
+            if (IsCanUseCard(card.price) && !dropCard)
             {
 
-                int Enemyindex = currentPlayer == 1 ? 0 : 1;
+                if (CurrentPlayer.gameActions.Contains(GameAction.PlayAgain))
+                    CurrentPlayer.gameActions.Remove(GameAction.PlayAgain);
+
                 if (!specialCardHandlers.ContainsKey(id))
-                    card.Apply(players[currentPlayer], players[Enemyindex]);
+                    card.Apply(CurrentPlayer, EnemyPlayer);
                 else 
                 {
                     specialCardHandlers[id].copyParams(card);
-                    specialCardHandlers[id].Apply(players[currentPlayer], players[Enemyindex]);
+                    specialCardHandlers[id].Apply(CurrentPlayer, EnemyPlayer);
 
                     if (specialCardHandlers[id].discard)
-                        additionaStatus = CurrentAction.PlayerMustDropCard;
+                        CurrentPlayer.gameActions.Add(GameAction.DropCard);
                 }
 
                 if (card.playAgain)
-                    Status = CurrentAction.PlayAgain;
+                    CurrentPlayer.gameActions.Add(GameAction.PlayAgain);
 
-                logCard.Add(new GameCardLog(players[currentPlayer], GameEvent.Used,players[currentPlayer].Cards[index],currentMove));
 
-                players[currentPlayer].Cards.RemoveAt(index);
-                return true;
+
+                logCard.Add(new GameCardLog(CurrentPlayer, GameEvent.Used, CurrentPlayer.Cards[index], currentMove));
+
+                CurrentPlayer.Cards.RemoveAt(index);
             }
-            
-            return false;
+            else
+            {
+                if (id == 40 && dropCard)
+                {
+                    log.Info("Эту карту нельзя сбросить!");
+                    return;
+                }
+
+                try
+                {
+                    CurrentPlayer.gameActions.Remove(GameAction.DropCard);
+                    logCard.Add(new GameCardLog(CurrentPlayer, GameEvent.Droped, CurrentPlayer.Cards[index], currentMove));
+                    CurrentPlayer.Cards.RemoveAt(index);  
+                }
+                catch
+                {
+                    log.Error("Player: " + CurrentPlayer.playerName + " can't pass card " + CurrentPlayer.Cards[index].name);
+                }
+            }
+
+            if (CurrentPlayer.gameActions.Count == 0)
+                CurrentPlayer.gameActions.Add(GameAction.Succes);
         }
 
-       
+
+        public void NextPlayerTurn()
+        {
+            if (!CurrentPlayer.gameActions.Contains(GameAction.Succes))
+                return;
+
+                SetPlayerCards(CurrentPlayer);
+
+                CurrentPlayer.UpdateParams();
+                CurrentPlayer.gameActions.Clear();
+
+                SetPlayerCards(EnemyPlayer);
+
+                Player temp = CurrentPlayer;
+                CurrentPlayer = EnemyPlayer;
+                EnemyPlayer = temp;
+
+
+                if (CurrentPlayer.type == TypePlayer.AI)
+                    MakeMoveAi();
+        }
 
         private Card GetCardById(int id, out int index)
         {
-            index = players[currentPlayer].Cards.FindIndex(x => x.id == id);
-            return players[currentPlayer].Cards[index];
+            index = CurrentPlayer.Cards.FindIndex(x => x.id == id);
+            return CurrentPlayer.Cards[index];
         }
+        
 
-    
-
-        public bool PassMove(int id)
-        {
-            if (id == 40)
-            {
-                log.Info("Эту карту нельзя сбросить!");
-                return false;
-            }
-
-            int index = players[currentPlayer].Cards.FindIndex(x => x.id == id);
-            
-            try
-            {
-                logCard.Add(new GameCardLog(players[currentPlayer], GameEvent.Droped, players[currentPlayer].Cards[index], currentMove));
-                players[currentPlayer].Cards.RemoveAt(index);               
-                return true;
-            }
-            catch
-            {
-                log.Error("Player: " + players[currentPlayer].playerName + " can't pass card " + players[currentPlayer].Cards[index].name);
-            }
-
-
-            return false;
-        }
-
-
-        private void MakeMoveAI()
+        private void MakeMoveAi()
         {
             log.Info("----===== Ход компьютера =====----");
 
-            //TODO: вставка гавнокода, будет исправлено при доработке AI
-           /* if (Status == CurrentAction.EndHumanMove)
+            MakePlayerMove(CurrentPlayer.ChooseCard().id);
+
+            foreach (var gameAction in CurrentPlayer.gameActions)
             {
-                Status = CurrentAction.GetAICard;
-                GetCard();
-
-                Status = CurrentAction.EndHumanMove;
-            }
-          
-
-            while (Status != CurrentAction.AIUseCard)
-            {
-                if (Status == CurrentAction.GetAICard)
+                switch (gameAction)
                 {
-                    GetCard();
-                    Status = CurrentAction.AIUseCard;
-                }
-
-                if (Status == CurrentAction.PlayAgain)
-                {
-                    Status = CurrentAction.GetAICard;
-                    GetCard();
-                    players[currentPlayer].UpdateParams();
-                    Status = CurrentAction.AIUseCard;
-                }
-
-                foreach (var item in players[currentPlayer].Cards)
-                {
-                    if (UseCard(item.id))
-                    {
-
-                        if (Status == CurrentAction.EndHumanMove)
-                            Status = CurrentAction.AIUseCard;
-
-                        if (additionaStatus == CurrentAction.PlayerMustDropCard)
-                        {
-                            if (PassMove(players[currentPlayer].Cards.First().id))
-                            {
-                                additionaStatus = CurrentAction.None;
-                                Status = CurrentAction.GetAICard;
-                                players[currentPlayer].UpdateParams();
-                            }
-
-                            if (Status == CurrentAction.GetAICard)
-                            {
-                                GetCard();
-                            }
-                        }
-
+                    case GameAction.PlayAgain:
+                        MakePlayerMove(CurrentPlayer.ChooseCard().id);
                         break;
-                    }
+                    case GameAction.DropCard:
+                        MakePlayerMove(CurrentPlayer.Cards.First().id, true);
+                        break;
                 }
-
-
-                if (Status == CurrentAction.EndHumanMove)
-                    break;
-             
             }
 
-            //TODO: еще один костыль
-            if (Status == CurrentAction.AIUseCard)
-            {
-                Status = CurrentAction.GetAICard;
-                 GetCard();
-                 Status = CurrentAction.AIUseCard;
-            }
-
-               //если компьютер не использовал карту и ему не нужно брать еще одну, тогда пропускаем ход
-            if (Status != CurrentAction.AIUseCard)
-            {
-                PassMove(players[currentPlayer].Cards.First().id);
-            }*/
+            NextPlayerTurn();
 
             log.Info("----===== Ход компьютера закончился =====----");
         }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Arcomage.Core;
 using Arcomage.Core.Interfaces.Impl;
 using Arcomage.Entity;
+using Arcomage.Entity.Interfaces;
 using Arcomage.Tests.Moq;
 using NUnit.Framework;
 
@@ -16,24 +17,24 @@ namespace Arcomage.Tests.GameControllerTests
         /// <param name="gameController"></param>
         public static void PassStroke(GameController gameController)
         {
-            gameController.SendGameNotification(new Dictionary<string, object>()
-            {
-                { "CurrentAction", CurrentAction.PassStroke },
-                {"ID", 1}
-            });
-            Assert.AreEqual(gameController.Status, CurrentAction.PassStroke, "“екущий статус должен быть равным сбросу карты");
-       
-            gameController.SendGameNotification(new Dictionary<string, object>() { { "CurrentAction", CurrentAction.AnimateHumanMove } });
-            Assert.AreEqual(gameController.Status, CurrentAction.UpdateStatHuman, "“екущий статус должен быть равным обновлению статистики игрока");
+      
+            gameController.MakePlayerMove(1, true);
 
-            gameController.SendGameNotification(new Dictionary<string, object>() { { "CurrentAction", CurrentAction.EndHumanMove } });
-            Assert.AreEqual(gameController.Status, CurrentAction.AIUseCardAnimation, "“екущий статус должен быть равным прорисовке хода компьютера");
+   
+
+           // Assert.AreEqual(gameController.Status, CurrentAction.PassStroke, "“екущий статус должен быть равным сбросу карты");
+       
+            //gameController.SendGameNotification(new Dictionary<string, object>() { { "CurrentAction", CurrentAction.AnimateHumanMove } });
+            //Assert.AreEqual(gameController.Status, CurrentAction.UpdateStatHuman, "“екущий статус должен быть равным обновлению статистики игрока");
+
+            //gameController.SendGameNotification(new Dictionary<string, object>() { { "CurrentAction", CurrentAction.EndHumanMove } });
+           // Assert.AreEqual(gameController.Status, CurrentAction.AIUseCardAnimation, "“екущий статус должен быть равным прорисовке хода компьютера");
         }
 
-        public static GameController InitDemoGame(int server = 0)
+        public static GameController InitDemoGame(int server = 0, IStartParams humanStat = null, IStartParams AIStat = null, int maxCard = 0, List<int> customCard = null)
         {
             LogTest log = new LogTest();
-            GameController gm = null;
+            GameController gm;
 
             switch (server)
             {
@@ -49,35 +50,39 @@ namespace Arcomage.Tests.GameControllerTests
                 case 5:
                     gm = new GameController(log, new TestServer5());
                     break;
+                case 6:
+                    gm = new GameController(log, new TestServer6());
+                    break;
                 default:
                     gm = new GameController(log, new TestServer());
                     break;
             }
 
-            gm.AddPlayer(TypePlayer.Human, "Human", new GameStartParams());
-            gm.AddPlayer(TypePlayer.AI, "AI", new GameStartParams());
+                humanStat = humanStat ?? new GameStartParams();
+                 AIStat = AIStat ?? new GameStartParams();
 
-            gm.SendGameNotification(new Dictionary<string, object>()
-            {
-                {"CurrentAction", CurrentAction.StartGame},
-                {"currentPlayer", TypePlayer.Human}
-            });
+            gm.AddPlayer(TypePlayer.Human, "Human", humanStat);
+            gm.AddPlayer(TypePlayer.AI, "AI", AIStat);
+       
+            if (maxCard > 0)
+                gm.ChangeMaxCard(maxCard);
 
+            gm.StartGame(0, customCard);
             return gm;
         }
 
-        public static void useCard(int id, GameController gameController)
+        public static void UseCard(int id, GameController gameController)
         {
             Assert.AreEqual(gameController.IsCanUseCard(id), true, "Ќе возможно использовать карту");
-            gameController.SendGameNotification(new Dictionary<string, object>()
-            {
-                { "CurrentAction", CurrentAction.HumanUseCard },
-                {"ID", id}
-            });
-            Assert.AreEqual(gameController.Status, CurrentAction.HumanUseCard, "ƒолжен быть статус, что игрок использовал карту");
+    
 
-            gameController.SendGameNotification(new Dictionary<string, object>() { { "CurrentAction", CurrentAction.AnimateHumanMove } });
-            Assert.AreEqual(gameController.Status, CurrentAction.UpdateStatHuman, "ƒолжен быть статус, что анимаци€ карты прошла и теперь нужно обновить статистику");
+            gameController.MakePlayerMove(id);
+
+          //  Assert.AreEqual(gameController.Status, CurrentAction.HumanUseCard, "ƒолжен быть статус, что игрок использовал карту");
+
+           // gameController.SendGameNotification(new Dictionary<string, object>() { { "CurrentAction", CurrentAction.AnimateHumanMove } });
+           // Assert.AreEqual(gameController.Status, CurrentAction.UpdateStatHuman, "ƒолжен быть статус, что анимаци€ карты прошла и теперь нужно обновить статистику");
         }
+
     }
 }

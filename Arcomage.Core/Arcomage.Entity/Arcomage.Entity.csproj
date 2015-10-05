@@ -37,6 +37,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AIPlayer.cs" />
     <Compile Include="Cards\Card.cs" />
     <Compile Include="Cards\CardAttributes.cs" />
     <Compile Include="Cards\CardParams.cs" />

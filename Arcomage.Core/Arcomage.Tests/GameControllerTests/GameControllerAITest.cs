@@ -31,14 +31,9 @@ namespace Arcomage.Tests.GameControllerTests
 
             gm.AddPlayer(TypePlayer.Human, "Human", new GameStartParams());
             gm.AddPlayer(TypePlayer.AI, "AI", new GameStartParams());
-    
-            gm.SendGameNotification(new Dictionary<string, object>()
-            {
-                { "CurrentAction", CurrentAction.StartGame },
-                {"currentPlayer", TypePlayer.AI}
-            });
-
-            Assert.AreEqual(gm.Status, CurrentAction.AIUseCardAnimation, "Текущий статус должен быть равным прорисовке карты компьютера");
+            
+            gm.StartGame(1);
+            Assert.AreEqual(gm.CurrentPlayer.type, TypePlayer.AI, "Текущий статус должен быть равным прорисовке карты компьютера");
         }
 
 
@@ -69,11 +64,11 @@ namespace Arcomage.Tests.GameControllerTests
             gm = GameControllerTestHelper.InitDemoGame(3);
             GameControllerTestHelper.PassStroke(gm);
             
-            gm.SendGameNotification(new Dictionary<string, object>() { { "CurrentAction", CurrentAction.AIMoveIsAnimated } });
-            Assert.AreEqual(gm.Status, CurrentAction.UpdateStatAI, "Текущий статус должен быть равным обновлению статистики компьютера");
+           // gm.SendGameNotification(new Dictionary<string, object>() { { "CurrentAction", CurrentAction.AIMoveIsAnimated } });
+           // Assert.AreEqual(gm.Status, CurrentAction.UpdateStatAI, "Текущий статус должен быть равным обновлению статистики компьютера");
        
-            gm.SendGameNotification( new Dictionary<string, object>() {{"CurrentAction", CurrentAction.EndAIMove }});
-            Assert.AreEqual(gm.GetPlayerParams(SelectPlayer.First)[Attributes.Tower], 0, "Башня врага должна быть уничтожена");
+           // gm.SendGameNotification( new Dictionary<string, object>() {{"CurrentAction", CurrentAction.EndAIMove }});
+            Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Tower], 0, "Башня врага должна быть уничтожена");
             Assert.AreEqual(gm.Winner, "AI", "Компьютер не может проиграть!");
 
         }
