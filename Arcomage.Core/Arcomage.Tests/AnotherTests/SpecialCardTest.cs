@@ -102,6 +102,8 @@ namespace Arcomage.Tests.AnotherTests
          {
              GameController gm = GameControllerTestHelper.InitDemoGame(6, new TestStartParams3(), new TestStartParams3(1), 20, new List<int> { 32 });
              GameControllerTestHelper.UseCard(32, gm);
+             gm.NextPlayerTurn();
+
              Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Animals], 13, "Зверей должно быть 13");
              Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Wall], 7, "Стена должна быть 7");
              Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Menagerie], 2, "Зверинец должен быть равен 2");
@@ -112,6 +114,7 @@ namespace Arcomage.Tests.AnotherTests
          {
              GameController gm = GameControllerTestHelper.InitDemoGame(6, new TestStartParams2(), new TestStartParams2(), 20, new List<int> { 32 });
              GameControllerTestHelper.UseCard(32, gm);
+             gm.NextPlayerTurn();
              Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Animals], 12, "Зверей должно быть 12");
              Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Wall], 11, "Стена должна быть 11");
              Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Menagerie], 1, "Зверинец должен быть равен 1");
@@ -327,9 +330,9 @@ namespace Arcomage.Tests.AnotherTests
         [Test]
         public void CardWithDiscardAITest()
         {
-            GameController gm = GameControllerTestHelper.InitDemoGame(6, new TestStartParams2(), new TestStartParams2(), 20);
+            GameController gm = GameControllerTestHelper.InitDemoGame(6, new TestStartParams2(), new TestStartParams2(), 20, null, new List<int> { 73,31 });
             GameControllerTestHelper.PassStroke(gm);
-
+            gm.NextPlayerTurn();
             var result = gm.logCard.Where(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Used);
 
             //Внимание: при усовершенствование AI данный тест может измениться, .т.к. комп уже осознано будет выбирать какую карту сбросить

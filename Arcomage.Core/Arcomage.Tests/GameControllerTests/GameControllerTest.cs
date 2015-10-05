@@ -195,11 +195,11 @@ namespace Arcomage.Tests.GameControllerTests
          {
              LogTest log = new LogTest();
              GameController gm = new GameController(log, new ArcoSQLLiteServer(@"arcomageDB.db"));
-             gm.AddPlayer(TypePlayer.Human, "Human", new GameStartParams());
+             gm.AddPlayer(TypePlayer.Human, "Human", new GameStartParams(), new List<int> {39, 11, 12, 13, 14, 15});
              gm.AddPlayer(TypePlayer.AI, "AI", new GameStartParams());
 
       
-             gm.StartGame(0, new List<int> {39, 11, 12, 13, 14, 15});
+             gm.StartGame(0);
              Assert.AreEqual(gm.CurrentPlayer.Cards.FirstOrDefault(x => x.id == 39).id, 39,
                  "У игрока должна быть карта с №39");
          }

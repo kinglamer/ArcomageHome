@@ -117,6 +117,8 @@ namespace Arcomage.Core
             else
                 host = server;
 
+            serverCards = JsonConvert.DeserializeObject<List<Card>>(host.GetRandomCard());
+
           /*  //Устанавливаем соответствие между методом и статусом
             eventHandlers = new Dictionary<CurrentAction, EventMethod>();
             eventHandlers.Add(CurrentAction.None,None);
@@ -159,7 +161,7 @@ namespace Arcomage.Core
             MaxCard = newMaxCard;
         }
 
-        public void AddPlayer(TypePlayer tp, string name, IStartParams startParams = null)
+        public void AddPlayer(TypePlayer tp, string name, IStartParams startParams = null, IEnumerable<int> cardTricksters = null)
         {
             if (players.Count == 2)
             {
@@ -170,10 +172,26 @@ namespace Arcomage.Core
             if (startParams == null)
                 startParams = new GameStartParams();
 
-            players.Add(new Player(name, tp, startParams));
+            Player newPlayer = tp == TypePlayer.Human ? new Player(name, tp, startParams) : new AiPlayer(name, tp, startParams);
+           
+            if (cardTricksters != null)
+                foreach (var item in cardTricksters)
+                {
+                    if (newPlayer.Cards.Count == MaxCard)
+                        break;
+
+                    var newCard = serverCards.FirstOrDefault(x => x.id == item);
+                    if (newCard != null)
+                    {
+                        newCard.description = ParseDescription.Parse(newCard.description);
+                        newPlayer.Cards.Add(newCard);
+                    }
+                }
+
+            players.Add(newPlayer);
         }
 
-        public void StartGame(int currentPlayer = -1, IEnumerable<int> cardTricksters = null)
+        public void StartGame(int currentPlayer = -1)
         {
             if (players.Count == 0)
             {
@@ -207,22 +225,8 @@ namespace Arcomage.Core
             log.Info("Game is started. CurrentPlayer: " + CurrentPlayer);
 
             currentMove = 0;
-            serverCards = JsonConvert.DeserializeObject<List<Card>>(host.GetRandomCard());
-
-
-            if (cardTricksters != null)
-                foreach (var item in cardTricksters)
-                {
-                    if (CurrentPlayer.Cards.Count == MaxCard)
-                        break;
-
-                    var newCard = serverCards.FirstOrDefault(x => x.id == item);
-                    if (newCard != null)
-                    {
-                        newCard.description = ParseDescription.Parse(newCard.description);
-                        CurrentPlayer.Cards.Add(newCard);
-                    }
-                }
+   
+ 
 
             SetPlayerCards(CurrentPlayer);
             SetPlayerCards(EnemyPlayer);
@@ -390,7 +394,10 @@ namespace Arcomage.Core
 
             MakePlayerMove(CurrentPlayer.ChooseCard().id);
 
-            foreach (var gameAction in CurrentPlayer.gameActions)
+            GameAction[] copyAction = new GameAction[CurrentPlayer.gameActions.Count] ;
+            CurrentPlayer.gameActions.CopyTo(copyAction);
+
+            foreach (var gameAction in copyAction)
             {
                 switch (gameAction)
                 {

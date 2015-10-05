@@ -7,7 +7,7 @@ using Arcomage.Entity.Interfaces;
 
 namespace Arcomage.Entity
 {
-    class AiPlayer : Player
+    public class AiPlayer : Player
     {
         public AiPlayer(string playerName, TypePlayer type, IStartParams gameParams) : base(playerName, type, gameParams)
         {

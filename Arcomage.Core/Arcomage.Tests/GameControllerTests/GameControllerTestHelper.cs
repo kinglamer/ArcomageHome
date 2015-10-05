@@ -31,7 +31,7 @@ namespace Arcomage.Tests.GameControllerTests
            // Assert.AreEqual(gameController.Status, CurrentAction.AIUseCardAnimation, "Текущий статус должен быть равным прорисовке хода компьютера");
         }
 
-        public static GameController InitDemoGame(int server = 0, IStartParams humanStat = null, IStartParams AIStat = null, int maxCard = 0, List<int> customCard = null)
+        public static GameController InitDemoGame(int server = 0, IStartParams humanStat = null, IStartParams AIStat = null, int maxCard = 0, List<int> customCard = null, List<int> customCardAi = null)
         {
             LogTest log = new LogTest();
             GameController gm;
@@ -61,13 +61,13 @@ namespace Arcomage.Tests.GameControllerTests
                 humanStat = humanStat ?? new GameStartParams();
                  AIStat = AIStat ?? new GameStartParams();
 
-            gm.AddPlayer(TypePlayer.Human, "Human", humanStat);
-            gm.AddPlayer(TypePlayer.AI, "AI", AIStat);
+            gm.AddPlayer(TypePlayer.Human, "Human", humanStat, customCard);
+            gm.AddPlayer(TypePlayer.AI, "AI", AIStat, customCardAi);
        
             if (maxCard > 0)
                 gm.ChangeMaxCard(maxCard);
 
-            gm.StartGame(0, customCard);
+            gm.StartGame(0);
             return gm;
         }
 
