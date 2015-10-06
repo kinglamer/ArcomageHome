@@ -14,26 +14,6 @@ namespace Arcomage.Tests.GameControllerTests
     class GameControllerTestHelper
     {
  
-        /// <summary>
-        /// Последовательность действий позволяющая игроку сбросить свой ход
-        /// </summary>
-        /// <param name="gameController"></param>
-        public static void PassStroke(GameController gameController)
-        {
-      
-            gameController.MakePlayerMove(1, true);
-
-   
-
-           // Assert.AreEqual(gameController.Status, CurrentAction.PassStroke, "Текущий статус должен быть равным сбросу карты");
-       
-            //gameController.SendGameNotification(new Dictionary<string, object>() { { "CurrentAction", CurrentAction.AnimateHumanMove } });
-            //Assert.AreEqual(gameController.Status, CurrentAction.UpdateStatHuman, "Текущий статус должен быть равным обновлению статистики игрока");
-
-            //gameController.SendGameNotification(new Dictionary<string, object>() { { "CurrentAction", CurrentAction.EndHumanMove } });
-           // Assert.AreEqual(gameController.Status, CurrentAction.AIUseCardAnimation, "Текущий статус должен быть равным прорисовке хода компьютера");
-        }
-
         public static GameController InitDemoGame(int server = 0, IStartParams humanStat = null, IStartParams AIStat = null, int maxCard = 0, List<int> customCard = null, List<int> customCardAi = null)
         {
             LogTest log = new LogTest();
@@ -77,19 +57,7 @@ namespace Arcomage.Tests.GameControllerTests
             return gm;
         }
 
-        public static void UseCard(int id, GameController gameController)
-        {
-            Assert.AreEqual(gameController.CanUseCard(id), true, "Не возможно использовать карту");
-    
-
-            gameController.MakePlayerMove(id);
-
-          //  Assert.AreEqual(gameController.Status, CurrentAction.HumanUseCard, "Должен быть статус, что игрок использовал карту");
-
-           // gameController.SendGameNotification(new Dictionary<string, object>() { { "CurrentAction", CurrentAction.AnimateHumanMove } });
-           // Assert.AreEqual(gameController.Status, CurrentAction.UpdateStatHuman, "Должен быть статус, что анимация карты прошла и теперь нужно обновить статистику");
-        }
-
+   
         public static void MakeMoveAi(GameController gm, ILog log)
         {
             log.Info("----===== Ход компьютера =====----");

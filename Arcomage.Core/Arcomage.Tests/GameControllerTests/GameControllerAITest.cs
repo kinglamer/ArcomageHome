@@ -48,7 +48,7 @@ namespace Arcomage.Tests.GameControllerTests
         public void WhichCardUseAi()
         {
             GameController gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> { 1 }, new List<int> { 2 });
-            GameControllerTestHelper.PassStroke(gm);
+            gm.MakePlayerMove(1, true);
             gm.NextPlayerTurn();
             GameControllerTestHelper.MakeMoveAi(gm, log);
             Assert.AreEqual(gm.GetAiUsedCard().LastOrDefault().id, 2, "Компьютер должен использовать карту id 2");
@@ -63,7 +63,7 @@ namespace Arcomage.Tests.GameControllerTests
         public void ComputerMustWin()
         {
             GameController gm = GameControllerTestHelper.InitDemoGame(3);
-            GameControllerTestHelper.PassStroke(gm);
+            gm.MakePlayerMove(1, true);
             gm.NextPlayerTurn();
             GameControllerTestHelper.MakeMoveAi(gm, log);
            // gm.SendGameNotification(new Dictionary<string, object>() { { "CurrentAction", CurrentAction.AIMoveIsAnimated } });
@@ -84,7 +84,7 @@ namespace Arcomage.Tests.GameControllerTests
         public void AiCanPassMove()
         {
             GameController gm = GameControllerTestHelper.InitDemoGame(5, null, null, 6, null, new List<int> { 2 });
-            GameControllerTestHelper.PassStroke(gm);
+            gm.MakePlayerMove(1, true);
             gm.NextPlayerTurn();
             GameControllerTestHelper.MakeMoveAi(gm, log);
             //Внимание: при усовершенствование AI данный тест может измениться, .т.к. комп уже осознано будет выбирать какую карту сбросить
@@ -101,7 +101,7 @@ namespace Arcomage.Tests.GameControllerTests
         {
             //Внимание: при усовершенствование AI данный тест может измениться, .т.к. комп уже осознано будет выбирать какую карту сбросить
             GameController gm = GameControllerTestHelper.InitDemoGame(4, null, null, 6, null, new List<int> { 55, 6 });
-            GameControllerTestHelper.PassStroke(gm);
+            gm.MakePlayerMove(1, true);
             gm.NextPlayerTurn();
             GameControllerTestHelper.MakeMoveAi(gm, log);
 

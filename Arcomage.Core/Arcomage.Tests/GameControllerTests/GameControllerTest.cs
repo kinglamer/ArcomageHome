@@ -39,7 +39,7 @@ namespace Arcomage.Tests.GameControllerTests
          public void PlayerMustWin()
          {
              GameController gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> { 1 });
-             GameControllerTestHelper.UseCard(1, gm);
+             gm.MakePlayerMove(1);
              gm.NextPlayerTurn();
              Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Tower], 0, "Ѕашн€ врага должна быть уничтожена");
             // Assert.AreEqual(gm.Status, CurrentAction.UpdateStatHuman, "“екущий статус должен быть равным обновлению статистики игрока");
@@ -89,8 +89,8 @@ namespace Arcomage.Tests.GameControllerTests
              gm.AddPlayer(TypePlayer.Human, "Human", new GameStartParams(), new List<int> {2});
              gm.AddPlayer(TypePlayer.Human, "AI", new GameStartParams());
              gm.StartGame(0);
-             
-             GameControllerTestHelper.UseCard(2, gm);
+
+             gm.MakePlayerMove(2);
              gm.NextPlayerTurn();
           
              Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Wall], 5 - 4, "Ќе правильно применен параметр PlayerWall");
@@ -121,7 +121,7 @@ namespace Arcomage.Tests.GameControllerTests
          public void CheckAddDiamonds()
          {
              GameController gm = GameControllerTestHelper.InitDemoGame(2);
-             GameControllerTestHelper.UseCard(6, gm);
+             gm.MakePlayerMove(6);
              gm.NextPlayerTurn();
              Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Diamonds], 5 + 11 + 1, "Ќе правильно применен параметр PlayerDiamonds");
          }
@@ -134,7 +134,7 @@ namespace Arcomage.Tests.GameControllerTests
          public void CheckApplyEnemyDirectDamage()
          {
              GameController gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int>{3});
-             GameControllerTestHelper.UseCard(3, gm);
+             gm.MakePlayerMove(3);
              Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Wall], 0, "Ќе правильно применен параметр EnemyDirectDamage");
              Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Tower], 0, "Ќе правильно применен параметр EnemyDirectDamage");
      
@@ -148,7 +148,7 @@ namespace Arcomage.Tests.GameControllerTests
          public void CheckApplyPlayerDirectDamage()
          {
              GameController gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> { 4 });
-             GameControllerTestHelper.UseCard(4, gm);
+             gm.MakePlayerMove(4);
 
              Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Wall], 0, "Ќе правильно применен параметр PlayerDirectDamage");
              Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Tower], 0, "Ќе правильно применен параметр PlayerDirectDamage");
@@ -184,7 +184,7 @@ namespace Arcomage.Tests.GameControllerTests
          public void PlayerCanPassMove()
          {
              GameController gm = GameControllerTestHelper.InitDemoGame(5);
-             GameControllerTestHelper.PassStroke(gm);
+             gm.MakePlayerMove(1, true);
              var result = gm.LogCard.FirstOrDefault(x => x.player.type == TypePlayer.Human && x.gameEvent == GameEvent.Droped);
              //¬нимание: при усовершенствование AI данный тест может изменитьс€, .т.к. комп уже осознано будет выбирать какую карту сбросить
              Assert.AreEqual(result.card.id, 1, "Human должен сбросить карту 1");
