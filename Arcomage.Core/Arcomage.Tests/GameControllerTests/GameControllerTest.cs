@@ -19,17 +19,7 @@ namespace Arcomage.Tests.GameControllerTests
 
         }
 
-        /// <summary>
-        /// ÷ель: ѕроверка, что игра стартовала
-        /// –езультат: статус игры должен быть равным "GetPlayerCard" - он означает, что игрок должен получить карты
-        /// </summary>
-        [Test]
-        public void GameIsStarted()
-        {
-            GameController gm = GameControllerTestHelper.InitDemoGame();
-            // Assert.AreEqual(gm.Status, CurrentAction.WaitHumanMove, "»гра не стартовала");
-        }
-
+ 
         /// <summary>
         /// ÷ель: проверить, что игрок может победить
         /// –езультат:  башн€ противника должна быть уничтожена, в переменной Winner должно хранитьс€ им€ пользовател€ 
@@ -41,12 +31,7 @@ namespace Arcomage.Tests.GameControllerTests
             gm.MakePlayerMove(1);
             gm.NextPlayerTurn();
             Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Tower], 0, "Ѕашн€ врага должна быть уничтожена");
-            // Assert.AreEqual(gm.Status, CurrentAction.UpdateStatHuman, "“екущий статус должен быть равным обновлению статистики игрока");
-
-            // gm.SendGameNotification(new Dictionary<string, object>() { { "CurrentAction", CurrentAction.EndHumanMove } });
             Assert.AreEqual(gm.Winner, "Human", "»грок не может проиграть!");
-
-
         }
 
         /// <summary>
@@ -73,8 +58,6 @@ namespace Arcomage.Tests.GameControllerTests
             Assert.IsTrue(gm.CurrentPlayer.Cards.Count > 1, " ƒолжно быть хот€ бы одна карта");
         }
 
-
-
         /// <summary>
         /// ÷ель: проверить как примен€ютс€ параметры карты к параметрам игроков
         /// –езультат: при вычитание или сложение параметров игрока с параметрами карты, должны получить конкретное значение
@@ -84,7 +67,7 @@ namespace Arcomage.Tests.GameControllerTests
         [Test]
         public void CheckApplyCardParams()
         {
-            GameController gm = new GameController(new LogTest(), new TestServer());
+            GameController gm = new GameController(new LogTest(), new TestServerForCustomCard());
             gm.AddPlayer(TypePlayer.Human, "Human", null, new List<int> {2});
             gm.AddPlayer(TypePlayer.Human, "AI");
             gm.StartGame(0);

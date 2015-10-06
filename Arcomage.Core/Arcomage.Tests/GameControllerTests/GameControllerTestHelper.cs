@@ -20,10 +20,10 @@ namespace Arcomage.Tests.GameControllerTests
             switch (server)
             {
                 case 6:
-                    gm = new GameController(new LogTest(), new TestServer6());
+                    gm = new GameController(new LogTest(), new TestServerForSpecialCard());
                     break;
                 default:
-                    gm = new GameController(new LogTest(), new TestServer());
+                    gm = new GameController(new LogTest(), new TestServerForCustomCard());
                     break;
             }
 
@@ -42,7 +42,6 @@ namespace Arcomage.Tests.GameControllerTests
         public static void MakeMoveAi(GameController gm, ILog log)
         {
             log.Info("----===== Ход компьютера =====----");
-
             gm.MakePlayerMove(gm.CurrentPlayer.ChooseCard().id);
 
             GameAction[] copyAction = new GameAction[gm.CurrentPlayer.gameActions.Count];
@@ -62,7 +61,6 @@ namespace Arcomage.Tests.GameControllerTests
             }
 
             gm.NextPlayerTurn();
-
             log.Info("----===== Ход компьютера закончился =====----");
         }
     }

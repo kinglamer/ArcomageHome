@@ -11,7 +11,7 @@ using NUnit.Framework.Constraints;
 
 namespace Arcomage.Tests.Moq
 {
-    internal class TestServer : IArcoServer
+    internal class TestServerForCustomCard : IArcoServer
     {
         public string GetRandomCard()
         {

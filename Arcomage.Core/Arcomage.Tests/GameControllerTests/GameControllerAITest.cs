@@ -26,7 +26,7 @@ namespace Arcomage.Tests.GameControllerTests
         [Test]
         public void AiCanStartTheGame()
         {
-            GameController gm = new GameController(log, new TestServer());
+            GameController gm = new GameController(log, new TestServerForCustomCard());
 
             gm.AddPlayer(TypePlayer.Human, "Human");
             gm.AddPlayer(TypePlayer.AI, "AI", null, new List<int> {1});

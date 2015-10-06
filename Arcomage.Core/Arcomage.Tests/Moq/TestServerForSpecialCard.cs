@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace Arcomage.Tests.Moq
 {
-    internal class TestServer6 : IArcoServer
+    internal class TestServerForSpecialCard : IArcoServer
     {
         public string GetRandomCard()
         {
