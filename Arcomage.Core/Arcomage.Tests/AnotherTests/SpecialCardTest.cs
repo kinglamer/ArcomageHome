@@ -294,7 +294,7 @@ namespace Arcomage.Tests.AnotherTests
         {
             GameController gm = GameControllerTestHelper.InitDemoGame(6, new TestStartParams2(), new TestStartParams2(), 20);
             Assert.AreEqual(gm.CurrentPlayer.Cards.Count, 18, "Количество карт должно быть равно 18");
-            Assert.AreEqual(gm.IsCanUseCard(39), true, "Не возможно использовать карту");
+            Assert.AreEqual(gm.CanUseCard(39), true, "Не возможно использовать карту");
  
             gm.MakePlayerMove(39);
 

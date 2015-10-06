@@ -77,7 +77,7 @@ namespace Arcomage.Tests.GameControllerTests
 
         public static void UseCard(int id, GameController gameController)
         {
-            Assert.AreEqual(gameController.IsCanUseCard(id), true, "Не возможно использовать карту");
+            Assert.AreEqual(gameController.CanUseCard(id), true, "Не возможно использовать карту");
     
 
             gameController.MakePlayerMove(id);

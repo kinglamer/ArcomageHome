@@ -58,7 +58,7 @@ namespace Arcomage.Tests.GameControllerTests
          public void PlayerCanUserCard()
          {
              GameController gm = GameControllerTestHelper.InitDemoGame(0,null,null,6, new List<int>{1});
-             Assert.AreEqual(gm.IsCanUseCard(1), true, "Не возможно использовать карту");
+             Assert.AreEqual(gm.CanUseCard(1), true, "Не возможно использовать карту");
          }
         
 
@@ -163,7 +163,7 @@ namespace Arcomage.Tests.GameControllerTests
          public void CheckPlayAgain()
          {
              GameController gm = GameControllerTestHelper.InitDemoGame();
-             Assert.AreEqual(gm.IsCanUseCard(55), true, "Не возможно использовать карту");
+             Assert.AreEqual(gm.CanUseCard(55), true, "Не возможно использовать карту");
 
     
              gm.MakePlayerMove(55);

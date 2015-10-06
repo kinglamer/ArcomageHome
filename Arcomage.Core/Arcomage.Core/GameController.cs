@@ -88,7 +88,6 @@ namespace Arcomage.Core
         public string Winner { get;private set; }
         private IArcoServer host;
 
-        private Dictionary<CurrentAction, EventMethod> eventHandlers;
         private Dictionary<int, Card> specialCardHandlers;
 
         //очередная подтасовка, что игрок начинал ход с определенным набором карт
@@ -120,23 +119,7 @@ namespace Arcomage.Core
 
             serverCards = JsonConvert.DeserializeObject<List<Card>>(host.GetRandomCard());
 
-          /*  //Устанавливаем соответствие между методом и статусом
-            eventHandlers = new Dictionary<CurrentAction, EventMethod>();
-            eventHandlers.Add(CurrentAction.None,None);
-            eventHandlers.Add(CurrentAction.StartGame, StartGame);
-            eventHandlers.Add(CurrentAction.GetPlayerCard, GetPlayerCard);
-            eventHandlers.Add(CurrentAction.WaitHumanMove, WaitHumanMove);
-            eventHandlers.Add(CurrentAction.PassStroke, PassStroke);
-            eventHandlers.Add(CurrentAction.HumanUseCard, HumanUseCard);
-            eventHandlers.Add(CurrentAction.UpdateStatHuman, UpdateStat);
-            eventHandlers.Add(CurrentAction.UpdateStatAI, UpdateStat);
-            eventHandlers.Add(CurrentAction.EndHumanMove, EndHumanMove);
-            eventHandlers.Add(CurrentAction.AIMoveIsAnimated, AIMoveIsAnimated);
-            eventHandlers.Add(CurrentAction.AIUseCardAnimation, AIUseCardAnimation);
-            eventHandlers.Add(CurrentAction.EndAIMove, EndAIMove);
-            eventHandlers.Add(CurrentAction.EndGame, EndGame);
-            eventHandlers.Add(CurrentAction.PlayerMustDropCard, PlayerMustDropCard);*/
-            
+           
             specialCardHandlers = new Dictionary<int, Card>();
             specialCardHandlers.Add(5,new Card5());
             specialCardHandlers.Add(8,new Card8());
@@ -253,7 +236,7 @@ namespace Arcomage.Core
         /// <summary>
         /// Проверка хватает ли ресурсов для использования карты
         /// </summary>
-        public bool IsCanUseCard(Price price)
+        public bool CanUseCard(Price price)
         {
             if (CurrentPlayer.PlayerParams[price.attributes] >= price.value)
                 return true;
@@ -261,10 +244,10 @@ namespace Arcomage.Core
             return false;
         }
 
-        public bool IsCanUseCard(int id)
+        public bool CanUseCard(int id)
         {
             int index;
-            return IsCanUseCard(GetCardById(id, out index).price);
+            return CanUseCard(GetCardById(id, out index).price);
         }
 
 
@@ -310,7 +293,7 @@ namespace Arcomage.Core
             int index;
             var card = GetCardById(id, out index);
             
-            if (IsCanUseCard(card.price) && !dropCard)
+            if (CanUseCard(card.price) && !dropCard)
             {
 
                 if (CurrentPlayer.gameActions.Contains(GameAction.PlayAgain))

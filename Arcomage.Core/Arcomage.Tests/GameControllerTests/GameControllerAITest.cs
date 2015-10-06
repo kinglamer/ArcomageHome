@@ -11,7 +11,6 @@ namespace Arcomage.Tests.GameControllerTests
     [TestFixture]
     class GameControllerAITest
     {
-        private GameController gm;
 
     [SetUp]
         public void Init()
@@ -25,7 +24,7 @@ namespace Arcomage.Tests.GameControllerTests
         /// Результат: компьютер должен использовать карту и передать ход человеку
         /// </summary>
         [Test]
-        public void AICanStartTheGame()
+        public void AiCanStartTheGame()
         {
             GameController gm = new GameController(new LogTest(), new TestServer2());
 
@@ -33,7 +32,11 @@ namespace Arcomage.Tests.GameControllerTests
             gm.AddPlayer(TypePlayer.AI, "AI", new GameStartParams());
             
             gm.StartGame(1);
-            Assert.AreEqual(gm.CurrentPlayer.type, TypePlayer.AI, "Текущий статус должен быть равным прорисовке карты компьютера");
+
+            Assert.AreEqual(gm.logCard.Count(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Used), 1,
+                "Компьютер должен использовать карту");
+
+            Assert.AreEqual(gm.CurrentPlayer.type, TypePlayer.Human, "Ход должен вернуться к человеку");
         }
 
 
@@ -42,17 +45,14 @@ namespace Arcomage.Tests.GameControllerTests
         /// Результат: компьютер должен использовать карту с id == 1, т.к. на данный момент она подходит под все условия
         /// </summary>
         [Test]
-        public void WhichCardUseAI()
+        public void WhichCardUseAi()
         {
-            gm = GameControllerTestHelper.InitDemoGame();
+            GameController gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, null, new List<int> { 2 });
             GameControllerTestHelper.PassStroke(gm);
+            gm.NextPlayerTurn();
             Assert.AreEqual(gm.GetAiUsedCard().LastOrDefault().id, 2, "Компьютер должен использовать карту id 2");
         }
-
-
-
-    
-
+        
   
         /// <summary>
         /// Цель: проверить, что компьютер может выйграть 
@@ -61,14 +61,14 @@ namespace Arcomage.Tests.GameControllerTests
         [Test]
         public void ComputerMustWin()
         {
-            gm = GameControllerTestHelper.InitDemoGame(3);
+            GameController gm = GameControllerTestHelper.InitDemoGame(3);
             GameControllerTestHelper.PassStroke(gm);
-            
+            gm.NextPlayerTurn();
            // gm.SendGameNotification(new Dictionary<string, object>() { { "CurrentAction", CurrentAction.AIMoveIsAnimated } });
            // Assert.AreEqual(gm.Status, CurrentAction.UpdateStatAI, "Текущий статус должен быть равным обновлению статистики компьютера");
        
            // gm.SendGameNotification( new Dictionary<string, object>() {{"CurrentAction", CurrentAction.EndAIMove }});
-            Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Tower], 0, "Башня врага должна быть уничтожена");
+            Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Tower], 0, "Башня врага должна быть уничтожена");
             Assert.AreEqual(gm.Winner, "AI", "Компьютер не может проиграть!");
 
         }
@@ -79,9 +79,9 @@ namespace Arcomage.Tests.GameControllerTests
         /// Результат: в логе должен быть найден id определенной карты
         /// </summary>
         [Test]
-        public void AICanPassMove()
+        public void AiCanPassMove()
         {
-            gm = GameControllerTestHelper.InitDemoGame(5, null, null,6,null, new List<int>{2});
+            GameController gm = GameControllerTestHelper.InitDemoGame(5, null, null, 6, null, new List<int> { 2 });
             GameControllerTestHelper.PassStroke(gm);
             gm.NextPlayerTurn();
             //Внимание: при усовершенствование AI данный тест может измениться, .т.к. комп уже осознано будет выбирать какую карту сбросить
@@ -94,10 +94,10 @@ namespace Arcomage.Tests.GameControllerTests
         /// Результат: должна быть карта с определенным id 
         /// </summary>
         [Test]
-        public void AICanGetAnotherCard()
+        public void AiCanGetAnotherCard()
         {
             //Внимание: при усовершенствование AI данный тест может измениться, .т.к. комп уже осознано будет выбирать какую карту сбросить
-            gm = GameControllerTestHelper.InitDemoGame(4, null, null, 6, null, new List<int>{55, 6});
+            GameController gm = GameControllerTestHelper.InitDemoGame(4, null, null, 6, null, new List<int> { 55, 6 });
             GameControllerTestHelper.PassStroke(gm);
             gm.NextPlayerTurn();
             Assert.AreEqual(gm.logCard.LastOrDefault(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Used).card.id, 6,
