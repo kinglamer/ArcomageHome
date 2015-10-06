@@ -11,21 +11,18 @@ namespace Arcomage.Core
     {
         public static Dictionary<Attributes, int> GetWinParams()
         {
-            Dictionary<Attributes, int> WinParams = new Dictionary<Attributes, int>();
-            WinParams.Add(Attributes.Tower, 50);
-            WinParams.Add(Attributes.Animals, 150);
-            WinParams.Add(Attributes.Rocks, 150);
-            WinParams.Add(Attributes.Diamonds, 150);
-
-            return WinParams;
+            return new Dictionary<Attributes, int>
+            {
+                {Attributes.Tower, 50},
+                {Attributes.Animals, 150},
+                {Attributes.Rocks, 150},
+                {Attributes.Diamonds, 150}
+            };;
         }
 
         public static Dictionary<Attributes, int> GetLoseParams()
         {
-            Dictionary<Attributes, int> LoseParams = new Dictionary<Attributes, int>();
-            LoseParams.Add(Attributes.Tower, 0);
-
-            return LoseParams;
+            return new Dictionary<Attributes, int> {{Attributes.Tower, 0}};
         }
 
         public static T ConvertObjToEnum<T>(object o)
@@ -48,9 +45,9 @@ namespace Arcomage.Core
 
             for (int i = 0; i < players.Count; i ++)
             {
-                int Ememyindex = i == 1 ? 0 : 1;
+                int ememyindex = i == 1 ? 0 : 1;
 
-                if (IsPlayerWin(players[i].PlayerParams, winParams) || IsPlayerLose(players[Ememyindex].PlayerParams, loseParams))
+                if (IsPlayerWin(players[i].PlayerParams, winParams) || IsPlayerLose(players[ememyindex].PlayerParams, loseParams))
                 {
                     returnVal = players[i].playerName;
                     break;
@@ -61,30 +58,12 @@ namespace Arcomage.Core
 
         private static bool IsPlayerWin(Dictionary<Attributes, int> playerStatistic, Dictionary<Attributes, int> winParams)
         {
-            foreach (var item in winParams)
-            {
-                if (playerStatistic[item.Key] >= item.Value)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return winParams.Any(item => playerStatistic[item.Key] >= item.Value);
         }
 
         private static bool IsPlayerLose(Dictionary<Attributes, int> playerStatistic, Dictionary<Attributes, int> loseParams)
         {
-            foreach (var item in loseParams)
-            {
-                if (playerStatistic[item.Key] <= item.Value)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return loseParams.Any(item => playerStatistic[item.Key] <= item.Value);
         }
-
-
     }
 }

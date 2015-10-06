@@ -51,12 +51,10 @@
     <Compile Include="AlternativeServers\ArcoSQLLiteServer.cs" />
     <Compile Include="Common\CollectionHelper.cs" />
     <Compile Include="Common\ParseDescription.cs" />
-    <Compile Include="EnumCatalog.cs" />
     <Compile Include="GameCardLog.cs" />
     <Compile Include="GameController.cs" />
     <Compile Include="GameControllerHelper.cs" />
     <Compile Include="Interfaces\ILog.cs" />
-    <Compile Include="Interfaces\Impl\GameStartParams.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\ArcomageService\Reference.cs">
       <AutoGen>True</AutoGen>

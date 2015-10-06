@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Arcomage.Entity.Cards;
-using Arcomage.Entity.Interfaces;
 
 namespace Arcomage.Entity
 {
     public class AiPlayer : Player
     {
-        public AiPlayer(string playerName, TypePlayer type, IStartParams gameParams) : base(playerName, type, gameParams)
+        public AiPlayer(string playerName, TypePlayer type, Dictionary<Attributes, int> gameParams)
+            : base(playerName, type, gameParams)
         {
         }
 
@@ -25,7 +23,5 @@ namespace Arcomage.Entity
 
             return card;
         }
-
-
     }
 }

@@ -12,14 +12,14 @@ using NUnit.Framework;
 namespace Arcomage.Tests.AnotherTests
 {
     [TestFixture]
-    class ParserDescripTest
+    internal class ParserDescripTest
     {
 
         [Test]
         public void StringMustBeEqual()
         {
             string value =
-               "<span style=\"font-weight: bold; color: #66ff00; font-style: italic; font-size: 8pt;\">Test</span>";
+                "<span style=\"font-weight: bold; color: #66ff00; font-style: italic; font-size: 8pt;\">Test</span>";
 
             Assert.AreEqual(ParseDescription.Parse(value), "<size=8><i><color=#66ff00><b>Test</b></color></i></size>",
                 "Строка преобразована неправильно");
@@ -41,9 +41,10 @@ namespace Arcomage.Tests.AnotherTests
                 if (item.description.Length > 0 && description.Length == 0)
                 {
                     countDesc++;
-                    Console.WriteLine("item " + item.name + " has no descript. Original text: " + Environment.NewLine + item.description + Environment.NewLine);
+                    Console.WriteLine("item " + item.name + " has no descript. Original text: " + Environment.NewLine +
+                                      item.description + Environment.NewLine);
                 }
-               
+
             }
 
             Assert.AreEqual(countDesc, 0, "Не должно быть карт с отсутствующим описанием");
@@ -57,9 +58,9 @@ namespace Arcomage.Tests.AnotherTests
             List<Card> result = JsonConvert.DeserializeObject<List<Card>>(cardFromServer);
             string description = "";
 
-            foreach (var item in result.Where(x=>x.id == 90))
+            foreach (var item in result.Where(x => x.id == 90))
             {
-                 description = ParseDescription.Parse(item.description);
+                description = ParseDescription.Parse(item.description);
             }
 
             Assert.AreEqual(description.IndexOf("&"), -1, "Не должно быть знаков амперсант");
@@ -83,7 +84,7 @@ namespace Arcomage.Tests.AnotherTests
 
 
         [Test]
-        public void SqliteDBTest()
+        public void SqliteDbTest()
         {
             IArcoServer host = new ArcoSQLLiteServer(@"arcomageDB.db");
             string cardFromServer = host.GetRandomCard();

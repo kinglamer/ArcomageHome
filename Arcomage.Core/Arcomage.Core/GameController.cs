@@ -6,11 +6,9 @@ using System.ServiceModel;
 using Arcomage.Core.ArcomageService;
 using Arcomage.Core.Common;
 using Arcomage.Core.Interfaces;
-using Arcomage.Core.Interfaces.Impl;
 using Arcomage.Core.SpecialCard;
 using Arcomage.Entity;
 using Arcomage.Entity.Cards;
-using Arcomage.Entity.Interfaces;
 using Newtonsoft.Json;
 
 
@@ -45,12 +43,12 @@ namespace Arcomage.Core
 
 
 
-        public GameController(ILog _log, IArcoServer server = null)
+        public GameController(ILog log, IArcoServer server = null)
         {
             IArcoServer host;
             IsGameEnded = true;
             _maxCard = 6;
-            Log = _log;
+            Log = log;
             _loseParams = GameControllerHelper.GetLoseParams();
             _winParams = GameControllerHelper.GetWinParams();
             _players = new List<Player>();
@@ -86,7 +84,7 @@ namespace Arcomage.Core
             _maxCard = newMaxCard;
         }
 
-        public void AddPlayer(TypePlayer tp, string name, IStartParams startParams = null,
+        public void AddPlayer(TypePlayer tp, string name, Dictionary<Attributes, int> startParams = null,
             IEnumerable<int> cardTricksters = null)
         {
             if (_players.Count == 2)
@@ -96,13 +94,27 @@ namespace Arcomage.Core
             }
 
             if (startParams == null)
-                startParams = new GameStartParams();
+            {
+                startParams = new Dictionary<Attributes, int>
+                {
+                    {Attributes.Wall, 5},
+                    {Attributes.Tower, 10},
+                    {Attributes.Menagerie, 1},
+                    {Attributes.Colliery, 1},
+                    {Attributes.DiamondMines, 1},
+                    {Attributes.Rocks, 5},
+                    {Attributes.Diamonds, 5},
+                    {Attributes.Animals, 5}
+                };
+            }
+
 
             Player newPlayer = tp == TypePlayer.Human
                 ? new Player(name, tp, startParams)
                 : new AiPlayer(name, tp, startParams);
 
-            if (cardTricksters != null)
+
+            if (cardTricksters != null) //добавление кастомных стартовых карт для игрока
                 foreach (var item in cardTricksters)
                 {
                     if (newPlayer.Cards.Count == _maxCard)
@@ -188,11 +200,11 @@ namespace Arcomage.Core
         public List<Card> GetAiUsedCard()
         {
             List<Card> returnVal = new List<Card>();
-            var result = LogCard.Where(x=>x.player.type == TypePlayer.AI && x.move == _currentMove);
+            var result = LogCard.Where(x=>x.Player.type == TypePlayer.AI && x.Move == _currentMove);
 
             foreach (var item in result)
             {
-                returnVal.Add(item.card);
+                returnVal.Add(item.Card);
             }
 
             return returnVal;
@@ -226,7 +238,7 @@ namespace Arcomage.Core
         /// <param name="dropCard">Флаг, что карта сбрасывается</param>
         public void MakePlayerMove(int id, bool dropCard = false)
         {
-            if (CurrentPlayer.gameActions.Contains(GameAction.Succes))
+            if (CurrentPlayer.gameActions.Contains(GameAction.EndMove))
                 return;
 
             int index;
@@ -235,8 +247,8 @@ namespace Arcomage.Core
             if (CanUseCard(card.price) && !dropCard)
             {
 
-                if (CurrentPlayer.gameActions.Contains(GameAction.PlayAgain))
-                    CurrentPlayer.gameActions.Remove(GameAction.PlayAgain);
+                if (CurrentPlayer.gameActions.Contains(GameAction.MakeMoveAgain))
+                    CurrentPlayer.gameActions.Remove(GameAction.MakeMoveAgain);
 
                 if (!_specialCardHandlers.ContainsKey(id))
                     card.Apply(CurrentPlayer, EnemyPlayer);
@@ -250,11 +262,11 @@ namespace Arcomage.Core
                 }
 
                 if (card.playAgain)
-                    CurrentPlayer.gameActions.Add(GameAction.PlayAgain);
+                    CurrentPlayer.gameActions.Add(GameAction.MakeMoveAgain);
 
 
 
-                LogCard.Add(new GameCardLog(CurrentPlayer, GameEvent.Used, CurrentPlayer.Cards[index], _currentMove));
+                LogCard.Add(new GameCardLog(CurrentPlayer, GameAction.MakeMove, CurrentPlayer.Cards[index], _currentMove));
                 Debug.Print(CurrentPlayer.playerName + " use " + CurrentPlayer.Cards[index].id);
                 CurrentPlayer.Cards.RemoveAt(index);
             }
@@ -269,7 +281,7 @@ namespace Arcomage.Core
                 try
                 {
                     CurrentPlayer.gameActions.Remove(GameAction.DropCard);
-                    LogCard.Add(new GameCardLog(CurrentPlayer, GameEvent.Droped, CurrentPlayer.Cards[index], _currentMove));
+                    LogCard.Add(new GameCardLog(CurrentPlayer, GameAction.DropCard, CurrentPlayer.Cards[index], _currentMove));
                     Debug.Print(CurrentPlayer.playerName + " drop " + CurrentPlayer.Cards[index].id);
                     CurrentPlayer.Cards.RemoveAt(index);
                 }
@@ -280,13 +292,13 @@ namespace Arcomage.Core
             }
 
             if (CurrentPlayer.gameActions.Count == 0)
-                CurrentPlayer.gameActions.Add(GameAction.Succes);
+                CurrentPlayer.gameActions.Add(GameAction.EndMove);
         }
 
 
         public void NextPlayerTurn()
         {
-            if (!CurrentPlayer.gameActions.Contains(GameAction.Succes) || IsGameEnded)
+            if (!CurrentPlayer.gameActions.Contains(GameAction.EndMove) || IsGameEnded)
                 return;
 
             SetPlayerCards(CurrentPlayer);

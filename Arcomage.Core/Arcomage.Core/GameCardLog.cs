@@ -4,30 +4,24 @@ using Arcomage.Entity.Cards;
 
 namespace Arcomage.Core
 {
-
-
     public class GameCardLog
     {
-        //Игрок, который работал над картой
-        public GameCardLog(Player player, GameEvent gameEvent, Card card, int move)
+        public GameCardLog(Player player, GameAction gameAction, Card card, int move)
         {
-            this.player = player;
-            this.gameEvent = gameEvent;
-            this.card = card;
-            this.move = move;
+            Player = player;
+            GameAction = gameAction;
+            Card = card;
+            Move = move;
         }
 
-        public Player player { get; set; }
+        public Player Player { get; set; }
 
         //Событие произведенное над картой
-        public GameEvent gameEvent { get; set; }
+        public GameAction GameAction { get; set; }
 
-        //Сама карта
-        public Card card { get; set; }
+        public Card Card { get; set; }
 
-        public int move { get; set; }
-
-
+        public int Move { get; set; }
 
     }
 

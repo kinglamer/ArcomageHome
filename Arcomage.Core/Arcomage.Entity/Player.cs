@@ -1,8 +1,5 @@
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using Arcomage.Entity.Cards;
-using Arcomage.Entity.Interfaces;
 
 namespace Arcomage.Entity
 {
@@ -24,12 +21,12 @@ namespace Arcomage.Entity
         /// <summary>
         /// Установка дефолтных значений
         /// </summary>
-        public Player(string playerName, TypePlayer type, IStartParams gameParams)
+        public Player(string playerName, TypePlayer type, Dictionary<Attributes, int> gameParams)
         {
             this.playerName = playerName;
             this.type = type;
 
-            PlayerParams = new Dictionary<Attributes, int>(gameParams.DefaultParams);
+            PlayerParams = gameParams;
             Cards = new List<Card>();
             gameActions = new List<GameAction>();
         }

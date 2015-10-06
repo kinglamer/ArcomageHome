@@ -12,9 +12,10 @@ namespace Arcomage.Entity
 
     public enum GameAction
     {
-        PlayAgain,
+        MakeMove, 
+        MakeMoveAgain,
         DropCard,
-        Succes
+        EndMove
     }
 
     public enum Attributes

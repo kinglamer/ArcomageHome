@@ -3,53 +3,34 @@ using System.Linq;
 using Arcomage.Core;
 using Arcomage.Core.AlternativeServers;
 using Arcomage.Core.Interfaces;
-using Arcomage.Core.Interfaces.Impl;
 using Arcomage.Entity;
-using Arcomage.Entity.Interfaces;
 using Arcomage.Tests.Moq;
-using NUnit.Framework;
 
 namespace Arcomage.Tests.GameControllerTests
 {
-    class GameControllerTestHelper
+    internal class GameControllerTestHelper
     {
- 
-        public static GameController InitDemoGame(int server = 0, IStartParams humanStat = null, IStartParams AIStat = null, int maxCard = 0, List<int> customCard = null, List<int> customCardAi = null)
+
+        public static GameController InitDemoGame(int server = 0,
+            Dictionary<Attributes, int> humanStat = null, Dictionary<Attributes, int> aiStat = null,
+            int maxCard = 0, List<int> customCard = null, List<int> customCardAi = null)
         {
-            LogTest log = new LogTest();
             GameController gm;
 
             switch (server)
             {
-                case 2:
-                    gm = new GameController(log, new TestServer2());
-                    break;
-                case 3:
-                    gm = new GameController(log, new TestServer3());
-                    break;
-                case 4:
-                    gm = new GameController(log, new TestServer4());
-                    break;
-                case 5:
-                    gm = new GameController(log, new TestServer5());
-                    break;
                 case 6:
-                    gm = new GameController(log, new TestServer6());
-                    break;
-                case 7:
-                    gm = new GameController(log, new ArcoSQLLiteServer(@"arcomageDB.db"));
+                    gm = new GameController(new LogTest(), new TestServer6());
                     break;
                 default:
-                    gm = new GameController(log, new TestServer());
+                    gm = new GameController(new LogTest(), new TestServer());
                     break;
             }
 
-                humanStat = humanStat ?? new GameStartParams();
-                 AIStat = AIStat ?? new GameStartParams();
 
             gm.AddPlayer(TypePlayer.Human, "Human", humanStat, customCard);
-            gm.AddPlayer(TypePlayer.AI, "AI", AIStat, customCardAi);
-       
+            gm.AddPlayer(TypePlayer.AI, "AI", aiStat, customCardAi);
+
             if (maxCard > 0)
                 gm.ChangeMaxCard(maxCard);
 
@@ -57,7 +38,7 @@ namespace Arcomage.Tests.GameControllerTests
             return gm;
         }
 
-   
+
         public static void MakeMoveAi(GameController gm, ILog log)
         {
             log.Info("----===== Ход компьютера =====----");
@@ -74,7 +55,7 @@ namespace Arcomage.Tests.GameControllerTests
                     case GameAction.DropCard: //TODO: зашить, что сначала идет сброс
                         gm.MakePlayerMove(gm.CurrentPlayer.Cards.First().id, true);
                         break;
-                    case GameAction.PlayAgain:
+                    case GameAction.MakeMoveAgain:
                         gm.MakePlayerMove(gm.CurrentPlayer.ChooseCard().id);
                         break;
                 }
