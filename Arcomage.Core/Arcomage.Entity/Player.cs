@@ -3,11 +3,8 @@ using Arcomage.Entity.Cards;
 
 namespace Arcomage.Entity
 {
-  
-
     public class Player
     {
-
         public string playerName { get; private set; }
 
         public TypePlayer type { get; private set; }

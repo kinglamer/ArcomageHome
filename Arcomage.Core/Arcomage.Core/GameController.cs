@@ -36,11 +36,8 @@ namespace Arcomage.Core
         /// Стэк карт с сервера, чтобы реже обращаться к нему
         /// </summary>
         private readonly Queue<Card> _qCard = new Queue<Card>();
-
         public List<GameCardLog> LogCard = new List<GameCardLog>();
-
         private readonly List<Player> _players;
-
 
 
         public GameController(ILog log, IArcoServer server = null)
@@ -177,6 +174,7 @@ namespace Arcomage.Core
         /// <returns></returns>
         private void SetPlayerCards(Player player)
         {
+            //TODO: возможно сделать класс колода?
             if (_qCard.Count < _maxCard)
             {
                 _serverCards.Randomize(); //TODO: стоил ли перемешивать список карт, каждый раз перед добавлением в стэк?
@@ -200,7 +198,7 @@ namespace Arcomage.Core
         public List<Card> GetAiUsedCard()
         {
             List<Card> returnVal = new List<Card>();
-            var result = LogCard.Where(x=>x.Player.type == TypePlayer.AI && x.Move == _currentMove);
+            var result = LogCard.Where(x=>x.Player.type == TypePlayer.AI && x.MoveIndex == _currentMove);
 
             foreach (var item in result)
             {
@@ -228,7 +226,7 @@ namespace Arcomage.Core
             return CanUseCard(GetCardById(id, out index).price);
         }
 
-
+        
 
 
         /// <summary>

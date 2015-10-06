@@ -6,12 +6,12 @@ namespace Arcomage.Core
 {
     public class GameCardLog
     {
-        public GameCardLog(Player player, GameAction gameAction, Card card, int move)
+        public GameCardLog(Player player, GameAction gameAction, Card card, int moveIndex)
         {
             Player = player;
             GameAction = gameAction;
             Card = card;
-            Move = move;
+            MoveIndex = moveIndex;
         }
 
         public Player Player { get; set; }
@@ -21,7 +21,7 @@ namespace Arcomage.Core
 
         public Card Card { get; set; }
 
-        public int Move { get; set; }
+        public int MoveIndex { get; set; }
 
     }
 
