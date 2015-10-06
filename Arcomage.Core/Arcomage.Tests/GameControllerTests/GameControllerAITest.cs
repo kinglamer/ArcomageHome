@@ -17,7 +17,7 @@ namespace Arcomage.Tests.GameControllerTests
         {
            
         }
-
+    LogTest log = new LogTest();
 
         /// <summary>
         /// Цель: проверить, что компьютер может начать игру 
@@ -32,8 +32,8 @@ namespace Arcomage.Tests.GameControllerTests
             gm.AddPlayer(TypePlayer.AI, "AI", new GameStartParams());
             
             gm.StartGame(1);
-
-            Assert.AreEqual(gm.logCard.Count(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Used), 1,
+            GameControllerTestHelper.MakeMoveAi(gm, log);
+            Assert.AreEqual(gm.LogCard.Count(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Used), 1,
                 "Компьютер должен использовать карту");
 
             Assert.AreEqual(gm.CurrentPlayer.type, TypePlayer.Human, "Ход должен вернуться к человеку");
@@ -47,9 +47,10 @@ namespace Arcomage.Tests.GameControllerTests
         [Test]
         public void WhichCardUseAi()
         {
-            GameController gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, null, new List<int> { 2 });
+            GameController gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> { 1 }, new List<int> { 2 });
             GameControllerTestHelper.PassStroke(gm);
             gm.NextPlayerTurn();
+            GameControllerTestHelper.MakeMoveAi(gm, log);
             Assert.AreEqual(gm.GetAiUsedCard().LastOrDefault().id, 2, "Компьютер должен использовать карту id 2");
         }
         
@@ -64,6 +65,7 @@ namespace Arcomage.Tests.GameControllerTests
             GameController gm = GameControllerTestHelper.InitDemoGame(3);
             GameControllerTestHelper.PassStroke(gm);
             gm.NextPlayerTurn();
+            GameControllerTestHelper.MakeMoveAi(gm, log);
            // gm.SendGameNotification(new Dictionary<string, object>() { { "CurrentAction", CurrentAction.AIMoveIsAnimated } });
            // Assert.AreEqual(gm.Status, CurrentAction.UpdateStatAI, "Текущий статус должен быть равным обновлению статистики компьютера");
        
@@ -84,8 +86,9 @@ namespace Arcomage.Tests.GameControllerTests
             GameController gm = GameControllerTestHelper.InitDemoGame(5, null, null, 6, null, new List<int> { 2 });
             GameControllerTestHelper.PassStroke(gm);
             gm.NextPlayerTurn();
+            GameControllerTestHelper.MakeMoveAi(gm, log);
             //Внимание: при усовершенствование AI данный тест может измениться, .т.к. комп уже осознано будет выбирать какую карту сбросить
-            Assert.AreEqual(gm.logCard.LastOrDefault(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Droped).card.id, 2, "AI должен сбросить карту 2");
+            Assert.AreEqual(gm.LogCard.LastOrDefault(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Droped).card.id, 2, "AI должен сбросить карту 2");
         }
 
 
@@ -100,10 +103,12 @@ namespace Arcomage.Tests.GameControllerTests
             GameController gm = GameControllerTestHelper.InitDemoGame(4, null, null, 6, null, new List<int> { 55, 6 });
             GameControllerTestHelper.PassStroke(gm);
             gm.NextPlayerTurn();
-            Assert.AreEqual(gm.logCard.LastOrDefault(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Used).card.id, 6,
+            GameControllerTestHelper.MakeMoveAi(gm, log);
+
+            Assert.AreEqual(gm.LogCard.LastOrDefault(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Used).card.id, 6,
                 "AI должен был использовать карту 6");
 
-            Assert.AreEqual(gm.logCard.FirstOrDefault(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Used).card.id, 55,
+            Assert.AreEqual(gm.LogCard.FirstOrDefault(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Used).card.id, 55,
                 "AI должен был использовать карту 55");
 
             Assert.AreEqual(gm.GetAiUsedCard().Count, 2, "AI должен был использовать 2 карты");

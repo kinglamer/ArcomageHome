@@ -103,10 +103,9 @@ namespace Arcomage.Tests.AnotherTests
              GameController gm = GameControllerTestHelper.InitDemoGame(6, new TestStartParams3(), new TestStartParams3(1), 20, new List<int> { 32 }, new List<int> { 5 });
              GameControllerTestHelper.UseCard(32, gm);
              gm.NextPlayerTurn();
-
-             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Animals], 13, "Зверей должно быть 13");
-             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Wall], 7, "Стена должна быть 7");
-             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Menagerie], 2, "Зверинец должен быть равен 2");
+             Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Animals], 13, "Зверей должно быть 13");
+             Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Wall], 7, "Стена должна быть 7");
+             Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Menagerie], 2, "Зверинец должен быть равен 2");
          }
 
          [Test]
@@ -115,9 +114,9 @@ namespace Arcomage.Tests.AnotherTests
              GameController gm = GameControllerTestHelper.InitDemoGame(6, new TestStartParams2(), new TestStartParams2(), 20, new List<int> { 32 }, new List<int> { 5 });
              GameControllerTestHelper.UseCard(32, gm);
              gm.NextPlayerTurn();
-             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Animals], 12, "Зверей должно быть 12");
-             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Wall], 11, "Стена должна быть 11");
-             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Menagerie], 1, "Зверинец должен быть равен 1");
+             Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Animals], 12, "Зверей должно быть 12");
+             Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Wall], 11, "Стена должна быть 11");
+             Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Menagerie], 1, "Зверинец должен быть равен 1");
          }
 
 
@@ -261,7 +260,7 @@ namespace Arcomage.Tests.AnotherTests
             GameController gm = GameControllerTestHelper.InitDemoGame(6, new TestStartParams3(), new TestStartParams3(), 6, new List<int> { 40 });
             gm.MakePlayerMove(40, true);
            // Assert.AreEqual(gm.Status, CurrentAction.WaitHumanMove, "Текущий статус должен быть равным ожиданию хода игрока");
-            var result = gm.logCard.LastOrDefault(x => x.player.type == TypePlayer.Human && x.gameEvent == GameEvent.Droped);
+            var result = gm.LogCard.LastOrDefault(x => x.player.type == TypePlayer.Human && x.gameEvent == GameEvent.Droped);
             Assert.AreEqual(result, null, "Карта не должна быть сброшена");
         }
 
@@ -298,15 +297,6 @@ namespace Arcomage.Tests.AnotherTests
  
             gm.MakePlayerMove(39);
 
-           // Assert.AreEqual(gm.Status, CurrentAction.HumanUseCard, "Игрок должен сбросить карту");
-
-
-          //  gm.SendGameNotification(new Dictionary<string, object>() {{"CurrentAction", CurrentAction.AnimateHumanMove}});
-
-
-          //  var result = gm.GetPlayerParams();
-           // Assert.AreEqual(gm.Status, CurrentAction.WaitHumanMove, "Должны вернуться к ожиданию сброса карты");
-
             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Rocks], 5, "Не должно быть прироста ресурсов до сброса");
             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Diamonds], 5, "Не должно быть прироста ресурсов до сброса");
             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Animals], 5, "Не должно быть прироста ресурсов до сброса");
@@ -315,11 +305,11 @@ namespace Arcomage.Tests.AnotherTests
 
             gm.NextPlayerTurn();
 
-            Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Rocks], 6, "должен быть прирост ресурсов");
-            Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Diamonds], 6, "должен быть прирост ресурсов");
-            Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Animals], 6, "должен быть прирост ресурсов");
+            Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Rocks], 6, "должен быть прирост ресурсов");
+            Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Diamonds], 6, "должен быть прирост ресурсов");
+            Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Animals], 6, "должен быть прирост ресурсов");
 
-            Assert.AreEqual(gm.CurrentPlayer.Cards.Count, 20, "Количество карт должно быть равно 20");
+            Assert.AreEqual(gm.EnemyPlayer.Cards.Count, 20, "Количество карт должно быть равно 20");
         }
 
 
@@ -333,12 +323,13 @@ namespace Arcomage.Tests.AnotherTests
             GameController gm = GameControllerTestHelper.InitDemoGame(6, new TestStartParams2(), new TestStartParams2(), 20, new List<int> { 1 }, new List<int> { 73, 1,31 });
             gm.MakePlayerMove(1, true);
             gm.NextPlayerTurn();
-
+            GameControllerTestHelper.MakeMoveAi(gm, log);
+          
             //Внимание: при усовершенствование AI данный тест может измениться, .т.к. комп уже осознано будет выбирать какую карту сбросить
-            Assert.AreEqual(gm.logCard.Count(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Used && x.card.id == 73), 1, "AI должен был использовать карту 73");
-            Assert.AreEqual(gm.logCard.Count(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Used && x.card.id == 31), 1, "AI должен был использовать карту 31");
+            Assert.AreEqual(gm.LogCard.Count(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Used && x.card.id == 73), 1, "AI должен был использовать карту 73");
+            Assert.AreEqual(gm.LogCard.Count(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Used && x.card.id == 31), 1, "AI должен был использовать карту 31");
 
-            var result2 = gm.logCard.FirstOrDefault(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Droped);
+            var result2 = gm.LogCard.FirstOrDefault(x => x.player.type == TypePlayer.AI && x.gameEvent == GameEvent.Droped);
             Assert.AreEqual(result2.card.id, 1, "AI должен был сбросить карту 1");
        }
     }

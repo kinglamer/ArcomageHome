@@ -7,7 +7,7 @@ using Arcomage.Entity;
 
 namespace Arcomage.Core
 {
-    internal class GameControllerHelper
+    internal static class GameControllerHelper
     {
         public static Dictionary<Attributes, int> GetWinParams()
         {
@@ -33,8 +33,6 @@ namespace Arcomage.Core
             T enumVal = (T)Enum.Parse(typeof(T), o.ToString());
             return enumVal;
         }
-
-
       
 
 
@@ -86,5 +84,7 @@ namespace Arcomage.Core
 
             return false;
         }
+
+
     }
 }

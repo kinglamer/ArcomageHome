@@ -25,5 +25,7 @@ namespace Arcomage.Entity
 
             return card;
         }
+
+
     }
 }

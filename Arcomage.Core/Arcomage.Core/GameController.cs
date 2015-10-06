@@ -16,155 +16,99 @@ using Newtonsoft.Json;
 
 namespace Arcomage.Core
 {
-
-   
-    public delegate void EventMethod(Dictionary<string, object> info);
-
     public class GameController
     {
-
-        #region Variables 
-
-        private int MaxCard;
-        public List<Player> players { get; private set; }
-
         public Player CurrentPlayer { get; set; }
         public Player EnemyPlayer { get; set; }
+        public bool IsGameEnded { get; set; }
+        public string Winner { get; private set; }
 
-      //  private int currentPlayer { get; set; }
+        private int _currentMove;
+        private int _maxCard;
 
-       /* private CurrentAction _additionaStatus;
+        protected readonly ILog Log;
+        private readonly Dictionary<Attributes, int> _winParams;
+        private readonly Dictionary<Attributes, int> _loseParams;
+        private const string Url = "http://arcomage.somee.com/ArcoServer.svc?wsdl"; //"http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
 
-        public CurrentAction additionaStatus
-        {
-            get { return _additionaStatus; }
-            set
-            {
-                if (log != null)
-                    log.Info("Дополнительный Статус " + additionaStatus + " изменен на " + value);
-                _additionaStatus = value;
+        readonly List<Card> _serverCards = new List<Card>();
+        private readonly Dictionary<int, Card> _specialCardHandlers;
 
-            }
-        }
-
-        private CurrentAction _status;
-        public CurrentAction Status {
-            get {   return _status;}
-            set
-            {
-                if (log != null)
-                log.Info("Статус " + Status + " изменен на " + value);
-                _status = value;
-                
-            }
-        }*/
-
-        private int currentMove { get; set; }
-
-        public bool isGameEnded;
-
-       /* private bool isGameEnded
-        {
-            get
-            {
-                if (Status == CurrentAction.None || Status == CurrentAction.EndGame)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }*/
-
-        protected readonly ILog log;
-        private readonly Dictionary<Attributes, int> WinParams;
-        private readonly Dictionary<Attributes, int> LoseParams;
-        private const string url = "http://arcomage.somee.com/ArcoServer.svc?wsdl"; //"http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
-
-        List<Card> serverCards = new List<Card>();
-
-        public string Winner { get;private set; }
-        private IArcoServer host;
-
-        private Dictionary<int, Card> specialCardHandlers;
-
-        //очередная подтасовка, что игрок начинал ход с определенным набором карт
-        private List<int> specialHand = new List<int>(); 
         /// <summary>
         /// Стэк карт с сервера, чтобы реже обращаться к нему
         /// </summary>
-        private Queue<Card> QCard = new Queue<Card>();
+        private readonly Queue<Card> _qCard = new Queue<Card>();
 
-        public List<GameCardLog> logCard = new List<GameCardLog>();
+        public List<GameCardLog> LogCard = new List<GameCardLog>();
 
-        #endregion
+        private readonly List<Player> _players;
+
 
 
         public GameController(ILog _log, IArcoServer server = null)
         {
-            isGameEnded = true;
-            MaxCard = 6;
-           // Status = CurrentAction.None;
-            log = _log;
-            LoseParams = GameControllerHelper.GetLoseParams();
-            WinParams = GameControllerHelper.GetWinParams();
-            players = new List<Player>();
+            IArcoServer host;
+            IsGameEnded = true;
+            _maxCard = 6;
+            Log = _log;
+            _loseParams = GameControllerHelper.GetLoseParams();
+            _winParams = GameControllerHelper.GetWinParams();
+            _players = new List<Player>();
            
             if (server == null)
-                host = new ArcoServerClient(new BasicHttpBinding(), new EndpointAddress(url));
+                host = new ArcoServerClient(new BasicHttpBinding(), new EndpointAddress(Url));
             else
                 host = server;
 
-            serverCards = JsonConvert.DeserializeObject<List<Card>>(host.GetRandomCard());
-
+            _serverCards = JsonConvert.DeserializeObject<List<Card>>(host.GetRandomCard());
            
-            specialCardHandlers = new Dictionary<int, Card>();
-            specialCardHandlers.Add(5,new Card5());
-            specialCardHandlers.Add(8,new Card8());
-            specialCardHandlers.Add(12, new Card12());
-            specialCardHandlers.Add(31, new Card31());
-            specialCardHandlers.Add(32, new Card32());
-            specialCardHandlers.Add(34,new Card34());
-            specialCardHandlers.Add(39,new Card39());
-            specialCardHandlers.Add(48,new Card48());
-            specialCardHandlers.Add(64,new Card64());
-            specialCardHandlers.Add(67,new Card67());
-            specialCardHandlers.Add(73,new Card73());
-            specialCardHandlers.Add(87,new Card87());
-            specialCardHandlers.Add(89,new Card89());
-            specialCardHandlers.Add(90,new Card90());
-            specialCardHandlers.Add(91,new Card91());
-            specialCardHandlers.Add(98,new Card98());
-          
+            _specialCardHandlers = new Dictionary<int, Card>();
+            _specialCardHandlers.Add(5,new Card5());
+            _specialCardHandlers.Add(8,new Card8());
+            _specialCardHandlers.Add(12, new Card12());
+            _specialCardHandlers.Add(31, new Card31());
+            _specialCardHandlers.Add(32, new Card32());
+            _specialCardHandlers.Add(34,new Card34());
+            _specialCardHandlers.Add(39,new Card39());
+            _specialCardHandlers.Add(48,new Card48());
+            _specialCardHandlers.Add(64,new Card64());
+            _specialCardHandlers.Add(67,new Card67());
+            _specialCardHandlers.Add(73,new Card73());
+            _specialCardHandlers.Add(87,new Card87());
+            _specialCardHandlers.Add(89,new Card89());
+            _specialCardHandlers.Add(90,new Card90());
+            _specialCardHandlers.Add(91,new Card91());
+            _specialCardHandlers.Add(98,new Card98());
         }
 
         public void ChangeMaxCard(int newMaxCard)
         {
-            MaxCard = newMaxCard;
+            _maxCard = newMaxCard;
         }
 
-        public void AddPlayer(TypePlayer tp, string name, IStartParams startParams = null, IEnumerable<int> cardTricksters = null)
+        public void AddPlayer(TypePlayer tp, string name, IStartParams startParams = null,
+            IEnumerable<int> cardTricksters = null)
         {
-            if (players.Count == 2)
+            if (_players.Count == 2)
             {
-                log.Error("Достигнуто максимальное количество игроков");
+                Log.Error("Достигнуто максимальное количество игроков");
                 return;
             }
 
             if (startParams == null)
                 startParams = new GameStartParams();
 
-            Player newPlayer = tp == TypePlayer.Human ? new Player(name, tp, startParams) : new AiPlayer(name, tp, startParams);
-           
+            Player newPlayer = tp == TypePlayer.Human
+                ? new Player(name, tp, startParams)
+                : new AiPlayer(name, tp, startParams);
+
             if (cardTricksters != null)
                 foreach (var item in cardTricksters)
                 {
-                    if (newPlayer.Cards.Count == MaxCard)
+                    if (newPlayer.Cards.Count == _maxCard)
                         break;
 
-                    var newCard = serverCards.FirstOrDefault(x => x.id == item);
+                    var newCard = _serverCards.FirstOrDefault(x => x.id == item);
                     if (newCard != null)
                     {
                         newCard.description = ParseDescription.Parse(newCard.description);
@@ -172,27 +116,27 @@ namespace Arcomage.Core
                     }
                 }
 
-            players.Add(newPlayer);
+            _players.Add(newPlayer);
         }
 
         public void StartGame(int currentPlayer = -1)
         {
-            if (players.Count == 0)
+            if (_players.Count == 0)
             {
-                log.Error("Добавьте игроков в игру. Сейчас их " + players.Count);
+                Log.Error(string.Format("Добавьте игроков в игру. Сейчас их {0}", _players.Count));
                 return;
             }
 
-            if (!isGameEnded)
+            if (!IsGameEnded)
             {
-                log.Info("Игра еще не закончилась");
+                Log.Info("Игра еще не закончилась");
                 return;
             }
 
             int enemy;
             if (currentPlayer != -1)
             {
-                CurrentPlayer = players[currentPlayer];
+                CurrentPlayer = _players[currentPlayer];
                 enemy = currentPlayer == 1 ? 0 : 1;
             }
             else
@@ -200,29 +144,24 @@ namespace Arcomage.Core
                 Random rnd = new Random();
                 int indexPlayer = rnd.Next(0, 2);
                 enemy = indexPlayer == 1 ? 0 : 1;
-                CurrentPlayer = players[indexPlayer];
+                CurrentPlayer = _players[indexPlayer];
             }
 
-            EnemyPlayer = players[enemy];
-            isGameEnded = false;
+            EnemyPlayer = _players[enemy];
+            IsGameEnded = false;
 
-            log.Info("Game is started. CurrentPlayer: " + CurrentPlayer);
+            Log.Info(string.Format("Game is started. CurrentPlayer: {0}", CurrentPlayer));
 
-            currentMove = 0;
-   
- 
+            _currentMove = 0;
 
             SetPlayerCards(CurrentPlayer);
             SetPlayerCards(EnemyPlayer);
-
-            if(CurrentPlayer.type == TypePlayer.AI)
-                MakeMoveAi();
         }
 
         public List<Card> GetAiUsedCard()
         {
             List<Card> returnVal = new List<Card>();
-            var result = logCard.Where(x=>x.player.type == TypePlayer.AI && x.move == currentMove);
+            var result = LogCard.Where(x=>x.player.type == TypePlayer.AI && x.move == _currentMove);
 
             foreach (var item in result)
             {
@@ -252,29 +191,27 @@ namespace Arcomage.Core
 
 
 
-
-
         /// <summary>
         /// Устанавливаем карты для игрока
         /// </summary>
         /// <returns></returns>
         private void SetPlayerCards(Player player)
         {
-            if (QCard.Count < MaxCard)
+            if (_qCard.Count < _maxCard)
             {
-                serverCards.Randomize(); //TODO: стоил ли перемешивать список карт, каждый раз перед добавлением в стэк?
-                foreach (var item in serverCards)
+                _serverCards.Randomize(); //TODO: стоил ли перемешивать список карт, каждый раз перед добавлением в стэк?
+                foreach (var item in _serverCards)
                 {
-                    QCard.Enqueue(item);
+                    _qCard.Enqueue(item);
                 }
             }
 
-            while (player.Cards.Count < MaxCard)
+            while (player.Cards.Count < _maxCard)
             {
-                if (QCard.Count == 0)
+                if (_qCard.Count == 0)
                     break;
 
-                var newCard = QCard.Dequeue();
+                var newCard = _qCard.Dequeue();
                 newCard.description = ParseDescription.Parse(newCard.description);
                 player.Cards.Add(newCard);
             }
@@ -292,21 +229,21 @@ namespace Arcomage.Core
 
             int index;
             var card = GetCardById(id, out index);
-            
+
             if (CanUseCard(card.price) && !dropCard)
             {
 
                 if (CurrentPlayer.gameActions.Contains(GameAction.PlayAgain))
                     CurrentPlayer.gameActions.Remove(GameAction.PlayAgain);
 
-                if (!specialCardHandlers.ContainsKey(id))
+                if (!_specialCardHandlers.ContainsKey(id))
                     card.Apply(CurrentPlayer, EnemyPlayer);
-                else 
+                else
                 {
-                    specialCardHandlers[id].copyParams(card);
-                    specialCardHandlers[id].Apply(CurrentPlayer, EnemyPlayer);
+                    _specialCardHandlers[id].copyParams(card);
+                    _specialCardHandlers[id].Apply(CurrentPlayer, EnemyPlayer);
 
-                    if (specialCardHandlers[id].discard)
+                    if (_specialCardHandlers[id].discard)
                         CurrentPlayer.gameActions.Add(GameAction.DropCard);
                 }
 
@@ -315,7 +252,7 @@ namespace Arcomage.Core
 
 
 
-                logCard.Add(new GameCardLog(CurrentPlayer, GameEvent.Used, CurrentPlayer.Cards[index], currentMove));
+                LogCard.Add(new GameCardLog(CurrentPlayer, GameEvent.Used, CurrentPlayer.Cards[index], _currentMove));
                 Debug.Print(CurrentPlayer.playerName + " use " + CurrentPlayer.Cards[index].id);
                 CurrentPlayer.Cards.RemoveAt(index);
             }
@@ -323,20 +260,20 @@ namespace Arcomage.Core
             {
                 if (id == 40 && dropCard)
                 {
-                    log.Info("Эту карту нельзя сбросить!");
+                    Log.Info("Эту карту нельзя сбросить!");
                     return;
                 }
 
                 try
                 {
                     CurrentPlayer.gameActions.Remove(GameAction.DropCard);
-                    logCard.Add(new GameCardLog(CurrentPlayer, GameEvent.Droped, CurrentPlayer.Cards[index], currentMove));
+                    LogCard.Add(new GameCardLog(CurrentPlayer, GameEvent.Droped, CurrentPlayer.Cards[index], _currentMove));
                     Debug.Print(CurrentPlayer.playerName + " drop " + CurrentPlayer.Cards[index].id);
-                    CurrentPlayer.Cards.RemoveAt(index);  
+                    CurrentPlayer.Cards.RemoveAt(index);
                 }
                 catch
                 {
-                    log.Error("Player: " + CurrentPlayer.playerName + " can't pass card " + CurrentPlayer.Cards[index].name);
+                    Log.Error(string.Format("Player: {0} can't pass card {1}", CurrentPlayer.playerName, CurrentPlayer.Cards[index].name));
                 }
             }
 
@@ -347,30 +284,29 @@ namespace Arcomage.Core
 
         public void NextPlayerTurn()
         {
-            if (!CurrentPlayer.gameActions.Contains(GameAction.Succes) || isGameEnded)
+            if (!CurrentPlayer.gameActions.Contains(GameAction.Succes) || IsGameEnded)
                 return;
 
-                SetPlayerCards(CurrentPlayer);
+            SetPlayerCards(CurrentPlayer);
 
-                CurrentPlayer.UpdateParams();
-                CurrentPlayer.gameActions.Clear();
+            CurrentPlayer.UpdateParams();
+            CurrentPlayer.gameActions.Clear();
 
-                Winner = GameControllerHelper.CheckPlayerParams(players, WinParams, LoseParams);
+            Winner = GameControllerHelper.CheckPlayerParams(_players, _winParams, _loseParams);
             if (Winner.Length > 0)
             {
-                isGameEnded = true;
+                Log.Info("Победил: " + Winner);
+
+                IsGameEnded = true;
                 return;
             }
 
             SetPlayerCards(EnemyPlayer);
 
-                Player temp = CurrentPlayer;
-                CurrentPlayer = EnemyPlayer;
-                EnemyPlayer = temp;
+            Player temp = CurrentPlayer;
+            CurrentPlayer = EnemyPlayer;
+            EnemyPlayer = temp;
 
-
-                if (CurrentPlayer.type == TypePlayer.AI)
-                    MakeMoveAi();
         }
 
         private Card GetCardById(int id, out int index)
@@ -378,38 +314,6 @@ namespace Arcomage.Core
             index = CurrentPlayer.Cards.FindIndex(x => x.id == id);
             return CurrentPlayer.Cards[index];
         }
-        
-
-        private void MakeMoveAi()
-        {
-            log.Info("----===== Ход компьютера =====----");
-
-            MakePlayerMove(CurrentPlayer.ChooseCard().id);
-
-            GameAction[] copyAction = new GameAction[CurrentPlayer.gameActions.Count] ;
-            CurrentPlayer.gameActions.CopyTo(copyAction);
-
-            foreach (var gameAction in copyAction)
-            {
-                switch (gameAction)
-                {
-                    case GameAction.DropCard: //TODO: зашить, что сначала идет сброс
-                        MakePlayerMove(CurrentPlayer.Cards.First().id, true);
-                        break;
-                    case GameAction.PlayAgain:
-                        MakePlayerMove(CurrentPlayer.ChooseCard().id);
-                        break;
-                }
-            }
-
-            NextPlayerTurn();
-
-            log.Info("----===== Ход компьютера закончился =====----");
-        }
-
-
-
-
     
     }
 }
