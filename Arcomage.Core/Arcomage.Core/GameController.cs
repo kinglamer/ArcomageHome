@@ -158,6 +158,33 @@ namespace Arcomage.Core
             SetPlayerCards(EnemyPlayer);
         }
 
+
+        /// <summary>
+        /// Устанавливаем карты для игрока
+        /// </summary>
+        /// <returns></returns>
+        private void SetPlayerCards(Player player)
+        {
+            if (_qCard.Count < _maxCard)
+            {
+                _serverCards.Randomize(); //TODO: стоил ли перемешивать список карт, каждый раз перед добавлением в стэк?
+                foreach (var item in _serverCards)
+                {
+                    _qCard.Enqueue(item);
+                }
+            }
+
+            while (player.Cards.Count < _maxCard)
+            {
+                if (_qCard.Count == 0)
+                    break;
+
+                var newCard = _qCard.Dequeue();
+                newCard.description = ParseDescription.Parse(newCard.description);
+                player.Cards.Add(newCard);
+            }
+        }
+
         public List<Card> GetAiUsedCard()
         {
             List<Card> returnVal = new List<Card>();
@@ -191,31 +218,6 @@ namespace Arcomage.Core
 
 
 
-        /// <summary>
-        /// Устанавливаем карты для игрока
-        /// </summary>
-        /// <returns></returns>
-        private void SetPlayerCards(Player player)
-        {
-            if (_qCard.Count < _maxCard)
-            {
-                _serverCards.Randomize(); //TODO: стоил ли перемешивать список карт, каждый раз перед добавлением в стэк?
-                foreach (var item in _serverCards)
-                {
-                    _qCard.Enqueue(item);
-                }
-            }
-
-            while (player.Cards.Count < _maxCard)
-            {
-                if (_qCard.Count == 0)
-                    break;
-
-                var newCard = _qCard.Dequeue();
-                newCard.description = ParseDescription.Parse(newCard.description);
-                player.Cards.Add(newCard);
-            }
-        }
 
         /// <summary>
         /// Использование карты игроком
@@ -296,17 +298,13 @@ namespace Arcomage.Core
             if (Winner.Length > 0)
             {
                 Log.Info("Победил: " + Winner);
-
                 IsGameEnded = true;
                 return;
             }
 
-            SetPlayerCards(EnemyPlayer);
-
             Player temp = CurrentPlayer;
             CurrentPlayer = EnemyPlayer;
             EnemyPlayer = temp;
-
         }
 
         private Card GetCardById(int id, out int index)
