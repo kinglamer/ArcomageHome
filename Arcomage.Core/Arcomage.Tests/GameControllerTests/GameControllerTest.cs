@@ -171,9 +171,7 @@ namespace Arcomage.Tests.GameControllerTests
 
             gm.MakePlayerMove(55);
             gm.NextPlayerTurn();
-            Assert.AreEqual(
-                gm.LogCard.FirstOrDefault(x => x.Player.type == TypePlayer.Human && x.GameAction == GameAction.MakeMove)
-                    .Card.id, 55, "Human должен был использовать карту 55");
+            Assert.AreEqual(gm.GetUsedCard(TypePlayer.Human,GameAction.MakeMove).FirstOrDefault().id, 55, "Human должен был использовать карту 55");
 
 
             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Rocks], 5, "ѕрироста камней не должно быть");
@@ -191,10 +189,8 @@ namespace Arcomage.Tests.GameControllerTests
         {
             GameModel gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {1});
             gm.MakePlayerMove(1, true);
-            var result =
-                gm.LogCard.FirstOrDefault(x => x.Player.type == TypePlayer.Human && x.GameAction == GameAction.DropCard);
 
-            Assert.AreEqual(result.Card.id, 1, "Human должен сбросить карту 1");
+            Assert.AreEqual(gm.GetUsedCard(TypePlayer.Human, GameAction.DropCard).FirstOrDefault().id, 1, "Human должен сбросить карту 1");
 
         }
 

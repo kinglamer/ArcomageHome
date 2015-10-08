@@ -255,7 +255,7 @@ namespace Arcomage.Tests.AnotherTests
             GameModel gm = GameControllerTestHelper.InitDemoGame(6, TestStartParams.GetParams(3), TestStartParams.GetParams(3), 6, new List<int> { 40 });
             gm.MakePlayerMove(40, true);
            // Assert.AreEqual(gm.Status, CurrentAction.WaitHumanMove, "“екущий статус должен быть равным ожиданию хода игрока");
-            var result = gm.LogCard.LastOrDefault(x => x.Player.type == TypePlayer.Human && x.GameAction == GameAction.DropCard);
+            var result = gm.GetUsedCard(TypePlayer.Human,GameAction.DropCard).LastOrDefault();
             Assert.AreEqual(result, null, " арта не должна быть сброшена");
         }
 
@@ -321,11 +321,10 @@ namespace Arcomage.Tests.AnotherTests
             GameControllerTestHelper.MakeMoveAi(gm, new LogTest());
           
             //¬нимание: при усовершенствование AI данный тест может изменитьс€, .т.к. комп уже осознано будет выбирать какую карту сбросить
-            Assert.AreEqual(gm.LogCard.Count(x => x.Player.type == TypePlayer.AI && x.GameAction == GameAction.MakeMove && x.Card.id == 73), 1, "AI должен был использовать карту 73");
-            Assert.AreEqual(gm.LogCard.Count(x => x.Player.type == TypePlayer.AI && x.GameAction == GameAction.MakeMove && x.Card.id == 31), 1, "AI должен был использовать карту 31");
+            Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI,GameAction.MakeMove).Count(x=>x.id == 73), 1, "AI должен был использовать карту 73");
+            Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI,GameAction.MakeMove).Count(x=>x.id == 31), 1, "AI должен был использовать карту 31");
 
-            var result2 = gm.LogCard.FirstOrDefault(x => x.Player.type == TypePlayer.AI && x.GameAction == GameAction.DropCard);
-            Assert.AreEqual(result2.Card.id, 1, "AI должен был сбросить карту 1");
+            Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI, GameAction.DropCard).FirstOrDefault().id, 1, "AI должен был сбросить карту 1");
        }
     }
 }

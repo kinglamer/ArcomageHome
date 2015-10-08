@@ -29,14 +29,13 @@ namespace Arcomage.Tests.GameControllerTests
             GameBuilder gameBuilder = new GameBuilder(log, new TestServerForCustomCard());
 
             gameBuilder.AddPlayer(TypePlayer.Human, "Human");
-            gameBuilder.AddPlayer(TypePlayer.AI, "AI", null, new List<int> { 1 });
+            gameBuilder.AddPlayer(TypePlayer.AI, "AI", null, new List<int> {1});
 
             GameModel gm = gameBuilder.StartGame(1);
 
 
             GameControllerTestHelper.MakeMoveAi(gm, log);
-            Assert.AreEqual(
-                gm.LogCard.Count(x => x.Player.type == TypePlayer.AI && x.GameAction == GameAction.MakeMove), 1,
+            Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI, GameAction.MakeMove).Count, 1,
                 "Компьютер должен использовать карту");
 
             Assert.AreEqual(gm.CurrentPlayer.type, TypePlayer.AI, "Ход должен остаться за компом");
@@ -55,7 +54,7 @@ namespace Arcomage.Tests.GameControllerTests
             gm.MakePlayerMove(1, true);
             gm.NextPlayerTurn();
             GameControllerTestHelper.MakeMoveAi(gm, log);
-            Assert.AreEqual(gm.GetAiUsedCard().LastOrDefault().id, 2, "Компьютер должен использовать карту id 2");
+            Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI, GameAction.MakeMove).LastOrDefault().id, 2, "Компьютер должен использовать карту id 2");
         }
 
 
@@ -90,9 +89,7 @@ namespace Arcomage.Tests.GameControllerTests
             gm.NextPlayerTurn();
             GameControllerTestHelper.MakeMoveAi(gm, log);
             //Внимание: при усовершенствование AI данный тест может измениться, .т.к. комп уже осознано будет выбирать какую карту сбросить
-            Assert.AreEqual(
-                gm.LogCard.LastOrDefault(x => x.Player.type == TypePlayer.AI && x.GameAction == GameAction.DropCard)
-                    .Card.id, 7, "AI должен сбросить карту 2");
+            Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI, GameAction.DropCard).LastOrDefault().id, 7, "AI должен сбросить карту 2");
         }
 
 
@@ -110,17 +107,12 @@ namespace Arcomage.Tests.GameControllerTests
             gm.NextPlayerTurn();
             GameControllerTestHelper.MakeMoveAi(gm, log);
 
-            Assert.AreEqual(
-                gm.LogCard.LastOrDefault(x => x.Player.type == TypePlayer.AI && x.GameAction == GameAction.MakeMove)
-                    .Card.id, 6,
-                "AI должен был использовать карту 6");
+            Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI, GameAction.MakeMove).LastOrDefault().id, 6,"AI должен был использовать карту 6");
 
-            Assert.AreEqual(
-                gm.LogCard.FirstOrDefault(x => x.Player.type == TypePlayer.AI && x.GameAction == GameAction.MakeMove)
-                    .Card.id, 56,
+            Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI, GameAction.MakeMove).FirstOrDefault().id, 56,
                 "AI должен был использовать карту 55");
 
-            Assert.AreEqual(gm.GetAiUsedCard().Count, 2, "AI должен был использовать 2 карты");
+            Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI, GameAction.MakeMove).Count, 2, "AI должен был использовать 2 карты");
         }
 
     }

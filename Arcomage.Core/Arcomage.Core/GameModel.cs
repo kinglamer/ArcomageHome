@@ -21,7 +21,7 @@ namespace Arcomage.Core
         public bool IsGameEnded { get; set; }
         public string Winner { get; private set; }
 
-        private int _currentMove;
+        public int CurrentMove;
         private readonly int _maxCard;
 
         protected readonly ILog Log;
@@ -35,7 +35,7 @@ namespace Arcomage.Core
         /// </summary>
         private readonly Queue<Card> _qCard = new Queue<Card>();
 
-        public List<GameCardLog> LogCard = new List<GameCardLog>();
+        private readonly List<GameCardLog> _logCard = new List<GameCardLog>();
 
         private readonly List<Player> _players;
 
@@ -47,7 +47,7 @@ namespace Arcomage.Core
             _specialCardHandlers = specialCardHandlers;
             Log = log;
             _players = players;
-            _currentMove = 0;
+            CurrentMove = 0;
             _serverCards = serverCards;
 
             CurrentPlayer = _players[currentPlayer];
@@ -82,17 +82,9 @@ namespace Arcomage.Core
             }
         }
 
-        public List<Card> GetAiUsedCard()
+        public List<Card> GetUsedCard(TypePlayer typePlayer, GameAction gameAction)
         {
-            List<Card> returnVal = new List<Card>();
-            var result = LogCard.Where(x => x.Player.type == TypePlayer.AI && x.MoveIndex == _currentMove);
-
-            foreach (var item in result)
-            {
-                returnVal.Add(item.Card);
-            }
-
-            return returnVal;
+            return _logCard.Where(x => x.Player.type == typePlayer && x.GameAction == gameAction).Select(item => item.Card).ToList();
         }
 
         
@@ -149,7 +141,7 @@ namespace Arcomage.Core
 
 
 
-                LogCard.Add(new GameCardLog(CurrentPlayer, GameAction.MakeMove, CurrentPlayer.Cards[index], _currentMove));
+                _logCard.Add(new GameCardLog(CurrentPlayer, GameAction.MakeMove, CurrentPlayer.Cards[index], CurrentMove));
                 Debug.Print(CurrentPlayer.playerName + " use " + CurrentPlayer.Cards[index].id);
                 CurrentPlayer.Cards.RemoveAt(index);
             }
@@ -164,7 +156,7 @@ namespace Arcomage.Core
                 try
                 {
                     CurrentPlayer.gameActions.Remove(GameAction.DropCard);
-                    LogCard.Add(new GameCardLog(CurrentPlayer, GameAction.DropCard, CurrentPlayer.Cards[index], _currentMove));
+                    _logCard.Add(new GameCardLog(CurrentPlayer, GameAction.DropCard, CurrentPlayer.Cards[index], CurrentMove));
                     Debug.Print(CurrentPlayer.playerName + " drop " + CurrentPlayer.Cards[index].id);
                     CurrentPlayer.Cards.RemoveAt(index);
                 }
