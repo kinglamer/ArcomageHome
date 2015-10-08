@@ -26,12 +26,14 @@ namespace Arcomage.Tests.GameControllerTests
         [Test]
         public void AiCanStartTheGame()
         {
-            GameController gm = new GameController(log, new TestServerForCustomCard());
+            GameBuilder gameBuilder = new GameBuilder(log, new TestServerForCustomCard());
 
-            gm.AddPlayer(TypePlayer.Human, "Human");
-            gm.AddPlayer(TypePlayer.AI, "AI", null, new List<int> {1});
+            gameBuilder.AddPlayer(TypePlayer.Human, "Human");
+            gameBuilder.AddPlayer(TypePlayer.AI, "AI", null, new List<int> { 1 });
 
-            gm.StartGame(1);
+            GameModel gm = gameBuilder.StartGame(1);
+
+
             GameControllerTestHelper.MakeMoveAi(gm, log);
             Assert.AreEqual(
                 gm.LogCard.Count(x => x.Player.type == TypePlayer.AI && x.GameAction == GameAction.MakeMove), 1,
@@ -48,7 +50,7 @@ namespace Arcomage.Tests.GameControllerTests
         [Test]
         public void WhichCardUseAi()
         {
-            GameController gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {1},
+            GameModel gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {1},
                 new List<int> {2});
             gm.MakePlayerMove(1, true);
             gm.NextPlayerTurn();
@@ -64,7 +66,7 @@ namespace Arcomage.Tests.GameControllerTests
         [Test]
         public void ComputerMustWin()
         {
-            GameController gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {1},
+            GameModel gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {1},
                 new List<int> {3});
             gm.MakePlayerMove(1, true);
             gm.NextPlayerTurn();
@@ -82,7 +84,7 @@ namespace Arcomage.Tests.GameControllerTests
         [Test]
         public void AiCanPassMove()
         {
-            GameController gm = GameControllerTestHelper.InitDemoGame(0, null, null, 1, new List<int> {1},
+            GameModel gm = GameControllerTestHelper.InitDemoGame(0, null, null, 1, new List<int> {1},
                 new List<int> {7});
             gm.MakePlayerMove(1, true);
             gm.NextPlayerTurn();
@@ -102,7 +104,7 @@ namespace Arcomage.Tests.GameControllerTests
         public void AiCanGetAnotherCard()
         {
             //Внимание: при усовершенствование AI данный тест может измениться, .т.к. комп уже осознано будет выбирать какую карту сбросить
-            GameController gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {1},
+            GameModel gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {1},
                 new List<int> {56, 6});
             gm.MakePlayerMove(1, true);
             gm.NextPlayerTurn();

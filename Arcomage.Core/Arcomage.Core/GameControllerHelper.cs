@@ -37,9 +37,7 @@ namespace Arcomage.Core
         /// Метод для определения имени победителя
         /// </summary>
         /// <param name="players"></param>
-        /// <param name="winParams"></param>
-        /// <param name="loseParams"></param>
-        public static string CheckPlayerParams(List<Player> players, Dictionary<Attributes, int> winParams, Dictionary<Attributes, int> loseParams)
+        public static string CheckPlayerParams(List<Player> players)
         {
             string returnVal = String.Empty;
 
@@ -47,7 +45,7 @@ namespace Arcomage.Core
             {
                 int ememyindex = i == 1 ? 0 : 1;
 
-                if (IsPlayerWin(players[i].PlayerParams, winParams) || IsPlayerLose(players[ememyindex].PlayerParams, loseParams))
+                if (IsPlayerWin(players[i].PlayerParams, GetWinParams()) || IsPlayerLose(players[ememyindex].PlayerParams, GetLoseParams()))
                 {
                     returnVal = players[i].playerName;
                     break;

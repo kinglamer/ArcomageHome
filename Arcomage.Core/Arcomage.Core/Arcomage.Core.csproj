@@ -51,8 +51,9 @@
     <Compile Include="AlternativeServers\ArcoSQLLiteServer.cs" />
     <Compile Include="Common\CollectionHelper.cs" />
     <Compile Include="Common\ParseDescription.cs" />
+    <Compile Include="GameBuilder.cs" />
     <Compile Include="GameCardLog.cs" />
-    <Compile Include="GameController.cs" />
+    <Compile Include="GameModel.cs" />
     <Compile Include="GameControllerHelper.cs" />
     <Compile Include="Interfaces\ILog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -27,7 +27,7 @@ namespace Arcomage.Tests.GameControllerTests
         [Test]
         public void PlayerMustWin()
         {
-            GameController gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {1});
+            GameModel gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {1});
             gm.MakePlayerMove(1);
             gm.NextPlayerTurn();
             Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Tower], 0, "Башня врага должна быть уничтожена");
@@ -41,7 +41,7 @@ namespace Arcomage.Tests.GameControllerTests
         [Test]
         public void PlayerCanUserCard()
         {
-            GameController gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {1});
+            GameModel gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {1});
             Assert.AreEqual(gm.CanUseCard(1), true, "Не возможно использовать карту");
         }
 
@@ -53,7 +53,7 @@ namespace Arcomage.Tests.GameControllerTests
         [Test]
         public void CheckPlayerInit()
         {
-            GameController gm = GameControllerTestHelper.InitDemoGame();
+            GameModel gm = GameControllerTestHelper.InitDemoGame();
             Assert.IsNotNull(gm.CurrentPlayer.PlayerParams, "Стартовые параметры игрока не должны быть пустыми");
             Assert.IsTrue(gm.CurrentPlayer.Cards.Count > 1, " Должно быть хотя бы одна карта");
         }
@@ -67,10 +67,10 @@ namespace Arcomage.Tests.GameControllerTests
         [Test]
         public void CheckApplyCardParams()
         {
-            GameController gm = new GameController(new LogTest(), new TestServerForCustomCard());
-            gm.AddPlayer(TypePlayer.Human, "Human", null, new List<int> {2});
-            gm.AddPlayer(TypePlayer.Human, "AI");
-            gm.StartGame(0);
+            GameBuilder gameBuilder = new GameBuilder(new LogTest(), new TestServerForCustomCard());
+            gameBuilder.AddPlayer(TypePlayer.Human, "Human", null, new List<int> { 2 });
+            gameBuilder.AddPlayer(TypePlayer.Human, "AI");
+            GameModel gm = gameBuilder.StartGame(0);
 
             gm.MakePlayerMove(2);
             gm.NextPlayerTurn();
@@ -118,7 +118,7 @@ namespace Arcomage.Tests.GameControllerTests
         [Test]
         public void CheckAddDiamonds()
         {
-            GameController gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {6});
+            GameModel gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {6});
             gm.MakePlayerMove(6);
             gm.NextPlayerTurn();
             Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Diamonds], 5 + 11 + 1,
@@ -132,7 +132,7 @@ namespace Arcomage.Tests.GameControllerTests
         [Test]
         public void CheckApplyEnemyDirectDamage()
         {
-            GameController gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {3});
+            GameModel gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {3});
             gm.MakePlayerMove(3);
             Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Wall], 0,
                 "Не правильно применен параметр EnemyDirectDamage");
@@ -148,7 +148,7 @@ namespace Arcomage.Tests.GameControllerTests
         [Test]
         public void CheckApplyPlayerDirectDamage()
         {
-            GameController gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {4});
+            GameModel gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {4});
             gm.MakePlayerMove(4);
 
             Assert.AreEqual(gm.CurrentPlayer.PlayerParams[Attributes.Wall], 0,
@@ -165,7 +165,7 @@ namespace Arcomage.Tests.GameControllerTests
         [Test]
         public void CheckPlayAgain()
         {
-            GameController gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {55});
+            GameModel gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {55});
             Assert.AreEqual(gm.CanUseCard(55), true, "Не возможно использовать карту");
 
 
@@ -189,7 +189,7 @@ namespace Arcomage.Tests.GameControllerTests
         [Test]
         public void PlayerCanPassMove()
         {
-            GameController gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {1});
+            GameModel gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {1});
             gm.MakePlayerMove(1, true);
             var result =
                 gm.LogCard.FirstOrDefault(x => x.Player.type == TypePlayer.Human && x.GameAction == GameAction.DropCard);
@@ -206,12 +206,12 @@ namespace Arcomage.Tests.GameControllerTests
         public void TestCardTricker()
         {
             LogTest log = new LogTest();
-            GameController gm = new GameController(log, new ArcoSQLLiteServer(@"arcomageDB.db"));
-            gm.AddPlayer(TypePlayer.Human, "Human", null, new List<int> {39, 11, 12, 13, 14, 15});
-            gm.AddPlayer(TypePlayer.AI, "AI");
+            GameBuilder gameBuilder = new GameBuilder(log, new ArcoSQLLiteServer(@"arcomageDB.db"));
+            gameBuilder.AddPlayer(TypePlayer.Human, "Human", null, new List<int> { 39, 11, 12, 13, 14, 15 });
+            gameBuilder.AddPlayer(TypePlayer.AI, "AI");
 
 
-            gm.StartGame(0);
+            GameModel gm = gameBuilder.StartGame(0);
             Assert.AreEqual(gm.CurrentPlayer.Cards.FirstOrDefault(x => x.id == 39).id, 39,
                 "У игрока должна быть карта с №39");
         }

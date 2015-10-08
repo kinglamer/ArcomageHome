@@ -11,35 +11,33 @@ namespace Arcomage.Tests.GameControllerTests
     internal class GameControllerTestHelper
     {
 
-        public static GameController InitDemoGame(int server = 0,
+        public static GameModel InitDemoGame(int server = 0,
             Dictionary<Attributes, int> humanStat = null, Dictionary<Attributes, int> aiStat = null,
             int maxCard = 0, List<int> customCard = null, List<int> customCardAi = null)
         {
-            GameController gm;
-
+            GameBuilder gameBuilder;
             switch (server)
             {
                 case 6:
-                    gm = new GameController(new LogTest(), new TestServerForSpecialCard());
+                    gameBuilder = new GameBuilder(new LogTest(), new TestServerForSpecialCard());
                     break;
                 default:
-                    gm = new GameController(new LogTest(), new TestServerForCustomCard());
+                    gameBuilder = new GameBuilder(new LogTest(), new TestServerForCustomCard());
                     break;
             }
 
 
-            gm.AddPlayer(TypePlayer.Human, "Human", humanStat, customCard);
-            gm.AddPlayer(TypePlayer.AI, "AI", aiStat, customCardAi);
+            gameBuilder.AddPlayer(TypePlayer.Human, "Human", humanStat, customCard);
+            gameBuilder.AddPlayer(TypePlayer.AI, "AI", aiStat, customCardAi);
 
             if (maxCard > 0)
-                gm.ChangeMaxCard(maxCard);
+                gameBuilder.ChangeMaxCard(maxCard);
 
-            gm.StartGame(0);
-            return gm;
+          return gameBuilder.StartGame(0);
         }
 
 
-        public static void MakeMoveAi(GameController gm, ILog log)
+        public static void MakeMoveAi(GameModel gm, ILog log)
         {
             log.Info("----===== Ход компьютера =====----");
             gm.MakePlayerMove(gm.CurrentPlayer.ChooseCard().id);
