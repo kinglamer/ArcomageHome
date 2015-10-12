@@ -9,7 +9,8 @@ using Arcomage.Core.Interfaces;
 using Arcomage.Core.SpecialCard;
 using Arcomage.Entity;
 using Arcomage.Entity.Cards;
-using Newtonsoft.Json;
+﻿using Arcomage.Entity.Players;
+﻿using Newtonsoft.Json;
 
 
 namespace Arcomage.Core
@@ -84,7 +85,7 @@ namespace Arcomage.Core
 
         public List<Card> GetUsedCard(TypePlayer typePlayer, GameAction gameAction)
         {
-            return _logCard.Where(x => x.Player.type == typePlayer && x.GameAction == gameAction).Select(item => item.Card).ToList();
+            return _logCard.Where(x => x.Player.Type == typePlayer && x.GameAction == gameAction).Select(item => item.Card).ToList();
         }
 
         
@@ -142,7 +143,7 @@ namespace Arcomage.Core
 
 
                 _logCard.Add(new GameCardLog(CurrentPlayer, GameAction.MakeMove, CurrentPlayer.Cards[index], CurrentMove));
-                Debug.Print(CurrentPlayer.playerName + " use " + CurrentPlayer.Cards[index].id);
+                Debug.Print(CurrentPlayer.PlayerName + " use " + CurrentPlayer.Cards[index].id);
                 CurrentPlayer.Cards.RemoveAt(index);
             }
             else
@@ -157,12 +158,12 @@ namespace Arcomage.Core
                 {
                     CurrentPlayer.gameActions.Remove(GameAction.DropCard);
                     _logCard.Add(new GameCardLog(CurrentPlayer, GameAction.DropCard, CurrentPlayer.Cards[index], CurrentMove));
-                    Debug.Print(CurrentPlayer.playerName + " drop " + CurrentPlayer.Cards[index].id);
+                    Debug.Print(CurrentPlayer.PlayerName + " drop " + CurrentPlayer.Cards[index].id);
                     CurrentPlayer.Cards.RemoveAt(index);
                 }
                 catch
                 {
-                    Log.Error(string.Format("Player: {0} can't pass card {1}", CurrentPlayer.playerName, CurrentPlayer.Cards[index].name));
+                    Log.Error(string.Format("Player: {0} can't pass card {1}", CurrentPlayer.PlayerName, CurrentPlayer.Cards[index].name));
                 }
             }
 

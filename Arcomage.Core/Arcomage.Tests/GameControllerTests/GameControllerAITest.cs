@@ -28,8 +28,8 @@ namespace Arcomage.Tests.GameControllerTests
         {
             GameBuilder gameBuilder = new GameBuilder(log, new TestServerForCustomCard());
 
-            gameBuilder.AddPlayer(TypePlayer.Human, "Human");
-            gameBuilder.AddPlayer(TypePlayer.AI, "AI", null, new List<int> {1});
+            gameBuilder.AddPlayer(TypePlayer.Human, "Human", new CardPickerTest());
+            gameBuilder.AddPlayer(TypePlayer.AI, "AI",new CardPickerTest(), null, new List<int> {1});
 
             GameModel gm = gameBuilder.StartGame(1);
 
@@ -38,7 +38,7 @@ namespace Arcomage.Tests.GameControllerTests
             Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI, GameAction.MakeMove).Count, 1,
                 "Компьютер должен использовать карту");
 
-            Assert.AreEqual(gm.CurrentPlayer.type, TypePlayer.AI, "Ход должен остаться за компом");
+            Assert.AreEqual(gm.CurrentPlayer.Type, TypePlayer.AI, "Ход должен остаться за компом");
         }
 
 

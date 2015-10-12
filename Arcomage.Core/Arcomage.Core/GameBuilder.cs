@@ -8,6 +8,7 @@ using Arcomage.Core.Interfaces;
 using Arcomage.Core.SpecialCard;
 using Arcomage.Entity;
 using Arcomage.Entity.Cards;
+using Arcomage.Entity.Players;
 using Newtonsoft.Json;
 
 namespace Arcomage.Core
@@ -63,7 +64,7 @@ namespace Arcomage.Core
 
         }
 
-        public void AddPlayer(TypePlayer tp, string name, Dictionary<Attributes, int> startParams = null,
+        public void AddPlayer(TypePlayer tp, string name,ICardPicker cardPicker = null, Dictionary<Attributes, int> startParams = null,
             IEnumerable<int> cardTricksters = null)
         {
             if (_players.Count == 2)
@@ -89,7 +90,7 @@ namespace Arcomage.Core
 
 
             Player newPlayer = tp == TypePlayer.Human
-                ? new Player(name, tp, startParams)
+                ? (Player) new HumanPlayer(name, tp, startParams, cardPicker)
                 : new AiPlayer(name, tp, startParams);
 
 

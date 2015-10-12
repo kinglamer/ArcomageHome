@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Arcomage.Core.Interfaces;
 using Arcomage.Entity;
+using Arcomage.Entity.Players;
 
 namespace Arcomage.Core
 {
@@ -47,7 +48,7 @@ namespace Arcomage.Core
 
                 if (IsPlayerWin(players[i].PlayerParams, GetWinParams()) || IsPlayerLose(players[ememyindex].PlayerParams, GetLoseParams()))
                 {
-                    returnVal = players[i].playerName;
+                    returnVal = players[i].PlayerName;
                     break;
                 }
             }

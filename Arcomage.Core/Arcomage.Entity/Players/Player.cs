@@ -1,17 +1,21 @@
+using System;
 using System.Collections.Generic;
 using Arcomage.Entity.Cards;
 
-namespace Arcomage.Entity
+namespace Arcomage.Entity.Players
 {
-    public class Player
+    public class Player 
     {
-        public string playerName { get; private set; }
+       
+        public string PlayerName { get; private set; }
 
-        public TypePlayer type { get; private set; }
+        public TypePlayer Type { get; private set; }
 
         public Dictionary<Attributes, int> PlayerParams { get; set; }
 
         public List<Card> Cards { get; set; }
+
+    
 
         public List<GameAction> gameActions { get; set; }
 
@@ -20,12 +24,14 @@ namespace Arcomage.Entity
         /// </summary>
         public Player(string playerName, TypePlayer type, Dictionary<Attributes, int> gameParams)
         {
-            this.playerName = playerName;
-            this.type = type;
+     
+            PlayerName = playerName;
+            Type = type;
 
             PlayerParams = gameParams;
             Cards = new List<Card>();
             gameActions = new List<GameAction>();
+ 
         }
 
         public void UpdateParams()
@@ -37,10 +43,7 @@ namespace Arcomage.Entity
 
         public virtual Card ChooseCard()
         {
-            if (Cards.Count > 0)
-                return Cards[0];
-
-            return new Card();
+            throw new NotImplementedException();
         }
     }
 }

@@ -68,8 +68,8 @@ namespace Arcomage.Tests.GameControllerTests
         public void CheckApplyCardParams()
         {
             GameBuilder gameBuilder = new GameBuilder(new LogTest(), new TestServerForCustomCard());
-            gameBuilder.AddPlayer(TypePlayer.Human, "Human", null, new List<int> { 2 });
-            gameBuilder.AddPlayer(TypePlayer.Human, "AI");
+            gameBuilder.AddPlayer(TypePlayer.Human, "Human",new CardPickerTest(), null, new List<int> { 2 });
+            gameBuilder.AddPlayer(TypePlayer.Human, "AI", new CardPickerTest());
             GameModel gm = gameBuilder.StartGame(0);
 
             gm.MakePlayerMove(2);
@@ -203,13 +203,31 @@ namespace Arcomage.Tests.GameControllerTests
         {
             LogTest log = new LogTest();
             GameBuilder gameBuilder = new GameBuilder(log, new ArcoSQLLiteServer(@"arcomageDB.db"));
-            gameBuilder.AddPlayer(TypePlayer.Human, "Human", null, new List<int> { 39, 11, 12, 13, 14, 15 });
-            gameBuilder.AddPlayer(TypePlayer.AI, "AI");
+            gameBuilder.AddPlayer(TypePlayer.Human, "Human",new CardPickerTest(), null, new List<int> { 39, 11, 12, 13, 14, 15 });
+            gameBuilder.AddPlayer(TypePlayer.AI, "AI", new CardPickerTest());
 
 
             GameModel gm = gameBuilder.StartGame(0);
             Assert.AreEqual(gm.CurrentPlayer.Cards.FirstOrDefault(x => x.id == 39).id, 39,
                 "У игрока должна быть карта с №39");
+        }
+
+        [Test]
+        public void TestCardPicker()
+        {
+            var cardP = new CardPickerTest();
+            var cardP2 = new CardPickerTest();
+            LogTest log = new LogTest();
+            GameBuilder gameBuilder = new GameBuilder(log, new ArcoSQLLiteServer(@"arcomageDB.db"));
+            gameBuilder.AddPlayer(TypePlayer.Human, "Human", cardP, null, new List<int> { 39, 11, 12, 13, 14, 15 });
+            gameBuilder.AddPlayer(TypePlayer.AI, "AI", cardP);
+
+            GameModel gm = gameBuilder.StartGame(0);
+
+
+            cardP.NotifyObservers(gm.CurrentPlayer.Cards.FirstOrDefault(x => x.id == 39));
+            Assert.AreEqual(gm.CurrentPlayer.ChooseCard().id, 39,"У игрока должна быть выбрана карта №39");
+            Assert.AreNotEqual(gm.EnemyPlayer.ChooseCard().id, 39, "У компьютера не должна быть выбрана карта №39");
         }
     }
 }

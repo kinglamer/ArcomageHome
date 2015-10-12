@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Arcomage.Entity.Cards;
 
-namespace Arcomage.Entity
+namespace Arcomage.Entity.Players
 {
     public class AiPlayer : Player
     {

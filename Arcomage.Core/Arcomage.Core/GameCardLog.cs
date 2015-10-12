@@ -1,6 +1,7 @@
 ﻿using Arcomage.Core.Interfaces;
 using Arcomage.Entity;
 using Arcomage.Entity.Cards;
+using Arcomage.Entity.Players;
 
 namespace Arcomage.Core
 {

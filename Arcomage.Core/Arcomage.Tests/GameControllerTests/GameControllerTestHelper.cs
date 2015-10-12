@@ -27,8 +27,8 @@ namespace Arcomage.Tests.GameControllerTests
             }
 
 
-            gameBuilder.AddPlayer(TypePlayer.Human, "Human", humanStat, customCard);
-            gameBuilder.AddPlayer(TypePlayer.AI, "AI", aiStat, customCardAi);
+            gameBuilder.AddPlayer(TypePlayer.Human, "Human", new CardPickerTest(), humanStat, customCard);
+            gameBuilder.AddPlayer(TypePlayer.AI, "AI", null, aiStat, customCardAi);
 
             if (maxCard > 0)
                 gameBuilder.ChangeMaxCard(maxCard);

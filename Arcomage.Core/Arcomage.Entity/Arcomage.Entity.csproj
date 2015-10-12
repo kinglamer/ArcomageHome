@@ -37,13 +37,16 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AIPlayer.cs" />
     <Compile Include="Cards\Card.cs" />
     <Compile Include="Cards\CardAttributes.cs" />
     <Compile Include="Cards\CardParams.cs" />
     <Compile Include="Cards\Price.cs" />
     <Compile Include="EnumCatalog.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Players\AiPlayer.cs" />
+    <Compile Include="Players\HumanPlayer.cs" />
+    <Compile Include="Players\ICardObserver.cs" />
+    <Compile Include="Players\ICardPicker.cs" />
+    <Compile Include="Players\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

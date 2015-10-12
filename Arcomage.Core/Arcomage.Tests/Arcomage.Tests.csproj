@@ -73,6 +73,7 @@
     <Compile Include="AnotherTests\ParserDescripTest.cs" />
     <Compile Include="AnotherTests\RefactoringTest.cs" />
     <Compile Include="AnotherTests\SpecialCardTest.cs" />
+    <Compile Include="GameControllerTests\CardPickerTest.cs" />
     <Compile Include="GameControllerTests\GameControllerAITest.cs" />
     <Compile Include="GameControllerTests\GameControllerTest.cs" />
     <Compile Include="GameControllerTests\GameControllerTestHelper.cs" />
