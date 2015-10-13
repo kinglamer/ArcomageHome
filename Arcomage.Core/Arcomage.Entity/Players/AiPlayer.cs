@@ -15,11 +15,12 @@ namespace Arcomage.Entity.Players
         {
             Card card = Cards.FirstOrDefault(item => PlayerParams[item.price.attributes] >= item.price.value);
 
+            //если нет никакой карты, которую возможно сыграть, тогда меняем событие на сброс карты и передаем первую возможную карту для сброса
             if (card == null)
             {
                 if (Cards.Count > 0)
                     card = Cards[0];
-              
+                
                 if (gameActions.Contains(GameAction.PlayCard))
                     gameActions.Remove(GameAction.PlayCard);
 
