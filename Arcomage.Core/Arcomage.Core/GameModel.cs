@@ -52,9 +52,61 @@ namespace Arcomage.Core
             _serverCards = serverCards;
 
             CurrentPlayer = _players[currentPlayer];
+
+            if (CurrentPlayer.Type == TypePlayer.AI)
+                CurrentPlayer.gameActions.Add(GameAction.PlayCard);
+
             EnemyPlayer = _players[enemy];
             SetPlayerCards(CurrentPlayer);
             SetPlayerCards(EnemyPlayer);
+        }
+
+        //TODO: возможно придется переделать список gameActions для персонажей
+        /// <summary>
+        /// На текущий момент данный метод надо вызывать после каждого уведомления CardPicker о том, что произошло
+        /// </summary>
+        public void Update()
+        {
+            while (CurrentPlayer.gameActions.Count > 0)
+            {
+                var card = CurrentPlayer.ChooseCard();
+
+                //если карты нет, а присутствует действией, которое необходимо выполнить, прерывается метод Update до тех пор, пока не придет уведомление из вне о новых картах
+                if (card == null && (CurrentPlayer.gameActions.Contains(GameAction.PlayCardAgain) ||
+                        CurrentPlayer.gameActions.Contains(GameAction.DropCard) ||
+                        CurrentPlayer.gameActions.Contains(GameAction.PlayCard)))
+                    break;
+
+                var playerActions = new List<GameAction>(CurrentPlayer.gameActions);
+
+                //Зашил, что если нужно сбросить карту, то сначала происходит сброс, а уже потом другие действия
+                if (CurrentPlayer.gameActions.Contains(GameAction.DropCard))
+                {
+                    playerActions.Clear();
+                    playerActions.Add(GameAction.DropCard);
+                }
+
+                foreach (var actions in playerActions)
+                {
+                    switch (actions)
+                    {
+                        case GameAction.DropCard:
+                            DropCard(card);
+                            break;
+                        case GameAction.PlayCard:
+                            PlayerCard(card);
+                            break;
+                        case GameAction.PlayCardAgain:
+                            PlayerCard(card);
+                            break;
+                        case GameAction.EndMove:
+                            NextPlayerTurn();
+                            break;
+                    }
+                }
+            }
+            
+
         }
 
         /// <summary>
@@ -82,89 +134,72 @@ namespace Arcomage.Core
                 player.Cards.Add(newCard);
             }
         }
-
-        public List<Card> GetUsedCard(TypePlayer typePlayer, GameAction gameAction)
-        {
-            return _logCard.Where(x => x.Player.Type == typePlayer && x.GameAction == gameAction).Select(item => item.Card).ToList();
-        }
-
         
-        /// <summary>
-        /// Проверка хватает ли ресурсов для использования карты
-        /// </summary>
-        public bool CanUseCard(Price price)
-        {
-            if (CurrentPlayer.PlayerParams[price.attributes] >= price.value)
-                return true;
-
-            return false;
-        }
-
-        public bool CanUseCard(int id)
-        {
-            int index;
-            return CanUseCard(GetCardById(id, out index).price);
-        }
-        
-
         /// <summary>
         /// Использование карты игроком
         /// </summary>
         /// <param name="id">Уникальный номер карты в БД</param>
-        /// <param name="dropCard">Флаг, что карта сбрасывается</param>
-        public void MakePlayerMove(int id, bool dropCard = false)
+        private void PlayerCard(Card card)
         {
             if (CurrentPlayer.gameActions.Contains(GameAction.EndMove))
                 return;
 
-            int index;
-            var card = GetCardById(id, out index);
-
-            if (CanUseCard(card.price) && !dropCard)
+            if (CanUseCard(card.price))
             {
+                if (CurrentPlayer.gameActions.Contains(GameAction.PlayCardAgain))
+                    CurrentPlayer.gameActions.Remove(GameAction.PlayCardAgain);
 
-                if (CurrentPlayer.gameActions.Contains(GameAction.MakeMoveAgain))
-                    CurrentPlayer.gameActions.Remove(GameAction.MakeMoveAgain);
+                if (CurrentPlayer.gameActions.Contains(GameAction.PlayCard))
+                    CurrentPlayer.gameActions.Remove(GameAction.PlayCard);
 
-                if (!_specialCardHandlers.ContainsKey(id))
+
+                if (!_specialCardHandlers.ContainsKey(card.id))
                     card.Apply(CurrentPlayer, EnemyPlayer);
                 else
                 {
-                    _specialCardHandlers[id].copyParams(card);
-                    _specialCardHandlers[id].Apply(CurrentPlayer, EnemyPlayer);
+                    _specialCardHandlers[card.id].copyParams(card);
+                    _specialCardHandlers[card.id].Apply(CurrentPlayer, EnemyPlayer);
 
-                    if (_specialCardHandlers[id].discard)
+                    if (_specialCardHandlers[card.id].discard)
                         CurrentPlayer.gameActions.Add(GameAction.DropCard);
                 }
 
                 if (card.playAgain)
-                    CurrentPlayer.gameActions.Add(GameAction.MakeMoveAgain);
+                    CurrentPlayer.gameActions.Add(GameAction.PlayCardAgain);
 
 
 
-                _logCard.Add(new GameCardLog(CurrentPlayer, GameAction.MakeMove, CurrentPlayer.Cards[index], CurrentMove));
-                Debug.Print(CurrentPlayer.PlayerName + " use " + CurrentPlayer.Cards[index].id);
-                CurrentPlayer.Cards.RemoveAt(index);
+                _logCard.Add(new GameCardLog(CurrentPlayer, GameAction.PlayCard, card, CurrentMove));
+                Debug.Print(CurrentPlayer.PlayerName + " use " + card.id);
+                CurrentPlayer.Cards.Remove(card);
             }
-            else
-            {
-                if (id == 40 && dropCard)
-                {
-                    Log.Info("Эту карту нельзя сбросить!");
-                    return;
-                }
+      
+            if (CurrentPlayer.gameActions.Count == 0)
+                CurrentPlayer.gameActions.Add(GameAction.EndMove);
+        }
 
-                try
-                {
-                    CurrentPlayer.gameActions.Remove(GameAction.DropCard);
-                    _logCard.Add(new GameCardLog(CurrentPlayer, GameAction.DropCard, CurrentPlayer.Cards[index], CurrentMove));
-                    Debug.Print(CurrentPlayer.PlayerName + " drop " + CurrentPlayer.Cards[index].id);
-                    CurrentPlayer.Cards.RemoveAt(index);
-                }
-                catch
-                {
-                    Log.Error(string.Format("Player: {0} can't pass card {1}", CurrentPlayer.PlayerName, CurrentPlayer.Cards[index].name));
-                }
+        private void DropCard(Card card)
+        {
+            if (CurrentPlayer.gameActions.Contains(GameAction.EndMove))
+                return;
+
+            if (card.id == 40)
+            {
+                Log.Info("Эту карту нельзя сбросить!");
+                CurrentPlayer.gameActions.Remove(GameAction.DropCard);
+                return;
+            }
+
+            try
+            {
+                CurrentPlayer.gameActions.Remove(GameAction.DropCard);
+                _logCard.Add(new GameCardLog(CurrentPlayer, GameAction.DropCard, card, CurrentMove));
+                Debug.Print(CurrentPlayer.PlayerName + " drop " + card.id);
+                CurrentPlayer.Cards.Remove(card);
+            }
+            catch
+            {
+                Log.Error(string.Format("Player: {0} can't pass card {1}", CurrentPlayer.PlayerName, card.name));
             }
 
             if (CurrentPlayer.gameActions.Count == 0)
@@ -172,7 +207,7 @@ namespace Arcomage.Core
         }
 
 
-        public void NextPlayerTurn()
+        private void NextPlayerTurn()
         {
             if (!CurrentPlayer.gameActions.Contains(GameAction.EndMove) || IsGameEnded)
                 return;
@@ -193,6 +228,34 @@ namespace Arcomage.Core
             Player temp = CurrentPlayer;
             CurrentPlayer = EnemyPlayer;
             EnemyPlayer = temp;
+
+            //Т.к. вызов этого метода происходит в Update, то ход не прерывается, а передается AI автоматически
+            if(CurrentPlayer.Type == TypePlayer.AI)
+                CurrentPlayer.gameActions.Add(GameAction.PlayCard);
+        }
+
+
+        //TODO: избавить от методов, которые перечислены ниже
+        public List<Card> GetUsedCard(TypePlayer typePlayer, GameAction gameAction)
+        {
+            return _logCard.Where(x => x.Player.Type == typePlayer && x.GameAction == gameAction).Select(item => item.Card).ToList();
+        }
+
+        /// <summary>
+        /// Проверка хватает ли ресурсов для использования карты
+        /// </summary>
+        public bool CanUseCard(Price price)
+        {
+            if (CurrentPlayer.PlayerParams[price.attributes] >= price.value)
+                return true;
+
+            return false;
+        }
+
+        public bool CanUseCard(int id)
+        {
+            int index;
+            return CanUseCard(GetCardById(id, out index).price);
         }
 
         private Card GetCardById(int id, out int index)

@@ -28,11 +28,11 @@ namespace Arcomage.Tests.GameControllerTests
             Observers.Remove(observer);
         }
 
-        public void NotifyObservers(Card card)
+        public void NotifyObservers(Card card, GameAction gameAction)
         {
             foreach (var observer in Observers)
             {
-                observer.Update(card);
+                observer.Update(card, gameAction);
             }
         }
     }

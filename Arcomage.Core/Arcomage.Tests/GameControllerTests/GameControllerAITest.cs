@@ -32,10 +32,9 @@ namespace Arcomage.Tests.GameControllerTests
             gameBuilder.AddPlayer(TypePlayer.AI, "AI",new CardPickerTest(), null, new List<int> {1});
 
             GameModel gm = gameBuilder.StartGame(1);
+            gm.Update();
 
-
-            GameControllerTestHelper.MakeMoveAi(gm, log);
-            Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI, GameAction.MakeMove).Count, 1,
+            Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI, GameAction.PlayCard).Count, 1,
                 "Компьютер должен использовать карту");
 
             Assert.AreEqual(gm.CurrentPlayer.Type, TypePlayer.AI, "Ход должен остаться за компом");
@@ -51,10 +50,10 @@ namespace Arcomage.Tests.GameControllerTests
         {
             GameModel gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {1},
                 new List<int> {2});
-            gm.MakePlayerMove(1, true);
-            gm.NextPlayerTurn();
-            GameControllerTestHelper.MakeMoveAi(gm, log);
-            Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI, GameAction.MakeMove).LastOrDefault().id, 2, "Компьютер должен использовать карту id 2");
+            GameControllerTestHelper.CardPicker.NotifyObservers(gm.CurrentPlayer.Cards.FirstOrDefault(x => x.id == 1), GameAction.DropCard);
+            gm.Update();
+        
+            Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI, GameAction.PlayCard).LastOrDefault().id, 2, "Компьютер должен использовать карту id 2");
         }
 
 
@@ -67,9 +66,8 @@ namespace Arcomage.Tests.GameControllerTests
         {
             GameModel gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {1},
                 new List<int> {3});
-            gm.MakePlayerMove(1, true);
-            gm.NextPlayerTurn();
-            GameControllerTestHelper.MakeMoveAi(gm, log);
+            GameControllerTestHelper.CardPicker.NotifyObservers(gm.CurrentPlayer.Cards.FirstOrDefault(x => x.id == 1), GameAction.DropCard);
+            gm.Update();
             Assert.AreEqual(gm.EnemyPlayer.PlayerParams[Attributes.Tower], 0, "Башня врага должна быть уничтожена");
             Assert.AreEqual(gm.Winner, "AI", "Компьютер не может проиграть!");
 
@@ -85,9 +83,9 @@ namespace Arcomage.Tests.GameControllerTests
         {
             GameModel gm = GameControllerTestHelper.InitDemoGame(0, null, null, 1, new List<int> {1},
                 new List<int> {7});
-            gm.MakePlayerMove(1, true);
-            gm.NextPlayerTurn();
-            GameControllerTestHelper.MakeMoveAi(gm, log);
+
+            GameControllerTestHelper.CardPicker.NotifyObservers(gm.CurrentPlayer.Cards.FirstOrDefault(x => x.id == 1), GameAction.DropCard);
+            gm.Update();
             //Внимание: при усовершенствование AI данный тест может измениться, .т.к. комп уже осознано будет выбирать какую карту сбросить
             Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI, GameAction.DropCard).LastOrDefault().id, 7, "AI должен сбросить карту 2");
         }
@@ -103,16 +101,17 @@ namespace Arcomage.Tests.GameControllerTests
             //Внимание: при усовершенствование AI данный тест может измениться, .т.к. комп уже осознано будет выбирать какую карту сбросить
             GameModel gm = GameControllerTestHelper.InitDemoGame(0, null, null, 6, new List<int> {1},
                 new List<int> {56, 6});
-            gm.MakePlayerMove(1, true);
-            gm.NextPlayerTurn();
-            GameControllerTestHelper.MakeMoveAi(gm, log);
 
-            Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI, GameAction.MakeMove).LastOrDefault().id, 6,"AI должен был использовать карту 6");
+            GameControllerTestHelper.CardPicker.NotifyObservers(gm.CurrentPlayer.Cards.FirstOrDefault(x => x.id == 1), GameAction.DropCard);
+            gm.Update();
 
-            Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI, GameAction.MakeMove).FirstOrDefault().id, 56,
+
+            Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI, GameAction.PlayCard).LastOrDefault().id, 6,"AI должен был использовать карту 6");
+
+            Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI, GameAction.PlayCard).FirstOrDefault().id, 56,
                 "AI должен был использовать карту 55");
 
-            Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI, GameAction.MakeMove).Count, 2, "AI должен был использовать 2 карты");
+            Assert.AreEqual(gm.GetUsedCard(TypePlayer.AI, GameAction.PlayCard).Count, 2, "AI должен был использовать 2 карты");
         }
 
     }

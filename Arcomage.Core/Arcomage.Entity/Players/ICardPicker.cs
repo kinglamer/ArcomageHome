@@ -6,6 +6,6 @@ namespace Arcomage.Entity.Players
     {
         void AddObserver(ICardObserver observer);
         void RemoveObserver(ICardObserver observer);
-        void NotifyObservers(Card card);
+        void NotifyObservers(Card card, GameAction gameAction);
     }
 }

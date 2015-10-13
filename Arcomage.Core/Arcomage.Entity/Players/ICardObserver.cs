@@ -4,6 +4,6 @@ namespace Arcomage.Entity.Players
 {
     public interface ICardObserver
     {
-        void Update(Card card);
+        void Update(Card card, GameAction gameAction);
     }
 }

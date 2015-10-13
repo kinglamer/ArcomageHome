@@ -12,8 +12,8 @@ namespace Arcomage.Entity
 
     public enum GameAction
     {
-        MakeMove, 
-        MakeMoveAgain,
+        PlayCard, 
+        PlayCardAgain,
         DropCard,
         EndMove
     }

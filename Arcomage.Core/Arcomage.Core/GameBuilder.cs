@@ -90,7 +90,7 @@ namespace Arcomage.Core
 
 
             Player newPlayer = tp == TypePlayer.Human
-                ? (Player) new HumanPlayer(name, tp, startParams, cardPicker)
+                ? new Player(name, tp, startParams, cardPicker)
                 : new AiPlayer(name, tp, startParams);
 
 
