@@ -77,6 +77,7 @@
     <Compile Include="GameControllerTests\GameControllerAITest.cs" />
     <Compile Include="GameControllerTests\GameControllerTest.cs" />
     <Compile Include="GameControllerTests\GameControllerTestHelper.cs" />
+    <Compile Include="GameControllerTests\RealGameTest.cs" />
     <Compile Include="Moq\LogTest.cs" />
     <Compile Include="Moq\TestServerForCustomCard.cs" />
     <Compile Include="Moq\TestServerForSpecialCard.cs" />
