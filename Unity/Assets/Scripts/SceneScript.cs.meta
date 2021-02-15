@@ -1,8 +1,20 @@
 fileFormatVersion: 2
 guid: f40db56953c0fd14095e5bd237f25359
 MonoImporter:
+  externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - respawnCard: {instanceID: 0}
+  - cards: {instanceID: 0}
+  - mainSkin: {instanceID: 0}
+  - PicAtlas: {instanceID: 0}
+  - gameScreenText: {instanceID: 0}
+  - PlayerTower: {instanceID: 0}
+  - EnemyTower: {instanceID: 0}
+  - PlayerWall: {instanceID: 0}
+  - EnemyWall: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 
