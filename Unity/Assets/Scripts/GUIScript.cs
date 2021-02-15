@@ -1,31 +1,29 @@
 ﻿using UnityEngine;
-using System.Collections;
-using Arcomage.Core;
-using Arcomage.Entity;
+using UnityEngine.UI;
 
 public class GUIScript : MonoBehaviour
 {
 
 //	public GUISkin MainSkin;
 
-		public GUIText PlayerName;
-		public GUIText EnemyName;
-		public GUIText PlayerTower;
-		public GUIText PlayerWall;
-		public GUIText EnemyTower;
-		public GUIText EnemyWall;
-		public GUIText PlayerDiamonds;
-		public GUIText PlayerAnimal;
-		public GUIText PlayerRock;
-		public GUIText EnemyDiamonds;
-		public GUIText EnemyAnimal;
-		public GUIText EnemyRock;
-		public GUIText PlayerMine;
-		public GUIText PlayerMagic;
-		public GUIText PlayerMenagerie;
-		public GUIText EnemyMine;
-		public GUIText EnemyMagic;
-		public GUIText EnemyMenagerie;
+		public Text PlayerName;
+		public Text EnemyName;
+		public Text PlayerTower;
+		public Text PlayerWall;
+		public Text EnemyTower;
+		public Text EnemyWall;
+		public Text PlayerDiamonds;
+		public Text PlayerAnimal;
+		public Text PlayerRock;
+		public Text EnemyDiamonds;
+		public Text EnemyAnimal;
+		public Text EnemyRock;
+		public Text PlayerMine;
+		public Text PlayerMagic;
+		public Text PlayerMenagerie;
+		public Text EnemyMine;
+		public Text EnemyMagic;
+		public Text EnemyMenagerie;
 
 //	public string playername { set{ PlayerName.text = value; }}
 //	public string enemyname { set{ EnemyName.text = value; }}

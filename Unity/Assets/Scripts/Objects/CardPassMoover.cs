@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class CardPassMoover : MonoBehaviour
 {
@@ -18,8 +19,8 @@ public class CardPassMoover : MonoBehaviour
 				passText = GameObject.Find ("PassText");
 				transform.Translate (Vector3.back * 2f);
 				target = new Vector3 (transform.position.x, -25f, transform.position.z);
-				passText.GetComponent<GUIText>().text = "PASS";
-                passText.GetComponent<GUIText>().enabled = true;
+				passText.GetComponent<Text>().text = "PASS";
+                passText.GetComponent<Text>().enabled = true;
 		}
 	
 		// Update is called once per frame
@@ -33,7 +34,7 @@ public class CardPassMoover : MonoBehaviour
 
 		void OnDisable ()
 		{
-            passText.GetComponent<GUIText>().enabled = false;
+            passText.GetComponent<Text>().enabled = false;
 		}
 
 }

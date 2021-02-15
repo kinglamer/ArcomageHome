@@ -14,6 +14,7 @@ using System.Linq;
 using AssemblyCSharp;
 using System;
 using Random = UnityEngine.Random;
+using UnityEngine.UI;
 
 public enum SoundTypes
 {
@@ -448,27 +449,27 @@ public class SceneScript : MonoBehaviour, ILog
 										UpdateGameParameters ();
 										PushCardOnDeck (new Vector3 ());
 										if (gm.additionaStatus == CurrentAction.PlayerMustDropCard) {
-												gameScreenText.GetComponent<GUIText>().text = "You need to drop a card";
-												gameScreenText.GetComponent<GUIText>().enabled = true;
+												gameScreenText.GetComponent<Text>().text = "You need to drop a card";
+												gameScreenText.GetComponent<Text>().enabled = true;
 										}
 								}
 								break;
 						}
 				case CurrentAction.HumanUseCard:
 						{
-								gameScreenText.GetComponent<GUIText>().enabled = false;
+								gameScreenText.GetComponent<Text>().enabled = false;
 								break;
 						}
 				case CurrentAction.PassStroke:
 						{
-								gameScreenText.GetComponent<GUIText>().enabled = false;
+								gameScreenText.GetComponent<Text>().enabled = false;
 								break;
 						}
 				case CurrentAction.PlayerMustDropCard:
 						{
 								PushCardOnDeck (new Vector3 ());
-								gameScreenText.GetComponent<GUIText>().text = "You need to drop a card";
-								gameScreenText.GetComponent<GUIText>().enabled = true;
+								gameScreenText.GetComponent<Text>().text = "You need to drop a card";
+								gameScreenText.GetComponent<Text>().enabled = true;
 								break;
 						}
 				case CurrentAction.UpdateStatHuman:
