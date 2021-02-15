@@ -644,32 +644,51 @@ namespace Arcomage.Core
 
         private void WaitHumanMove(Dictionary<string, object> information)
         {
-            if (additionaStatus == CurrentAction.PlayerMustDropCard && PassMove((int)information["ID"]))
+            int ID;
+            if (information.TryGetValue("ID", out object val))
+            {
+                ID = (int)val;
+            }
+            else
+            {
+                throw new ArgumentException("Can't find ID");
+            }
+
+            CurrentAction action;
+            if (information.TryGetValue("CurrentAction", out object val2))
+            {
+                action = (CurrentAction)Enum.Parse(typeof(CurrentAction), val2.ToString(), true);
+            }
+            else
+            {
+                throw new ArgumentException("Can't find CurrentAction");
+            }
+
+            if (additionaStatus == CurrentAction.PlayerMustDropCard && PassMove(ID))
             {
                 players[currentPlayer].UpdateParams();
                 Status = CurrentAction.GetPlayerCard;
                 information["CurrentAction"] = CurrentAction.PassStroke.ToString();
                 SendGameNotification(information);
-                
                 return;
             }
 
-            if (information["CurrentAction"].ToString() == "HumanUseCard" && UseCard((int)information["ID"]))
+            if (action == CurrentAction.HumanUseCard && UseCard(ID))
             {
-                    if (Status != CurrentAction.PlayAgain)
-                        Status = CurrentAction.HumanUseCard;
-                    else
-                    {
-                        players[currentPlayer].UpdateParams();
+                if (Status != CurrentAction.PlayAgain)
+                    Status = CurrentAction.HumanUseCard;
+                else
+                {
+                    players[currentPlayer].UpdateParams();
 
-                        Status = CurrentAction.GetPlayerCard;
-                        information["CurrentAction"] = CurrentAction.WaitHumanMove.ToString();
-                        SendGameNotification(information);
-                    }
+                    Status = CurrentAction.GetPlayerCard;
+                    information["CurrentAction"] = CurrentAction.WaitHumanMove.ToString();
+                    SendGameNotification(information);
+                }
             }
-            
-            if (information["CurrentAction"].ToString() == "PassStroke" && PassMove((int)information["ID"]))
-                    Status = CurrentAction.PassStroke;
+
+            if (action == CurrentAction.PassStroke && PassMove(ID))
+                Status = CurrentAction.PassStroke;
         }
 
         private void GetPlayerCard(Dictionary<string, object> information)
