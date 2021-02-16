@@ -644,20 +644,9 @@ namespace Arcomage.Core
 
         private void WaitHumanMove(Dictionary<string, object> information)
         {
-            int ID;
-            if (information.TryGetValue("ID", out object val))
-            {
-                ID = (int)val;
-            }
-            else
-            {
-                log.Info($"information: {string.Join(";", information.Select(x => $"{x.Key}:{x.Value}").ToArray())}");
-                throw new ArgumentException("Can't find ID");
-            }
-
             CurrentAction action;
             if (information.TryGetValue("CurrentAction", out object val2))
-            {              
+            {
                 action = (CurrentAction)Enum.Parse(typeof(CurrentAction), val2.ToString(), true);
             }
             else
@@ -666,6 +655,17 @@ namespace Arcomage.Core
                 throw new ArgumentException("Can't find CurrentAction");
             }
 
+            int ID;
+            if (action != CurrentAction.AIMoveIsAnimated && information.TryGetValue("ID", out object val))
+            {
+                ID = (int)val;
+            }
+            else
+            {
+                log.Info($"information: {string.Join(";", information.Select(x => $"{x.Key}:{x.Value}").ToArray())}");
+                throw new ArgumentException("Can't find ID");
+            }      
+            
             if (additionaStatus == CurrentAction.PlayerMustDropCard && PassMove(ID))
             {
                 players[currentPlayer].UpdateParams();

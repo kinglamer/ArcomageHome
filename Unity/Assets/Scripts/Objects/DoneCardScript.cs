@@ -61,7 +61,7 @@ public class DoneCardScript : MonoBehaviour
     {
         gameController = GameObject.FindWithTag("GameController");
         startPos = transform.position;
-        audios = new AudioSource();
+        audios = gameObject.AddComponent<AudioSource>();
 
     }
 
@@ -92,7 +92,8 @@ public class DoneCardScript : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             gameController.GetComponent<SceneScript>().PassMove(cardId, startPos, gameObject);
-            audios.PlayOneShot(SceneScript.AudioClips[SoundTypes.card]);
+            var sound = SceneScript.AudioClips[SoundTypes.card];
+            audios.PlayOneShot(sound);
         }
     }
 
