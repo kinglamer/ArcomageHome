@@ -650,19 +650,23 @@ namespace Arcomage.Core
                 action = (CurrentAction)Enum.Parse(typeof(CurrentAction), val2.ToString(), true);
             }
             else
-            {
+            {  
                 log.Info($"information: {string.Join(";", information.Select(x => $"{x.Key}:{x.Value}").ToArray())}");
                 throw new ArgumentException("Can't find CurrentAction");
             }
 
+            if (action == CurrentAction.AIMoveIsAnimated || action == CurrentAction.AnimateHumanMove)
+                return;
+
             int ID;
-            if (action != CurrentAction.AIMoveIsAnimated && information.TryGetValue("ID", out object val))
+            if (information.TryGetValue("ID", out object val))
             {
                 ID = (int)val;
             }
             else
             {
-                log.Info($"information: {string.Join(";", information.Select(x => $"{x.Key}:{x.Value}").ToArray())}");
+                log.Error($"Enum action: {action}");
+                log.Error($"information: {string.Join(";", information.Select(x => $"{x.Key}:{x.Value}").ToArray())}");
                 throw new ArgumentException("Can't find ID");
             }      
             
