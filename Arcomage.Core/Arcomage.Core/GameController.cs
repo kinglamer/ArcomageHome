@@ -651,16 +651,18 @@ namespace Arcomage.Core
             }
             else
             {
+                log.Info($"information: {string.Join(";", information.Select(x => $"{x.Key}:{x.Value}").ToArray())}");
                 throw new ArgumentException("Can't find ID");
             }
 
             CurrentAction action;
             if (information.TryGetValue("CurrentAction", out object val2))
-            {
+            {              
                 action = (CurrentAction)Enum.Parse(typeof(CurrentAction), val2.ToString(), true);
             }
             else
             {
+                log.Info($"information: {string.Join(";", information.Select(x => $"{x.Key}:{x.Value}").ToArray())}");
                 throw new ArgumentException("Can't find CurrentAction");
             }
 
