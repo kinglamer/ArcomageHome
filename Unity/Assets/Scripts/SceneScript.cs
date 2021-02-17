@@ -126,49 +126,47 @@ public class SceneScript : MonoBehaviour, ILog
 				}
 		}
 
-		private void StartNewGame ()
-		{
-				GameIsOver = false;
+	private void StartNewGame()
+	{
+		GameIsOver = false;
+		string filePath = GetStreamingAssetsPath("arcomageDB.db");
+		Debug.LogWarning("GetStreamingAssetsPath.Path: " + filePath);
+		var newServe = new ArcoSQLLiteServer(filePath);
+		Debug.LogWarning("newServe.Path: " + newServe.connectionPath);
+		gm = new GameController(this, newServe);
 
-                string filePath = GetStreamingAssetsPath("arcomageDB.db");
-                var newServe = new ArcoSQLLiteServer(filePath);
-                Debug.LogWarning("newServe.Path: " + newServe.connectionPath);
-                gm = new GameController(this, newServe);
+		gm.AddPlayer(TypePlayer.Human, "Human");
+		gm.AddPlayer(TypePlayer.AI, "Computer");
 
-				gm.AddPlayer (TypePlayer.Human, "Human");
-				gm.AddPlayer (TypePlayer.AI, "Computer");
+		Dictionary<string, object> notify = new Dictionary<string, object>();
 
-				Dictionary<string, object> notify = new Dictionary<string, object> ();
+		notify.Add("CurrentAction", CurrentAction.StartGame);
+		notify.Add("currentPlayer", TypePlayer.Human);
 
-				notify.Add ("CurrentAction", CurrentAction.StartGame);
-				notify.Add ("currentPlayer", TypePlayer.Human);
-
-//				notify.Add ("CardTricksters", new List<int> { 39, 11, 12, 13, 14, 15 });
+		//				notify.Add ("CardTricksters", new List<int> { 39, 11, 12, 13, 14, 15 });
 
 
-				gm.SendGameNotification (notify);
+		gm.SendGameNotification(notify);
 
-		}
+	}
 
-    private string GetStreamingAssetsPath(string fileName)
-    {
-
-        string path;
+	private string GetStreamingAssetsPath(string fileName)
+	{
+		string path;
 #if UNITY_EDITOR
-    path = Path.Combine(Application.streamingAssetsPath, fileName);
+		path = Path.Combine(Application.streamingAssetsPath, fileName);
 #elif UNITY_ANDROID
-     path = "//"+ Application.dataPath + "!/assets/";
+     path = "//"+ Application.dataPath + "!/assets/" + fileName;
 #elif UNITY_IOS
-     path = Application.dataPath + "/Raw";
+     path = Application.dataPath + "/Raw" + fileName;
 #elif UNITY_STANDALONE_OSX
      path = Application.streamingAssetsPath + @"/" + fileName;
 #else
-    path = Path.Combine(Application.streamingAssetsPath, fileName);
-    
+    path = Path.Combine(Application.streamingAssetsPath, fileName);    
 #endif
 
-        return path;
-    }
+		return path;
+	}
 
         private void CreateCard (Card myCard, ref Vector3 spawnPosition, bool isAICard = false)
 		{
