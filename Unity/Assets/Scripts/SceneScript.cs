@@ -129,10 +129,9 @@ public class SceneScript : MonoBehaviour, ILog
 	private void StartNewGame()
 	{
 		GameIsOver = false;
-		string filePath = GetStreamingAssetsPath("arcomageDB.db");
-		Debug.LogWarning("GetStreamingAssetsPath.Path: " + filePath);
-		var newServe = new ArcoSQLLiteServer(filePath);
-		Debug.LogWarning("newServe.Path: " + newServe.connectionPath);
+		(string path, string os) = GetStreamingAssetsPath("arcomageDB.db");
+		Debug.LogWarning("GetStreamingAssetsPath.Path: " + path + "\nos: " + os);
+		var newServe = new ArcoSQLLiteServer(path);
 		gm = new GameController(this, newServe);
 
 		gm.AddPlayer(TypePlayer.Human, "Human");
@@ -150,22 +149,29 @@ public class SceneScript : MonoBehaviour, ILog
 
 	}
 
-	private string GetStreamingAssetsPath(string fileName)
+	private (string path, string os) GetStreamingAssetsPath(string fileName)
 	{
+		
 		string path;
+		string os;
 #if UNITY_EDITOR
 		path = Path.Combine(Application.streamingAssetsPath, fileName);
+		os = "win";
 #elif UNITY_ANDROID
-     path = "//"+ Application.dataPath + "!/assets/" + fileName;
+     path = Path.Combine("//"+ Application.dataPath + "!/assets/", fileName);
+	 os = "android";
 #elif UNITY_IOS
-     path = Application.dataPath + "/Raw" + fileName;
+     path = Path.Combine(Application.dataPath + "/Raw", fileName);
+	 os = "ios";
 #elif UNITY_STANDALONE_OSX
-     path = Application.streamingAssetsPath + @"/" + fileName;
+     path = Path.Combine(Application.dataPath + "/Resources/Data/StreamingAssets", fileName); 
+	 os = "OSX";
 #else
     path = Path.Combine(Application.streamingAssetsPath, fileName);    
+	os = "Uknown: " + Application.platform;
 #endif
 
-		return path;
+		return (path, os);
 	}
 
         private void CreateCard (Card myCard, ref Vector3 spawnPosition, bool isAICard = false)
