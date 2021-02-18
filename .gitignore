@@ -222,3 +222,6 @@ Unity/Arcomage.userprefs
 Unity/UnityVS.Unity.CSharp.csproj
 Unity/UnityVS.Unity.sln
 Unity/Assets/Plugins/Arcomage.Core.dll.config
+/Unity/ProjectSettings/
+/Unity/UserSettings/EditorUserSettings.asset
+/Unity/.vsconfig
