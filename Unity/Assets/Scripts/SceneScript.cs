@@ -1,14 +1,10 @@
 ﻿using System.IO;
 using Arcomage.Core;
-using Arcomage.Core.Common;
 using Arcomage.Core.Interfaces;
 using Arcomage.Core.AlternativeServers;
-using Arcomage.Core.ArcomageService;
 using UnityEngine;
-using System.Collections;
 using Arcomage.Entity;
 using Arcomage.Entity.Cards;
-using Arcomage.Entity.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using AssemblyCSharp;

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -31,7 +32,7 @@ public class MainMenuController : MonoBehaviour
 				GUI.skin = GUISkin;
 				GUILayout.BeginArea (new Rect (Screen.width / 2 - 200, Screen.height / 2 - 100, 400, 200));
 				if (GUILayout.Button ("Start Game") && !isHelp && !isAbout) {
-						Application.LoadLevel (1);
+					SceneManager.LoadScene(1);
 				}
 				if (GUILayout.Button ("Help") && !isHelp && !isAbout) {
 						isHelp = true;
