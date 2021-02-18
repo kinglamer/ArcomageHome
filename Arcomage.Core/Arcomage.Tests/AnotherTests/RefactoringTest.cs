@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Arcomage.Core.AlternativeServers;
-using Arcomage.Core.ArcomageService;
+using Arcomage.Core.Interfaces;
 using Arcomage.Entity.Cards;
 using Newtonsoft.Json;
 using NUnit.Framework;

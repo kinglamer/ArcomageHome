@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using Arcomage.Core.ArcomageService;
+﻿using System.Collections.Generic;
 using Arcomage.Core.Common;
-using Arcomage.Entity;
+using Arcomage.Core.Interfaces;
 using Arcomage.Entity.Cards;
 using Newtonsoft.Json;
 using SQLite;
@@ -27,7 +22,6 @@ namespace Arcomage.Core.AlternativeServers
             using (var connect = new SQLiteConnection(connectionPath,  SQLiteOpenFlags.ReadWrite, false))
             {
             
-
               //  using (var fmd = connect.CreateCommand())
            //     {
                   //  fmd.CommandText = @"";

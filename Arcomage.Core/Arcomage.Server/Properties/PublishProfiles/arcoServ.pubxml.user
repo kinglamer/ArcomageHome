@@ -27,10 +27,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="bin/Arcomage.BL.dll">
       <publishTime>10/04/2014 12:20:57</publishTime>
-    </File>
-    <File Include="bin/Arcomage.Common.dll">
-      <publishTime>10/20/2014 16:06:20</publishTime>
-    </File>
+    </File>  
     <File Include="bin/Arcomage.Core.dll">
       <publishTime>10/04/2014 20:59:25</publishTime>
     </File>

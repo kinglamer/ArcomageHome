@@ -225,3 +225,9 @@ Unity/Assets/Plugins/Arcomage.Core.dll.config
 /Unity/ProjectSettings/
 /Unity/UserSettings/EditorUserSettings.asset
 /Unity/.vsconfig
+/Unity/Assets/Plugins/Arcomage.Common.dll
+/Unity/Assets/Plugins/Arcomage.Common.dll.meta
+/Unity/Assets/Plugins/Arcomage.Core.deps.json
+/Unity/Assets/Plugins/Arcomage.Core.dll
+/Unity/Assets/Plugins/Arcomage.Core.dll.meta
+/Unity/Assets/Plugins/Arcomage.Entity.dll

@@ -1,13 +1,8 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using Arcomage.Core.Common;
+﻿using System.Collections.Generic;
 using Arcomage.DAL;
-using Arcomage.Entity;
 using Arcomage.Entity.Cards;
 using Newtonsoft.Json;
+using Arcomage.Core.Common;
 
 namespace Arcomage.Server
 {

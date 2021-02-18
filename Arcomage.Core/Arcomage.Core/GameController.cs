@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.ServiceModel;
-using Arcomage.Core.ArcomageService;
+using Arcomage.Core.AlternativeServers;
 using Arcomage.Core.Common;
 using Arcomage.Core.Interfaces;
 using Arcomage.Core.Interfaces.Impl;
@@ -74,7 +73,6 @@ namespace Arcomage.Core
         protected readonly ILog log;
         private readonly Dictionary<Attributes, int> WinParams;
         private readonly Dictionary<Attributes, int> LoseParams;
-        private const string url = "http://arcomage.somee.com/ArcoServer.svc?wsdl"; //"http://kinglamer-001-site1.smarterasp.net/ArcoServer.svc?wsdl";
 
         public string Winner { get;private set; }
         private IArcoServer host;
@@ -103,11 +101,7 @@ namespace Arcomage.Core
             LoseParams = GameControllerHelper.GetLoseParams();
             WinParams = GameControllerHelper.GetWinParams();
             players = new List<Player>();
-           
-            if (server == null)
-                host = new ArcoServerClient(new BasicHttpBinding(), new EndpointAddress(url));
-            else
-                host = server;
+            host = server;
 
             //Устанавливаем соответствие между методом и статусом
             eventHandlers = new Dictionary<CurrentAction, EventMethod>();
