@@ -397,9 +397,9 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100006}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cebeda407d5841442878adaab59fc195, type: 3}
+  m_Script: {fileID: 11500000, guid: b8f5aa7de951d3147ac6ef5de2224d4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   detectSwipeOnlyAfterRelease: 0
@@ -416,6 +416,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a85d286bdcdb5d42b502b8ac69ad449, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  detectSwipeOnlyAfterRelease: 0
+  SWIPE_THRESHOLD: 20
   CardName: {fileID: 10200004}
   CardParameter: {fileID: 10200002}
   CardCost: {fileID: 10200000}
