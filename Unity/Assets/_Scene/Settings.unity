@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.39468873, g: 0.40558603, b: 0.34850737, a: 1}
+  m_IndirectSpecularColor: {r: 0.39330333, g: 0.4033237, b: 0.34628758, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &4
 LightmapSettings:
@@ -301,6 +301,36 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 965243191135147127, guid: 8f23847f19df48e46be98ca677896033,
+        type: 3}
+      propertyPath: PlayerName
+      value: AI
+      objectReference: {fileID: 0}
+    - target: {fileID: 2868230895457918930, guid: 8f23847f19df48e46be98ca677896033,
+        type: 3}
+      propertyPath: PlayerName
+      value: AI
+      objectReference: {fileID: 0}
+    - target: {fileID: 3412850038754405573, guid: 8f23847f19df48e46be98ca677896033,
+        type: 3}
+      propertyPath: m_Text
+      value: P2 Settings
+      objectReference: {fileID: 0}
+    - target: {fileID: 3433613763553684776, guid: 8f23847f19df48e46be98ca677896033,
+        type: 3}
+      propertyPath: PlayerName
+      value: AI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4681306363202778109, guid: 8f23847f19df48e46be98ca677896033,
+        type: 3}
+      propertyPath: PlayerName
+      value: AI
+      objectReference: {fileID: 0}
+    - target: {fileID: 6024037197216002530, guid: 8f23847f19df48e46be98ca677896033,
+        type: 3}
+      propertyPath: PlayerName
+      value: AI
+      objectReference: {fileID: 0}
     - target: {fileID: 6784916494353529265, guid: 8f23847f19df48e46be98ca677896033,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -316,6 +346,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: SettingsCanvas, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 6784916494356824087, guid: 8f23847f19df48e46be98ca677896033,
+        type: 3}
+      propertyPath: m_Text
+      value: P1 Settings
       objectReference: {fileID: 0}
     - target: {fileID: 6784916494372276530, guid: 8f23847f19df48e46be98ca677896033,
         type: 3}
@@ -426,6 +461,61 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6784916494820197340, guid: 8f23847f19df48e46be98ca677896033,
+        type: 3}
+      propertyPath: PlayerName
+      value: Human
+      objectReference: {fileID: 0}
+    - target: {fileID: 6784916494996674777, guid: 8f23847f19df48e46be98ca677896033,
+        type: 3}
+      propertyPath: PlayerName
+      value: Human
+      objectReference: {fileID: 0}
+    - target: {fileID: 6784916495271666145, guid: 8f23847f19df48e46be98ca677896033,
+        type: 3}
+      propertyPath: PlayerName
+      value: Human
+      objectReference: {fileID: 0}
+    - target: {fileID: 6784916495381809891, guid: 8f23847f19df48e46be98ca677896033,
+        type: 3}
+      propertyPath: PlayerName
+      value: Human
+      objectReference: {fileID: 0}
+    - target: {fileID: 6784916495826648664, guid: 8f23847f19df48e46be98ca677896033,
+        type: 3}
+      propertyPath: PlayerName
+      value: Human
+      objectReference: {fileID: 0}
+    - target: {fileID: 6784916496150217759, guid: 8f23847f19df48e46be98ca677896033,
+        type: 3}
+      propertyPath: PlayerName
+      value: Human
+      objectReference: {fileID: 0}
+    - target: {fileID: 6784916496191493207, guid: 8f23847f19df48e46be98ca677896033,
+        type: 3}
+      propertyPath: PlayerName
+      value: Human
+      objectReference: {fileID: 0}
+    - target: {fileID: 6784916496231086104, guid: 8f23847f19df48e46be98ca677896033,
+        type: 3}
+      propertyPath: PlayerName
+      value: Human
+      objectReference: {fileID: 0}
+    - target: {fileID: 7239369025296428810, guid: 8f23847f19df48e46be98ca677896033,
+        type: 3}
+      propertyPath: PlayerName
+      value: AI
+      objectReference: {fileID: 0}
+    - target: {fileID: 7726740158078887880, guid: 8f23847f19df48e46be98ca677896033,
+        type: 3}
+      propertyPath: PlayerName
+      value: AI
+      objectReference: {fileID: 0}
+    - target: {fileID: 9013623247351069293, guid: 8f23847f19df48e46be98ca677896033,
+        type: 3}
+      propertyPath: PlayerName
+      value: AI
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f23847f19df48e46be98ca677896033, type: 3}

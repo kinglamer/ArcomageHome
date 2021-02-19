@@ -1,20 +1,27 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Arcomage.Core.Interfaces.Impl;
 using Arcomage.Entity;
 using UnityEngine;
 
 public class WinParams : MonoBehaviour 
 {
     public static WinParams Instance { get; private set; }
-    public Dictionary<Attributes, int> Params = new Dictionary<Attributes, int>();
-
+    public GameStartParams HumanParams = new GameStartParams();
+    public GameStartParams AIParams = new GameStartParams();
     /// <summary>
     /// 
     /// </summary>
     private void Awake()
     {
-        if( Instance)
+        var defaultValue = new GameStartParams();
+        foreach (InputAttribute inputAttribute in FindObjectsOfType<InputAttribute>())
+        {
+            inputAttribute.SetValue(defaultValue.DefaultParams[inputAttribute.Attribute]);
+        }
+
+        if (Instance)
         {
             DestroyImmediate(gameObject);
             return;
@@ -29,7 +36,7 @@ public class WinParams : MonoBehaviour
     /// </summary>
     /// <param name="attributes"></param>
     /// <param name="value"></param>
-    private void SetAttribute(Attributes attributes, int value)
+    private void SetAttribute(Dictionary<Attributes, int> Params, Attributes attributes, int value)
     {
         if (Params.ContainsKey(attributes))
             Params[attributes] = value;
@@ -43,14 +50,16 @@ public class WinParams : MonoBehaviour
     public void ReadAllSettings()
     {
         foreach (InputAttribute inputAttribute in FindObjectsOfType<InputAttribute>())
-        {
-            if (!inputAttribute.IsWinParam)
-                continue;
-
+        { 
             int val = inputAttribute.GetValue();
 
             if (val > 0)
-                SetAttribute(inputAttribute.Attribute, val);
+            {
+                if(inputAttribute.PlayerName.StartsWith("human", StringComparison.OrdinalIgnoreCase))
+                    SetAttribute(HumanParams.DefaultParams, inputAttribute.Attribute, val);
+                else
+                    SetAttribute(AIParams.DefaultParams, inputAttribute.Attribute, val);
+            }
         }
     }
 

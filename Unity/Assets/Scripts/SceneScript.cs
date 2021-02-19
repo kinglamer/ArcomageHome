@@ -130,8 +130,8 @@ public class SceneScript : MonoBehaviour, ILog
 		var newServe = new ArcoSQLLiteServer(path);
 		gm = new GameController(this, newServe);
 
-		gm.AddPlayer(TypePlayer.Human, "Human");
-		gm.AddPlayer(TypePlayer.AI, "Computer");
+		gm.AddPlayer(TypePlayer.Human, "Human", WinParams.Instance.HumanParams);
+		gm.AddPlayer(TypePlayer.AI, "Computer", WinParams.Instance.AIParams);
 
 		Dictionary<string, object> notify = new Dictionary<string, object>();
 

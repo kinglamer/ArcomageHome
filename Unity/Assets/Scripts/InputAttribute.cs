@@ -1,14 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Arcomage.Entity;
+﻿using Arcomage.Entity;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class InputAttribute : MonoBehaviour
 {
     public Attributes Attribute;
-    public bool IsWinParam;
-
+    public string PlayerName;
     /// <summary>
     /// 
     /// </summary>
@@ -25,5 +22,10 @@ public class InputAttribute : MonoBehaviour
         }
 
         return 0;
+    }
+
+    public void SetValue(int val)
+    {
+        GetComponent<InputField>().text = val.ToString();    
     }
 }

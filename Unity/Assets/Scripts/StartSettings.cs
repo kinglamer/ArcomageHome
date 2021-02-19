@@ -120,23 +120,4 @@ public class StartSettings : MonoBehaviour, IStartParams
             Params.Add(attributes, value);
         }
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public void ReadAllSettings()
-    {
-        foreach( InputAttribute inputAttribute in FindObjectsOfType<InputAttribute>())
-        {
-           // Debug.Log("Set");
-            if (inputAttribute.IsWinParam)
-                continue;
-
-            int val = inputAttribute.GetValue();
-
-            if (val > 0)
-              // Debug.Log("PSA");
-                SetAttribute(inputAttribute.Attribute, val);
-        }
-    }
 }
